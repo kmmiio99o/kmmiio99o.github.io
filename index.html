@@ -169,7 +169,7 @@
 </head>
 <body>
     <!-- Background Video -->
-    <video class="background-video" autoplay loop muted playsinline>
+    <video class="background-video" autoplay loop playsinline>
         <source src="https://r2.guns.lol/5a925ac9-baa6-459c-9a47-bfd44846717d.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -185,7 +185,7 @@
 
     <!-- Unmute Button -->
     <div class="unmute-button" id="unmuteButton">
-        <i class="fas fa-volume-mute"></i> Unmute
+        <i class="fas fa-volume-up"></i> Mute
     </div>
 
     <div class="container">
@@ -268,6 +268,9 @@
         unmuteButton.addEventListener('mouseup', () => {
             document.body.style.cursor = 'none'; // Keep default cursor hidden after clicking
         });
+
+        // Ensure the video is unmuted by default
+        video.muted = false; // Unmute the video instantly
     </script>
 </body>
 </html>
