@@ -11,13 +11,16 @@
     <meta property="og:image" content="https://cdn.discordapp.com/attachments/1300495495071928321/1343742408638201907/95d59823ee0830566f91b3276b7aa5f5.gif?ex=67be6123&is=67bd0fa3&hm=564e67d29e52bff3d6313a0ebfafa3ddf9ce56b5af64a2f1d381e21b4cd06471&">
     <meta property="og:url" content="https://cdn.discordapp.com/attachments/1300495495071928321/1343741465339367434/0cc57118c6b84bda3edd71c001901899.jpg?ex=67be6042&is=67bd0ec2&hm=2c79517e7eaf9c2acd3af7e77442f8a030296366d4ca4ef8545a858eacf787ce&">
     <meta property="og:type" content="website">
+
+    <!-- Import Open Sans font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Open Sans', Arial, sans-serif; /* Apply Open Sans as the default font */
         }
         body {
             display: flex;
@@ -65,10 +68,12 @@
         h1 {
             font-size: 24px;
             margin-bottom: 10px;
+            font-weight: 600; /* Semi-bold for headings */
         }
         p {
             font-size: 16px;
             margin-bottom: 20px;
+            font-weight: 400; /* Regular weight for paragraphs */
         }
         .links a {
             display: block;
