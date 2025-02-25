@@ -27,6 +27,7 @@
             color: white;
             text-align: center;
             overflow: hidden;
+            cursor: none; /* Hide the default cursor */
         }
         .background-video {
             position: fixed;
@@ -78,6 +79,7 @@
             border-radius: 8px;
             margin: 8px 0;
             transition: 0.3s;
+            cursor: none; /* Ensure no default cursor on links */
         }
         .links a:hover {
             background: rgba(0, 0, 0, 0.8);
@@ -86,6 +88,20 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            border-radius: 50%;
+            pointer-events: none; /* Ensure the cursor doesn't interfere with clicks */
+            box-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red; /* Glow effect */
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            transition: transform 0.1s ease-out; /* Smooth movement */
         }
     </style>
 </head>
@@ -111,12 +127,28 @@
             <a href="https://discord.gg/SBcEfCwpKj">Discord where you can find me ;)</a>
         </div>
     </div>
+
+    <!-- Custom Cursor Element -->
+    <div class="custom-cursor" id="customCursor"></div>
+
     <script>
         const video = document.querySelector('.background-video');
         const volumeControl = document.getElementById('volume');
+        const customCursor = document.getElementById('customCursor');
 
         volumeControl.addEventListener('input', function() {
             video.volume = this.value;
+        });
+
+        // Update custom cursor position
+        document.addEventListener('mousemove', function(e) {
+            customCursor.style.left = e.pageX + 'px';
+            customCursor.style.top = e.pageY + 'px';
+        });
+
+        // Ensure the custom cursor stays on top of all elements
+        document.querySelectorAll('a, button, input, .links').forEach(element => {
+            element.style.cursor = 'none'; // Remove default cursor on interactive elements
         });
     </script>
 </body>
