@@ -14,6 +14,9 @@
 
     <!-- Import Open Sans font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Import Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         * {
@@ -76,7 +79,8 @@
             font-weight: 400; /* Regular weight for paragraphs */
         }
         .links a {
-            display: block;
+            display: flex;
+            align-items: center;
             text-decoration: none;
             color: white;
             background: rgba(0, 0, 0, 0.6);
@@ -89,6 +93,10 @@
         .links a:hover {
             background: rgba(0, 0, 0, 0.8);
             transform: scale(1.05);
+        }
+        .links a i {
+            margin-right: 10px; /* Space between icon and text */
+            font-size: 20px; /* Icon size */
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
@@ -133,13 +141,27 @@
         <h1>kmmiio99o.dev</h1>
         <p>| I'm a guy from Poland. | <br>| I'm a good developer and constributor ❤️ |</p>
         <div class="links">
-            <a href="https://www.instagram.com/kmmiio99o.dev/">Instagram</a>
-            <a href="https://x.com/kmmiio99o_dev">X</a>
-            <a href="https://guns.lol/kmmiio99o">Guns.lol</a>
-            <a href="https://myanimelist.net/animelist/kmmiio99o">Myanimelist</a>
-            <a href="https://open.spotify.com/user/31vktzo3gg3jxjky6bf7eg4lts5q">Spotify</a>
-            <a href="https://soundcloud.com/kmmiio99o">SoundCloud</a>
-            <a href="https://discord.gg/SBcEfCwpKj">Discord where you can find me ;)</a>
+            <a href="https://www.instagram.com/kmmiio99o.dev/">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://x.com/kmmiio99o_dev">
+                <i class="fab fa-twitter"></i> X (Twitter)
+            </a>
+            <a href="https://guns.lol/kmmiio99o">
+                <i class="fas fa-gamepad"></i> Guns.lol
+            </a>
+            <a href="https://myanimelist.net/animelist/kmmiio99o">
+                <i class="fas fa-tv"></i> MyAnimeList
+            </a>
+            <a href="https://open.spotify.com/user/31vktzo3gg3jxjky6bf7eg4lts5q">
+                <i class="fab fa-spotify"></i> Spotify
+            </a>
+            <a href="https://soundcloud.com/kmmiio99o">
+                <i class="fab fa-soundcloud"></i> SoundCloud
+            </a>
+            <a href="https://discord.gg/SBcEfCwpKj">
+                <i class="fab fa-discord"></i> Discord
+            </a>
         </div>
     </div>
 
