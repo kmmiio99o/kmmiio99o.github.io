@@ -165,6 +165,34 @@
         .unmute-button {
             cursor: none; /* Hide default cursor */
         }
+
+        /* View counter styles */
+        .view-counter {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            z-index: 10;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            opacity: 0.7;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 6px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(2px);
+        }
+
+        .eye-icon {
+            font-size: 16px;
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
     </style>
 </head>
 <body>
@@ -180,7 +208,7 @@
     <!-- Volume Control -->
     <div class="volume-control">
         <label for="volume">Volume:</label>
-        <input type="range" id="volume" min="0" max="1" step="0.00000001" value="1">
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
     </div>
 
     <!-- Unmute Button -->
@@ -199,8 +227,8 @@
             <a href="https://x.com/kmmiio99o_dev">
                 <i class="fab fa-twitter"></i> X (Twitter)
             </a>
-            <a href="https://www.tiktok.com/@kmmiio99o.dev">
-                <i class="fab fa-tiktok"></i> Tiktok
+            <a href="https://www.tiktok.com/@your_tiktok_username">
+                <i class="fab fa-tiktok"></i> TikTok
             </a>
             <a href="https://myanimelist.net/animelist/kmmiio99o">
                 <i class="fas fa-tv"></i> MyAnimeList
@@ -215,6 +243,12 @@
                 <i class="fab fa-discord"></i> Discord
             </a>
         </div>
+    </div>
+
+    <!-- View counter -->
+    <div class="view-counter" id="viewCounter">
+        <i class="fas fa-eye eye-icon"></i>
+        <span id="viewCount">0</span>
     </div>
 
     <!-- Custom Cursor Element -->
@@ -271,6 +305,17 @@
 
         // Ensure the video is unmuted by default
         video.muted = false; // Unmute the video instantly
+
+        // View counter functionality
+        const updateViewCount = () => {
+            let views = localStorage.getItem('siteViews');
+            views = views ? parseInt(views) + 1 : 1;
+            localStorage.setItem('siteViews', views);
+            document.getElementById('viewCount').textContent = views;
+        };
+
+        // Initialize counter
+        window.addEventListener('load', updateViewCount);
     </script>
 </body>
 </html>
