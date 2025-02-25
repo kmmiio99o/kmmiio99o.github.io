@@ -177,14 +177,28 @@
     <!-- Custom Cursor Element -->
     <div class="custom-cursor" id="customCursor"></div>
 
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://cdn.discordapp.com/attachments/1300495495071928321/1344022431702056990/0225.MP3?ex=67bf65ee&is=67be146e&hm=b5a3bbf76d0426ce1a44b9ccbe6d4b0818f59b5420585be92a87add90a693618&" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
         const video = document.querySelector('.background-video');
         const customCursor = document.getElementById('customCursor');
         const fallbackImage = document.querySelector('.fallback-image');
+        const backgroundMusic = document.getElementById('backgroundMusic');
 
         // Check if the video is playing, if not, show the fallback image
         video.addEventListener('error', () => {
             fallbackImage.style.display = 'block'; // Show fallback image if video fails
+        });
+
+        // Unmute the video and play music after user interaction
+        document.addEventListener('click', () => {
+            video.muted = false; // Unmute the video
+            backgroundMusic.muted = false; // Ensure music is unmuted
+            backgroundMusic.play(); // Play the background music
         });
 
         // Update custom cursor position
@@ -197,9 +211,9 @@
         document.querySelectorAll('a, button, input, .links').forEach(element => {
             element.style.cursor = 'none'; // Remove default cursor on interactive elements
         });
-
+    
         // Ensure the video is unmuted by default
-        video.muted = false; // Unmute the video instantly
+        audio.muted = false; // Unmute the video instantly
     </script>
 </body>
 </html>
