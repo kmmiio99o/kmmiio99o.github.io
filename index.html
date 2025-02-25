@@ -125,6 +125,12 @@
             transform: translate(-50%, -50%);
             z-index: 1000;
             transition: transform 0.1s ease-out; /* Smooth movement */
+            opacity: 0; /* Initially hidden */
+        }
+
+        /* Show cursor on mouse move */
+        body:hover .custom-cursor {
+            opacity: 1; /* Show cursor when mouse is moved */
         }
 
         /* Hide custom cursor on touch devices */
