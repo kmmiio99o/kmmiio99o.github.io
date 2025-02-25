@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kmmiio99o Website</title>
+    <title>EASTEREGG</title>
     <style>
         * {
             margin: 0;
@@ -16,16 +16,34 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #000000, #363636);
             color: white;
             text-align: center;
+            overflow: hidden;
+        }
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .volume-control {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
         }
         .container {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.6);
             padding: 20px;
             border-radius: 15px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             animation: fadeIn 1s ease-in-out;
         }
         img {
@@ -47,14 +65,14 @@
             display: block;
             text-decoration: none;
             color: white;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.6);
             padding: 12px;
             border-radius: 8px;
             margin: 8px 0;
             transition: 0.3s;
         }
         .links a:hover {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.8);
             transform: scale(1.05);
         }
         @keyframes fadeIn {
@@ -64,10 +82,17 @@
     </style>
 </head>
 <body>
+    <video class="background-video" autoplay loop>
+        <source src="https://cdn.discordapp.com/attachments/1300495495071928321/1343735652059185182/eb64978d-c1a0-42c4-b848-3b6979762b98.mp4?ex=67be5ad8&is=67bd0958&hm=226096bd63346824a77024dfd37830c777c23510db40e631cbdec7553bf59f2f&" type="video/mp4">
+    </video>
+    <div class="volume-control">
+        <label for="volume">Volume:</label>
+        <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
+    </div>
     <div class="container">
-        <img src="https://cdn.discordapp.com/avatars/879393496627306587/a_5e61d700ab93a1f62cd43083412aec72.gif?size=1024" alt="Profile Picture">
-        <h1>kmmiio99o</h1>
-        <p>| I'm a guy from Poland. | <br>| I'm a good developer and constributor ❤️ |</br></p>
+        <img src="https://cdn.discordapp.com/attachments/1300495495071928321/1343739425854586992/a_a4de877d06a810893a9b4c41644c5ad3.gif?ex=67be5e5c&is=67bd0cdc&hm=917c4cd8061d22edaf0c04b0b3e22613e4ea6fe46502bfbfe33da4988ef94cd8&" alt="Profile Picture">
+        <h1>kmmiio99o.dev</h1>
+        <p>| I'm a guy from Poland. | <br>| I'm a good developer and constributor ❤️ |</p>
         <div class="links">
             <a href="https://www.instagram.com/kmmiio99o.dev/">Instagram</a>
             <a href="https://x.com/kmmiio99o_dev">X</a>
@@ -78,5 +103,13 @@
             <a href="https://discord.gg/SBcEfCwpKj">Discord where you can find me ;)</a>
         </div>
     </div>
+    <script>
+        const video = document.querySelector('.background-video');
+        const volumeControl = document.getElementById('volume');
+
+        volumeControl.addEventListener('input', function() {
+            video.volume = this.value;
+        });
+    </script>
 </body>
 </html>
