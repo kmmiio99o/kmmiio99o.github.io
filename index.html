@@ -54,19 +54,6 @@
             z-index: -2; /* Behind the video */
             display: none; /* Hidden by default */
         }
-        .volume-control {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 5px;
-        }
-        /* Add this rule to hide the cursor on the volume label */
-        .volume-control label {
-            cursor: none;
-        }
         .container {
             background: rgba(0, 0, 0, 0.6);
             padding: 20px;
@@ -147,29 +134,6 @@
             }
         }
 
-        /* Unmute button */
-        .unmute-button {
-            position: fixed;
-            top: 60px;
-            left: 10px;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 5px;
-            color: white;
-            cursor: none; /* Hide default cursor */
-            transition: background 0.3s;
-        }
-        .unmute-button:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        /* Hide default cursor when dragging */
-        .volume-control input[type="range"],
-        .unmute-button {
-            cursor: none; /* Hide default cursor */
-        }
-
         /* View counter styles */
         .view-counter {
             position: fixed;
@@ -201,24 +165,13 @@
 </head>
 <body>
     <!-- Background Video -->
-    <video class="background-video" autoplay loop playsinline>
+    <video class="background-video" autoplay loop playsinline muted>
         <source src="https://r2.guns.lol/5a925ac9-baa6-459c-9a47-bfd44846717d.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
     <!-- Fallback Image -->
     <img class="fallback-image" src="https://cdn.discordapp.com/attachments/1300495495071928321/1343955703869476966/a_e0f88286fd0017e085a72291180335d8.gif?ex=67bf27c9&is=67bdd649&hm=8536e327c86ea8024056e2c89e48487d2a1b2c6d2345e1428ea7a09240636b31&" alt="Fallback Image">
-
-    <!-- Volume Control -->
-    <div class="volume-control">
-        <label for="volume">Volume:</label>
-        <input type="range" id="volume" min="0" max="1" step="0.00000001" value="1">
-    </div>
-
-    <!-- Unmute Button -->
-    <div class="unmute-button" id="unmuteButton">
-        <i class="fas fa-volume-up"></i> Mute
-    </div>
 
     <div class="container">
         <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmFxdDBrbmZiaG9xYnU2MGI1bnF6aG93c2JsOHNpbnV2NnVnMmdobyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LtV3LhDTRHNSLv4Q9U/giphy.gif" alt="Profile Picture">
@@ -260,25 +213,12 @@
 
     <script>
         const video = document.querySelector('.background-video');
-        const volumeControl = document.getElementById('volume');
         const customCursor = document.getElementById('customCursor');
         const fallbackImage = document.querySelector('.fallback-image');
-        const unmuteButton = document.getElementById('unmuteButton');
 
         // Check if the video is playing, if not, show the fallback image
         video.addEventListener('error', () => {
             fallbackImage.style.display = 'block'; // Show fallback image if video fails
-        });
-
-        // Volume control
-        volumeControl.addEventListener('input', function() {
-            video.volume = this.value;
-        });
-
-        // Unmute button functionality
-        unmuteButton.addEventListener('click', () => {
-            video.muted = !video.muted; // Toggle mute/unmute
-            unmuteButton.innerHTML = video.muted ? '<i class="fas fa-volume-mute"></i> Unmute' : '<i class="fas fa-volume-up"></i> Mute';
         });
 
         // Update custom cursor position
@@ -290,21 +230,6 @@
         // Ensure the custom cursor stays on top of all elements
         document.querySelectorAll('a, button, input, .links').forEach(element => {
             element.style.cursor = 'none'; // Remove default cursor on interactive elements
-        });
-
-        // Hide default cursor when dragging the volume slider or clicking the unmute button
-        volumeControl.addEventListener('mousedown', () => {
-            document.body.style.cursor = 'none'; // Hide default cursor when dragging
-        });
-        volumeControl.addEventListener('mouseup', () => {
-            document.body.style.cursor = 'none'; // Keep default cursor hidden after dragging
-        });
-
-        unmuteButton.addEventListener('mousedown', () => {
-            document.body.style.cursor = 'none'; // Hide default cursor when clicking
-        });
-        unmuteButton.addEventListener('mouseup', () => {
-            document.body.style.cursor = 'none'; // Keep default cursor hidden after clicking
         });
 
         // Ensure the video is unmuted by default
