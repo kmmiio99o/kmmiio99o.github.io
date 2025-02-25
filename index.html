@@ -108,6 +108,16 @@
             z-index: 1000;
             transition: transform 0.1s ease-out; /* Smooth movement */
         }
+
+        /* Hide custom cursor on touch devices */
+        @media (pointer: coarse) {
+            .custom-cursor {
+                display: none; /* Hide the custom cursor on touch devices */
+            }
+            body {
+                cursor: default; /* Restore default cursor on touch devices */
+            }
+        }
     </style>
 </head>
 <body>
