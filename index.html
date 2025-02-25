@@ -44,6 +44,16 @@
             object-fit: cover;
             z-index: -1;
         }
+        .fallback-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2; /* Behind the video */
+            display: none; /* Hidden by default */
+        }
         .volume-control {
             position: fixed;
             top: 10px;
@@ -129,9 +139,15 @@
     </style>
 </head>
 <body>
-    <video class="background-video" autoplay loop>
+    <!-- Background Video -->
+    <video class="background-video" autoplay loop muted playsinline>
         <source src="https://r2.guns.lol/5a925ac9-baa6-459c-9a47-bfd44846717d.mp4" type="video/mp4">
+        Your browser does not support the video tag.
     </video>
+
+    <!-- Fallback Image -->
+    <img class="fallback-image" src="https://via.placeholder.com/1920x1080" alt="Fallback Image">
+
     <div class="volume-control">
         <label for="volume">Volume:</label>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
@@ -147,6 +163,9 @@
             <a href="https://x.com/kmmiio99o_dev">
                 <i class="fab fa-twitter"></i> X (Twitter)
             </a>
+            <a href="https://guns.lol/kmmiio99o">
+                <i class="fas fa-gamepad"></i> Guns.lol
+            </a>
             <a href="https://myanimelist.net/animelist/kmmiio99o">
                 <i class="fas fa-tv"></i> MyAnimeList
             </a>
@@ -159,12 +178,6 @@
             <a href="https://discord.gg/SBcEfCwpKj">
                 <i class="fab fa-discord"></i> Discord
             </a>
-            <a href="https://last.fm/user/kmmiio99o">
-                <i class="fab fa-lastfm"></i> Last.fm
-            </a>
-            <a href="https://twitch.tv/kmmiio99odev">
-                <i class="fab fa-twitch"></i> Twitch
-            </a>
         </div>
     </div>
 
@@ -175,6 +188,12 @@
         const video = document.querySelector('.background-video');
         const volumeControl = document.getElementById('volume');
         const customCursor = document.getElementById('customCursor');
+        const fallbackImage = document.querySelector('.fallback-image');
+
+        // Check if the video is playing, if not, show the fallback image
+        video.addEventListener('error', () => {
+            fallbackImage.style.display = 'block'; // Show fallback image if video fails
+        });
 
         volumeControl.addEventListener('input', function() {
             video.volume = this.value;
