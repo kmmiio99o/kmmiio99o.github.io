@@ -197,7 +197,7 @@
         // Unmute the video and play music after user interaction
         document.addEventListener('click', () => {
             video.muted = false; // Unmute the video
-            backgroundMusic.muted = false; // Ensure music is unmuted
+            backgroundMusic.muted = true; // Ensure music is unmuted
             backgroundMusic.play(); // Play the background music
         });
 
