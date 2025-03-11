@@ -17,6 +17,7 @@
             color: white;
             font-family: 'Arial', sans-serif;
             overflow: hidden;
+            cursor: none; /* Ukryj domyślny kursor */
         }
 
         /* Styl dla kontenera gry */
@@ -65,12 +66,31 @@
             color: white;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
+            cursor: none; /* Ukryj domyślny kursor na przycisku */
             transition: background-color 0.3s ease;
         }
 
         #restart-button:hover {
             background-color: #388E3C; /* Ciemniejszy zielony po najechaniu */
+        }
+
+        /* Niestandardowy kursor */
+        .custom-cursor {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            border-radius: 50%;
+            pointer-events: none; /* Zapobiega interferencji z kliknięciami */
+            box-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red; /* Czerwony cień */
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            transition: transform 0.1s ease-out;
+            opacity: 0; /* Początkowo ukryty */
+        }
+
+        body:hover .custom-cursor {
+            opacity: 1; /* Pokaż kursor po najechaniu myszką */
         }
     </style>
 </head>
@@ -82,12 +102,16 @@
         <button id="restart-button">Restart</button>
     </div>
 
+    <!-- Niestandardowy kursor -->
+    <div class="custom-cursor" id="customCursor"></div>
+
     <script>
         // Zmienne gry
         const boardSize = 20; // Rozmiar planszy (20x20)
         const board = document.getElementById('game-board');
         const scoreElement = document.getElementById('score');
         const restartButton = document.getElementById('restart-button');
+        const customCursor = document.getElementById('customCursor');
 
         let snake = [{ x: 10, y: 10 }]; // Początkowa pozycja węża
         let food = { x: 5, y: 5 }; // Początkowa pozycja jedzenia
@@ -175,6 +199,11 @@
 
         // Obsługa klawiszy
         function handleKeyPress(event) {
+            // Jeśli gra nie jest jeszcze uruchomiona, zacznij grę po pierwszym naciśnięciu klawisza strzałki
+            if (!gameInterval && (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+                gameInterval = setInterval(update, 100);
+            }
+
             switch (event.key) {
                 case 'ArrowUp':
                     if (direction.y === 0) direction = { x: 0, y: -1 };
@@ -199,20 +228,31 @@
             scoreElement.textContent = `Score: ${score}`;
             placeFood();
             clearInterval(gameInterval);
-            gameInterval = setInterval(update, 100);
+            gameInterval = null; // Zresetuj interwał gry
+            draw(); // Narysuj planszę po restarcie
         }
 
-        // Inicjalizacja gry
+        // Inicjalizacja gry (bez automatycznego startu)
         createBoard();
         placeFood();
         draw();
-        gameInterval = setInterval(update, 100);
 
         // Nasłuchiwanie klawiszy
         window.addEventListener('keydown', handleKeyPress);
 
         // Restart gry po kliknięciu przycisku
         restartButton.addEventListener('click', restartGame);
+
+        // Aktualizacja pozycji niestandardowego kursora
+        document.addEventListener('mousemove', function(e) {
+            customCursor.style.left = e.pageX + 'px';
+            customCursor.style.top = e.pageY + 'px';
+        });
+
+        // Ukryj domyślny kursor na wszystkich interaktywnych elementach
+        document.querySelectorAll('a, button, input, .links').forEach(element => {
+            element.style.cursor = 'none';
+        });
     </script>
 </body>
 </html>
