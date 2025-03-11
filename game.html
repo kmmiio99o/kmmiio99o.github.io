@@ -91,7 +91,7 @@
 
         let snake = [{ x: 10, y: 10 }]; // Początkowa pozycja węża
         let food = { x: 5, y: 5 }; // Początkowa pozycja jedzenia
-        let direction = { x: 1, y: 0 }; // Początkowy kierunek ruchu w prawo
+        let direction = { x: 0, y: 0 }; // Początkowy kierunek ruchu (wąż stoi w miejscu)
         let score = 0;
         let gameInterval;
 
@@ -146,7 +146,7 @@
 
             // Sprawdź, czy węż zjadł jedzenie
             if (head.x === food.x && head.y === food.y) {
-                score += 10;
+                score += 1; // Zmiana: 1 punkt za jedzenie
                 scoreElement.textContent = `Score: ${score}`;
                 placeFood();
             } else {
@@ -194,7 +194,7 @@
         // Restart gry
         function restartGame() {
             snake = [{ x: 10, y: 10 }];
-            direction = { x: 1, y: 0 }; // Początkowy kierunek ruchu w prawo
+            direction = { x: 0, y: 0 }; // Wąż stoi w miejscu na początku
             score = 0;
             scoreElement.textContent = `Score: ${score}`;
             placeFood();
