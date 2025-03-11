@@ -7,10 +7,10 @@
         
     <!-- Open Graph Meta Tags for Discord Embed -->
     <meta name="twitter:site" content="kmmiio99o.dev">
-	<meta name="twitter:title" content="kmmiio99o.dev">
-	<meta name="twitter:description" content="Link to all my social media's!">
-	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:image:src" content="https://cdn.discordapp.com/attachments/1300495495071928321/1348081958759956511/a_2550575752b8ad22102c65cc17706862.gif?ex=67ce2aa9&is=67ccd929&hm=be8db685070197e0863cdbc553d2dae2894326e064ea685a2eff871a68564316&">
+    <meta name="twitter:title" content="kmmiio99o.dev">
+    <meta name="twitter:description" content="Link to all my social media's!">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image:src" content="https://cdn.discordapp.com/attachments/1300495495071928321/1348081958759956511/a_2550575752b8ad22102c65cc17706862.gif?ex=67ce2aa9&is=67ccd929&hm=be8db685070197e0863cdbc553d2dae2894326e064ea685a2eff871a68564316&">
 
     <!-- Import Open Sans font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -79,26 +79,37 @@
             margin-bottom: 20px;
             font-weight: 400; /* Regular weight for paragraphs */
         }
-        .links a {
+
+        /* Nowe style dla przycisków */
+        .links {
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .links a {
+            margin: 2px;
+            border-radius: 50%;
+            box-sizing: border-box;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
             align-items: center;
             text-decoration: none;
+            transition: 0.3s ease;
+            font-size: 2rem;
             color: white;
             background: rgba(0, 0, 0, 0.6);
-            padding: 12px;
-            border-radius: 8px;
-            margin: 8px 0;
-            transition: 0.3s;
-            cursor: none; /* Ensure no default cursor on links */
+            border: 2px solid white;
         }
+
         .links a:hover {
             background: rgba(0, 0, 0, 0.8);
-            transform: scale(1.05);
+            transform: scale(0.9);
         }
-        .links a i {
-            margin-right: 10px; /* Space between icon and text */
-            font-size: 20px; /* Icon size */
-        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -111,26 +122,24 @@
             height: 15px;
             background-color: red;
             border-radius: 50%;
-            pointer-events: none; /* Ensure the cursor doesn't interfere with clicks */
-            box-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red; /* Glow effect */
+            pointer-events: none;
+            box-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red;
             transform: translate(-50%, -50%);
             z-index: 1000;
-            transition: transform 0.1s ease-out; /* Smooth movement */
-            opacity: 0; /* Initially hidden */
+            transition: transform 0.1s ease-out;
+            opacity: 0;
         }
 
-        /* Show cursor on mouse move */
         body:hover .custom-cursor {
-            opacity: 1; /* Show cursor when mouse is moved */
+            opacity: 1;
         }
 
-        /* Hide custom cursor on touch devices */
         @media (pointer: coarse) {
             .custom-cursor {
-                display: none; /* Hide the custom cursor on touch devices */
+                display: none;
             }
             body {
-                cursor: default; /* Restore default cursor on touch devices */
+                cursor: default;
             }
         }
     </style>
@@ -151,25 +160,25 @@
         <p>| I'm a guy from Poland. |<br>| 15 yo |<br>| Developer | F1 fan | Anime lover |</br></p>
         <div class="links">
             <a href="https://www.instagram.com/kmmiio99o.dev/">
-                <i class="fab fa-instagram"></i> Instagram
+                <i class="fab fa-instagram"></i>
             </a>
             <a href="https://x.com/kmmiio99o_dev">
-                <i class="fab fa-twitter"></i> X (Twitter)
+                <i class="fab fa-twitter"></i>
             </a>
             <a href="https://www.tiktok.com/@kmmiio99o.dev">
-                <i class="fab fa-tiktok"></i> TikTok
+                <i class="fab fa-tiktok"></i>
             </a>
             <a href="https://myanimelist.net/animelist/kmmiio99o">
-                <i class="fas fa-tv"></i> MyAnimeList
+                <i class="fas fa-tv"></i>
             </a>
             <a href="https://open.spotify.com/user/31vktzo3gg3jxjky6bf7eg4lts5q">
-                <i class="fab fa-spotify"></i> Spotify
+                <i class="fab fa-spotify"></i>
             </a>
             <a href="https://soundcloud.com/kmmiio99o">
-                <i class="fab fa-soundcloud"></i> SoundCloud
+                <i class="fab fa-soundcloud"></i>
             </a>
             <a href="https://discordapp.com/users/879393496627306587">
-                <i class="fab fa-discord"></i> Discord
+                <i class="fab fa-discord"></i>
             </a>
         </div>
     </div>
