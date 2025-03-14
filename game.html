@@ -32,7 +32,7 @@
         /* Styl dla planszy gry */
         #game-board {
             display: grid;
-            grid-template-columns: repeat(20, 20px); /* 20x20 siatka */
+            grid-template-columns: repeat(20, 20px); /* Domyślnie 20x20 siatka */
             grid-template-rows: repeat(20, 20px);
             gap: 1px;
             background-color: #333; /* Kolor tła planszy */
@@ -92,6 +92,51 @@
         body:hover .custom-cursor {
             opacity: 1; /* Pokaż kursor po najechaniu myszką */
         }
+
+        /* Przyciski sterujące */
+        .controls {
+            display: none; /* Domyślnie ukryte */
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 20px;
+            font-size: 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .controls button:hover {
+            background-color: #388E3C;
+        }
+
+        /* Pokazuj przyciski tylko na urządzeniach mobilnych */
+        @media (max-width: 768px) {
+            .controls {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .custom-cursor {
+                display: none; /* Ukryj kursor na urządzeniach mobilnych */
+            }
+
+            body {
+                cursor: default; /* Przywróć domyślny kursor na urządzeniach mobilnych */
+            }
+
+            /* Mniejsza plansza na urządzeniach mobilnych */
+            #game-board {
+                grid-template-columns: repeat(15, 15px); /* 15x15 siatka na mobilnych */
+                grid-template-rows: repeat(15, 15px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -100,6 +145,13 @@
         <div id="game-board"></div>
         <div id="score">Score: 0</div>
         <button id="restart-button">Restart</button>
+        <!-- Przyciski sterujące -->
+        <div class="controls">
+            <button id="left-button">←</button>
+            <button id="up-button">↑</button>
+            <button id="down-button">↓</button>
+            <button id="right-button">→</button>
+        </div>
     </div>
 
     <!-- Niestandardowy kursor -->
@@ -107,13 +159,19 @@
 
     <script>
         // Zmienne gry
-        const boardSize = 20; // Rozmiar planszy (20x20)
+        const boardSize = window.innerWidth <= 768 ? 15 : 20; // Mniejsza plansza na mobilnych
         const board = document.getElementById('game-board');
         const scoreElement = document.getElementById('score');
         const restartButton = document.getElementById('restart-button');
         const customCursor = document.getElementById('customCursor');
 
-        let snake = [{ x: 10, y: 10 }]; // Początkowa pozycja węża
+        // Przyciski sterujące
+        const upButton = document.getElementById('up-button');
+        const downButton = document.getElementById('down-button');
+        const leftButton = document.getElementById('left-button');
+        const rightButton = document.getElementById('right-button');
+
+        let snake = [{ x: Math.floor(boardSize / 2), y: Math.floor(boardSize / 2) }]; // Początkowa pozycja węża na środku
         let food = { x: 5, y: 5 }; // Początkowa pozycja jedzenia
         let direction = { x: 0, y: 0 }; // Początkowy kierunek ruchu (wąż stoi w miejscu)
         let score = 0;
@@ -142,12 +200,12 @@
             // Rysuj węża
             snake.forEach(segment => {
                 const index = segment.y * boardSize + segment.x;
-                cells[index].classList.add('snake');
+                if (cells[index]) cells[index].classList.add('snake');
             });
 
             // Rysuj jedzenie
             const foodIndex = food.y * boardSize + food.x;
-            cells[foodIndex].classList.add('food');
+            if (cells[foodIndex]) cells[foodIndex].classList.add('food');
         }
 
         // Aktualizacja pozycji węża
@@ -201,7 +259,7 @@
         function handleKeyPress(event) {
             // Jeśli gra nie jest jeszcze uruchomiona, zacznij grę po pierwszym naciśnięciu klawisza strzałki
             if (!gameInterval && (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
-                gameInterval = setInterval(update, 100);
+                gameInterval = setInterval(update, 150); // Wąż porusza się wolniej (200 ms)
             }
 
             switch (event.key) {
@@ -222,7 +280,7 @@
 
         // Restart gry
         function restartGame() {
-            snake = [{ x: 10, y: 10 }];
+            snake = [{ x: Math.floor(boardSize / 2), y: Math.floor(boardSize / 2) }];
             direction = { x: 0, y: 0 }; // Wąż stoi w miejscu na początku
             score = 0;
             scoreElement.textContent = `Score: ${score}`;
@@ -252,6 +310,27 @@
         // Ukryj domyślny kursor na wszystkich interaktywnych elementach
         document.querySelectorAll('a, button, input, .links').forEach(element => {
             element.style.cursor = 'none';
+        });
+
+        // Obsługa przycisków sterujących
+        upButton.addEventListener('click', () => {
+            if (direction.y === 0) direction = { x: 0, y: -1 };
+            if (!gameInterval) gameInterval = setInterval(update, 200); // Wąż porusza się wolniej (200 ms)
+        });
+
+        downButton.addEventListener('click', () => {
+            if (direction.y === 0) direction = { x: 0, y: 1 };
+            if (!gameInterval) gameInterval = setInterval(update, 200); // Wąż porusza się wolniej (200 ms)
+        });
+
+        leftButton.addEventListener('click', () => {
+            if (direction.x === 0) direction = { x: -1, y: 0 };
+            if (!gameInterval) gameInterval = setInterval(update, 200); // Wąż porusza się wolniej (200 ms)
+        });
+
+        rightButton.addEventListener('click', () => {
+            if (direction.x === 0) direction = { x: 1, y: 0 };
+            if (!gameInterval) gameInterval = setInterval(update, 200); // Wąż porusza się wolniej (200 ms)
         });
     </script>
 </body>
