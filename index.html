@@ -86,6 +86,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 2px;
+            margin-bottom: 15px;
         }
 
         .links a {
@@ -108,6 +109,27 @@
         .links a:hover {
             background: rgba(0, 0, 0, 0.8);
             transform: scale(0.9);
+        }
+
+        /* Styl dla nowego przycisku */
+        .full-width-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: none;
+        }
+
+        .full-width-button:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(0.98);
         }
 
         /* Styl dla napisu "game" */
@@ -199,6 +221,8 @@
                 <i class="fab fa-discord"></i>
             </a>
         </div>
+        <!-- Github Repo -->
+        <a href="https://github.com/kmmiio99o/Themes" class="full-width-button">Vencord/BetterDiscord Themes</a>
     </div>
 
     <!-- Napis "game" w prawym dolnym rogu -->
