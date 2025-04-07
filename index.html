@@ -64,6 +64,13 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             animation: fadeIn 1s ease-in-out;
+            opacity: 0; /* Start hidden */
+            visibility: hidden; /* Hide completely */
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        .container.visible {
+            opacity: 1;
+            visibility: visible;
         }
         img {
             width: 120px;
@@ -146,6 +153,14 @@
             padding: 10px 20px;
             border-radius: 8px;
             transition: 0.3s ease;
+            opacity: 0; /* Start hidden */
+            visibility: hidden; /* Hide completely */
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .game-link.visible {
+            opacity: 1;
+            visibility: visible;
         }
 
         .game-link:hover {
@@ -170,11 +185,7 @@
             transform: translate(-50%, -50%);
             z-index: 1000;
             transition: transform 0.1s ease-out;
-            opacity: 0;
-        }
-
-        body:hover .custom-cursor {
-            opacity: 1;
+            opacity: 1; /* Teraz zawsze widoczny */
         }
 
         @media (pointer: coarse) {
@@ -185,11 +196,115 @@
                 cursor: default;
             }
         }
+
+        /* Welcome Screen Styles */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            cursor: none;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .welcome-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .welcome-screen h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Animacja znikania */
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* Volume Slider Styles */
+        .volume-control {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 30px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        
+        .volume-control.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .volume-icon {
+            color: white;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100px;
+            height: 5px;
+            border-radius: 5px;
+            background: #4d4d4d;
+            outline: none;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: white;
+            cursor: none;
+        }
+        
+        .volume-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: white;
+            cursor: none;
+            border: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <h2>click me</h2>
+    </div>
+
     <!-- Background Video -->
-    <video class="background-video" autoplay loop playsinline muted>
+    <video class="background-video" autoplay loop playsinline muted id="backgroundVideo">
         <source src="icons/background.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -197,7 +312,15 @@
     <!-- Fallback Image -->
     <img class="fallback-image" src="https://i.imgur.com/oKSApN5.gif" alt="Fallback Image">
 
-    <div class="container">
+    <!-- Volume Control -->
+    <div class="volume-control" id="volumeControl">
+        <div class="volume-icon">
+            <i class="fas fa-volume-up" id="volumeIcon"></i>
+        </div>
+        <input type="range" min="0" max="1" step="0.01" value="0.5" class="volume-slider" id="volumeSlider">
+    </div>
+
+    <div class="container" id="mainContainer">
         <img src="https://i.imgur.com/ZWC36uF.png" alt="Profile Picture">
         <h1>kmmiio99o.dev</h1>
         <p>| I'm a guy from Poland. |<br>| 15 yo | He/Him |<br>| Lazy | F1 fan | Anime lover |</br></p>
@@ -229,7 +352,7 @@
     </div>
 
     <!-- Napis "game" w prawym dolnym rogu -->
-    <a href="game.html" class="game-link">game</a>
+    <a href="game.html" class="game-link" id="gameLink">game</a>
 
     <!-- Custom Cursor Element -->
     <div class="custom-cursor" id="customCursor"></div>
@@ -238,18 +361,77 @@
         const video = document.querySelector('.background-video');
         const customCursor = document.getElementById('customCursor');
         const fallbackImage = document.querySelector('.fallback-image');
-        const backgroundMusic = document.getElementById('backgroundMusic');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const backgroundVideo = document.getElementById('backgroundVideo');
+        const mainContainer = document.getElementById('mainContainer');
+        const gameLink = document.getElementById('gameLink');
+        const volumeControl = document.getElementById('volumeControl');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeIcon = document.getElementById('volumeIcon');
+
+        // Initially mute and pause the video
+        backgroundVideo.muted = true;
+        backgroundVideo.pause();
+
+        // Show custom cursor immediately
+        customCursor.style.opacity = '1';
+
+        // When welcome screen is clicked
+        welcomeScreen.addEventListener('click', () => {
+            // Start fade out animation
+            welcomeScreen.classList.add('hide');
+            
+            // After animation completes, hide the element and show all other elements
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+                
+                // Unmute and play the video
+                backgroundVideo.muted = false;
+                backgroundVideo.volume = volumeSlider.value; // Set initial volume
+                backgroundVideo.play();
+                
+                // Show the main container
+                mainContainer.classList.add('visible');
+                
+                // Show the game link
+                gameLink.classList.add('visible');
+                
+                // Show volume control
+                volumeControl.classList.add('visible');
+                
+            }, 500); // Match this with the CSS transition duration
+        });
+
+        // Volume slider functionality
+        volumeSlider.addEventListener('input', () => {
+            const volumeValue = volumeSlider.value;
+            backgroundVideo.volume = volumeValue;
+            
+            // Update volume icon based on volume level
+            if (volumeValue == 0) {
+                volumeIcon.className = 'fas fa-volume-mute';
+            } else if (volumeValue < 0.5) {
+                volumeIcon.className = 'fas fa-volume-down';
+            } else {
+                volumeIcon.className = 'fas fa-volume-up';
+            }
+        });
+
+        // Mute/unmute when clicking the volume icon
+        volumeIcon.addEventListener('click', () => {
+            if (backgroundVideo.muted) {
+                backgroundVideo.muted = false;
+                volumeIcon.className = backgroundVideo.volume === 0 ? 'fas fa-volume-mute' : 
+                                      (backgroundVideo.volume < 0.5 ? 'fas fa-volume-down' : 'fas fa-volume-up');
+            } else {
+                backgroundVideo.muted = true;
+                volumeIcon.className = 'fas fa-volume-mute';
+            }
+        });
 
         // Check if the video is playing, if not, show the fallback image
         video.addEventListener('error', () => {
             fallbackImage.style.display = 'block'; // Show fallback image if video fails
-        });
-
-        // Unmute the video and play music after user interaction
-        document.addEventListener('none', () => {
-            video.muted = false; // Unmute the video
-            backgroundMusic.muted = false; // Ensure music is unmuted
-            backgroundMusic.play(); // Play the background music
         });
 
         // Update custom cursor position
@@ -262,9 +444,6 @@
         document.querySelectorAll('a, button, input, .links').forEach(element => {
             element.style.cursor = 'none'; // Remove default cursor on interactive elements
         });
-    
-        // Ensure the video is unmuted by default
-        audio.muted = false; // Unmute the video instantly
     </script>
 </body>
 </html>
