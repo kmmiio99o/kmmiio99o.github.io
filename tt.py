@@ -4,7 +4,7 @@ import os
 # Funkcja do pobierania wideo z TikTok
 def download_tiktok_video(url):
     # Tworzymy folder downloads, jeśli nie istnieje
-    download_folder = 'downloads'
+    download_folder = 'edits'
     if not os.path.exists(download_folder):
         os.makedirs(download_folder)
 
