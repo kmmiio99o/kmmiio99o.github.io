@@ -4,21 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EASTEREGG</title>
-
-    <!-- Favicon (ikonka obok nazwy strony) -->
     <link rel="icon" href="icons/icon.png" type="image/png">
-        
-    <!-- Open Graph Meta Tags for Discord Embed -->
     <meta name="twitter:site" content="kmmiio99o.dev">
     <meta name="twitter:title" content="kmmiio99o.dev">
     <meta name="twitter:description" content="Link to all my social media's!">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image:src" content="https://i.imgur.com/9AKR6bG.gif">
-
-    <!-- Import Open Sans font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Import Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
@@ -245,22 +237,143 @@
             cursor: none;
             border: none;
         }
-        .discord-status {
+        
+        /* NOWY STYL STATUSU DISCORD */
+        .discord-status-container {
             margin: 15px 0;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.4);
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
             border-radius: 8px;
-            font-size: 14px;
-            border-left: 3px solid #5865F2;
+            border-left: 3px solid #7289DA;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .discord-status span {
-            display: block;
-            margin: 3px 0;
+        .discord-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: relative;
+        }
+        .discord-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: none;
+            margin: 0;
+        }
+        .status-indicator {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid #2f3136;
+        }
+        .status-online { background: #3ba55c; }
+        .status-idle { background: #faa61a; }
+        .status-dnd { background: #ed4245; }
+        .status-offline { background: #747f8d; }
+        .discord-info {
+            text-align: left;
+            flex-grow: 1;
+        }
+        .discord-username {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+            font-size: 14px;
         }
         .discord-activity {
-            color: #5865F2;
-            font-weight: 600;
+            font-size: 13px;
+            color: #b9bbbe;
+            font-style: italic;
         }
+        .discord-custom-status {
+            color: #dcddde;
+            font-size: 13px;
+        }
+
+        /* NEW - Spotify listening status styles */
+        .spotify-container {
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid #1DB954;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+        }
+        .spotify-container.hidden {
+            display: none;
+        }
+        .spotify-artwork {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .spotify-artwork img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: none;
+            margin: 0;
+        }
+        .spotify-info {
+            text-align: left;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .spotify-song {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .spotify-artist {
+            font-size: 13px;
+            color: #b9bbbe;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .spotify-progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 8px;
+            position: relative;
+        }
+        .spotify-progress-bar {
+            height: 100%;
+            background: #1DB954;
+            border-radius: 2px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: width 1s linear;
+        }
+        .spotify-times {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #b9bbbe;
+            margin-top: 4px;
+        }
+        .spotify-logo {
+            margin-left: auto;
+            color: #1DB954;
+            font-size: 16px;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -285,21 +398,17 @@
     </style>
 </head>
 <body>
-    <!-- Welcome Screen -->
     <div class="welcome-screen" id="welcomeScreen">
         <h2>click me</h2>
     </div>
 
-    <!-- Background Video -->
     <video class="background-video" autoplay loop playsinline muted id="backgroundVideo">
         <source src="icons/background.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
-    <!-- Fallback Image -->
     <img class="fallback-image" src="https://i.imgur.com/oKSApN5.gif" alt="Fallback Image">
 
-    <!-- Volume Control -->
     <div class="volume-control" id="volumeControl">
         <div class="volume-icon">
             <i class="fas fa-volume-up" id="volumeIcon"></i>
@@ -312,9 +421,38 @@
         <h1>kmmiio99o.dev</h1>
         <p>| I'm a guy from Poland. |<br>| 15 yo | He/Him |<br>| Lazy | F1 fan | Anime lover |</br></p>
         
-        <!-- Discord Status -->
-        <div class="discord-status" id="discordStatus">
-            <span>Ładowanie statusu Discord...</span>
+        <!-- Discord Status Container -->
+        <div class="discord-status-container" id="discordStatusContainer">
+            <div class="discord-avatar">
+                <img id="discordAvatar" src="" alt="Discord Avatar">
+                <div class="status-indicator" id="statusIndicator"></div>
+            </div>
+            <div class="discord-info">
+                <div class="discord-username" id="discordUsername">Loading status...</div>
+                <div class="discord-activity" id="discordActivity"></div>
+                <div class="discord-custom-status" id="discordCustomStatus"></div>
+            </div>
+        </div>
+
+        <!-- NEW - Spotify Listening Status Container -->
+        <div class="spotify-container hidden" id="spotifyContainer">
+            <div class="spotify-artwork">
+                <img id="spotifyArtwork" src="" alt="Album Artwork">
+            </div>
+            <div class="spotify-info">
+                <div class="spotify-song" id="spotifySong">Loading...</div>
+                <div class="spotify-artist" id="spotifyArtist"></div>
+                <div class="spotify-progress-container">
+                    <div class="spotify-progress-bar" id="spotifyProgressBar"></div>
+                </div>
+                <div class="spotify-times">
+                    <div id="spotifyCurrentTime">0:00</div>
+                    <div id="spotifyEndTime">0:00</div>
+                </div>
+            </div>
+            <div class="spotify-logo">
+                <i class="fab fa-spotify"></i>
+            </div>
         </div>
 
         <div class="links">
@@ -343,10 +481,8 @@
         <a href="https://github.com/kmmiio99o/Themes" class="full-width-button">Vencord/BetterDiscord Themes</a>
     </div>
 
-    <!-- Napis "game" w prawym dolnym rogu -->
     <a href="game.html" class="game-link" id="gameLink">game</a>
 
-    <!-- Custom Cursor Element -->
     <div class="custom-cursor" id="customCursor"></div>
 
     <script>
@@ -360,7 +496,22 @@
         const volumeControl = document.getElementById('volumeControl');
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeIcon = document.getElementById('volumeIcon');
-        const discordStatusElement = document.getElementById('discordStatus');
+
+        // Discord elements
+        const discordAvatar = document.getElementById('discordAvatar');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const discordUsername = document.getElementById('discordUsername');
+        const discordActivity = document.getElementById('discordActivity');
+        const discordCustomStatus = document.getElementById('discordCustomStatus');
+
+        // Spotify elements
+        const spotifyContainer = document.getElementById('spotifyContainer');
+        const spotifyArtwork = document.getElementById('spotifyArtwork');
+        const spotifySong = document.getElementById('spotifySong');
+        const spotifyArtist = document.getElementById('spotifyArtist');
+        const spotifyProgressBar = document.getElementById('spotifyProgressBar');
+        const spotifyCurrentTime = document.getElementById('spotifyCurrentTime');
+        const spotifyEndTime = document.getElementById('spotifyEndTime');
 
         // Initially mute and pause the video
         backgroundVideo.muted = true;
@@ -426,45 +577,103 @@
             element.style.cursor = 'none';
         });
 
-        // Discord Status via Lanyard API
+        // Format seconds to mm:ss format
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Discord Status and Spotify tracking via Lanyard API
         function updateDiscordStatus() {
-            fetch('https://api.lanyard.rest/v1/users/879393496627306587')
+            const DISCORD_ID = "879393496627306587"; // Your Discord ID
+            
+            fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
                 .then(response => response.json())
                 .then(data => {
-                    const status = data.data;
-                    let html = '';
-
-                    // Status online/offline
-                    const statusText = status.discord_status === 'dnd' ? 'Do Not Disturb' : 
-                                      status.discord_status === 'idle' ? 'Idle' : 
-                                      status.discord_status === 'online' ? 'Online' : 'Offline';
+                    const discord = data.data;
                     
-                    html += `<span>Status: <strong>${statusText}</strong></span>`;
-
-                    // Aktualna gra
-                    const gameActivity = status.activities.find(a => a.type === 0);
+                    // Avatar
+                    const avatarUrl = discord.discord_user.avatar 
+                        ? `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${discord.discord_user.avatar}.png?size=80`
+                        : 'https://cdn.discordapp.com/embed/avatars/0.png';
+                    discordAvatar.src = avatarUrl;
+                    
+                    // Username
+                    discordUsername.textContent = 
+                        `${discord.discord_user.username}${discord.discord_user.discriminator !== '0' ? 
+                        '#' + discord.discord_user.discriminator : ''}`;
+                    
+                    // Status indicator
+                    statusIndicator.className = 'status-indicator';
+                    statusIndicator.classList.add(`status-${discord.discord_status}`);
+                    
+                    // Game activity
+                    const gameActivity = discord.activities.find(a => a.type === 0);
                     if (gameActivity) {
-                        html += `<span class="discord-activity">Gra: ${gameActivity.name}</span>`;
-                        if (gameActivity.details) html += `<span>${gameActivity.details}</span>`;
+                        discordActivity.textContent = `Playing: ${gameActivity.name}`;
+                        if (gameActivity.details) {
+                            discordActivity.textContent += ` (${gameActivity.details})`;
+                        }
+                    } else {
+                        discordActivity.textContent = '';
                     }
-
-                    // Niestandardowy status
-                    const customStatus = status.activities.find(a => a.type === 4);
+                    
+                    // Custom status
+                    const customStatus = discord.activities.find(a => a.type === 4);
                     if (customStatus?.state) {
-                        html += `<span>"${customStatus.state}"</span>`;
+                        discordCustomStatus.textContent = `"${customStatus.state}"`;
+                    } else {
+                        discordCustomStatus.textContent = '';
                     }
 
-                    discordStatusElement.innerHTML = html;
+                    // Spotify activity - NEW
+                    if (discord.spotify) {
+                        const spotify = discord.spotify;
+                        
+                        // Display the Spotify container
+                        spotifyContainer.classList.remove('hidden');
+                        
+                        // Set song and artist
+                        spotifySong.textContent = spotify.song;
+                        spotifyArtist.textContent = `by ${spotify.artist}`;
+                        
+                        // Set album artwork
+                        if (spotify.album_art_url) {
+                            spotifyArtwork.src = spotify.album_art_url;
+                        } else {
+                            spotifyArtwork.src = 'https://i.imgur.com/xZ03jQg.png'; // Fallback Spotify logo
+                        }
+                        
+                        // Calculate song progress
+                        const now = new Date().getTime();
+                        const start = new Date(spotify.timestamps.start).getTime();
+                        const end = new Date(spotify.timestamps.end).getTime();
+                        
+                        const elapsed = now - start;
+                        const duration = end - start;
+                        const progress = Math.min(100, (elapsed / duration) * 100);
+                        
+                        spotifyProgressBar.style.width = `${progress}%`;
+                        
+                        // Update time display
+                        spotifyCurrentTime.textContent = formatTime(elapsed / 1000);
+                        spotifyEndTime.textContent = formatTime(duration / 1000);
+                    } else {
+                        // Hide the Spotify container if not listening
+                        spotifyContainer.classList.add('hidden');
+                    }
                 })
                 .catch(error => {
-                    console.error("Błąd Lanyard API:", error);
-                    discordStatusElement.innerHTML = '<span>Status Discord niedostępny</span>';
+                    console.error("Lanyard API Error:", error);
+                    discordUsername.textContent = "Error loading status";
+                    spotifyContainer.classList.add('hidden');
                 });
         }
 
-        // Aktualizuj status co 10 sekund
+        // Initialize and auto-refresh every 100 miliseconds
         updateDiscordStatus();
-        setInterval(updateDiscordStatus, 10000);
+        setInterval(updateDiscordStatus, 100);
     </script>
 </body>
 </html>
