@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EASTEREGG</title>
 
-     <!-- Favicon (ikonka obok nazwy strony) -->
-     <link rel="icon" href="icons/icon.png" type="image/png">
+    <!-- Favicon (ikonka obok nazwy strony) -->
+    <link rel="icon" href="icons/icon.png" type="image/png">
         
     <!-- Open Graph Meta Tags for Discord Embed -->
     <meta name="twitter:site" content="kmmiio99o.dev">
@@ -26,7 +26,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Open Sans', Arial, sans-serif; /* Apply Open Sans as the default font */
+            font-family: 'Open Sans', Arial, sans-serif;
         }
         body {
             display: flex;
@@ -36,7 +36,7 @@
             color: white;
             text-align: center;
             overflow: hidden;
-            cursor: none; /* Hide the default cursor */
+            cursor: none;
         }
         .background-video {
             position: fixed;
@@ -54,8 +54,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -2; /* Behind the video */
-            display: none; /* Hidden by default */
+            z-index: -2;
+            display: none;
         }
         .container {
             background: rgba(0, 0, 0, 0.6);
@@ -64,8 +64,8 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             animation: fadeIn 1s ease-in-out;
-            opacity: 0; /* Start hidden */
-            visibility: hidden; /* Hide completely */
+            opacity: 0;
+            visibility: hidden;
             transition: opacity 1s ease, visibility 1s ease;
         }
         .container.visible {
@@ -82,15 +82,13 @@
         h1 {
             font-size: 24px;
             margin-bottom: 10px;
-            font-weight: 600; /* Semi-bold for headings */
+            font-weight: 600;
         }
         p {
             font-size: 16px;
             margin-bottom: 20px;
-            font-weight: 400; /* Regular weight for paragraphs */
+            font-weight: 400;
         }
-
-        /* Nowe style dla przycisków */
         .links {
             display: flex;
             flex-wrap: wrap;
@@ -98,7 +96,6 @@
             gap: 2px;
             margin-bottom: 15px;
         }
-
         .links a {
             margin: 2px;
             border-radius: 50%;
@@ -115,13 +112,10 @@
             background: rgba(0, 0, 0, 0.6);
             border: 2px solid white;
         }
-
         .links a:hover {
             background: rgba(0, 0, 0, 0.8);
             transform: scale(0.9);
         }
-
-        /* Styl dla nowego przycisku */
         .full-width-button {
             display: block;
             width: 100%;
@@ -136,13 +130,10 @@
             transition: all 0.3s ease;
             cursor: none;
         }
-
         .full-width-button:hover {
             background: rgba(0, 0, 0, 0.8);
             transform: scale(0.98);
         }
-
-        /* Styl dla napisu "game" */
         .game-link {
             position: fixed;
             bottom: 20px;
@@ -153,27 +144,18 @@
             padding: 10px 20px;
             border-radius: 8px;
             transition: 0.3s ease;
-            opacity: 0; /* Start hidden */
-            visibility: hidden; /* Hide completely */
+            opacity: 0;
+            visibility: hidden;
             transition: opacity 1s ease, visibility 1s ease;
         }
-
         .game-link.visible {
             opacity: 1;
             visibility: visible;
         }
-
         .game-link:hover {
             background: rgba(0, 0, 0, 0.8);
             transform: scale(1.05);
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Custom Cursor */
         .custom-cursor {
             position: absolute;
             width: 15px;
@@ -185,19 +167,8 @@
             transform: translate(-50%, -50%);
             z-index: 1000;
             transition: transform 0.1s ease-out;
-            opacity: 1; /* Teraz zawsze widoczny */
+            opacity: 1;
         }
-
-        @media (pointer: coarse) {
-            .custom-cursor {
-                display: none;
-            }
-            body {
-                cursor: default;
-            }
-        }
-
-        /* Welcome Screen Styles */
         .welcome-screen {
             position: fixed;
             top: 0;
@@ -216,31 +187,15 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
-
         .welcome-screen.hide {
             opacity: 0;
             pointer-events: none;
         }
-
         .welcome-screen h2 {
             font-size: 3rem;
             margin-bottom: 20px;
             animation: pulse 2s infinite;
         }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Animacja znikania */
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-
-        /* Volume Slider Styles */
         .volume-control {
             position: fixed;
             top: 20px;
@@ -255,18 +210,15 @@
             visibility: hidden;
             transition: opacity 1s ease, visibility 1s ease;
         }
-        
         .volume-control.visible {
             opacity: 1;
             visibility: visible;
         }
-        
         .volume-icon {
             color: white;
             margin-right: 10px;
             font-size: 18px;
         }
-        
         .volume-slider {
             -webkit-appearance: none;
             appearance: none;
@@ -276,7 +228,6 @@
             background: #4d4d4d;
             outline: none;
         }
-        
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -286,7 +237,6 @@
             background: white;
             cursor: none;
         }
-        
         .volume-slider::-moz-range-thumb {
             width: 15px;
             height: 15px;
@@ -294,6 +244,43 @@
             background: white;
             cursor: none;
             border: none;
+        }
+        .discord-status {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            font-size: 14px;
+            border-left: 3px solid #5865F2;
+        }
+        .discord-status span {
+            display: block;
+            margin: 3px 0;
+        }
+        .discord-activity {
+            color: #5865F2;
+            font-weight: 600;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @media (pointer: coarse) {
+            .custom-cursor {
+                display: none;
+            }
+            body {
+                cursor: default;
+            }
         }
     </style>
 </head>
@@ -324,6 +311,12 @@
         <img src="https://i.imgur.com/ZWC36uF.png" alt="Profile Picture">
         <h1>kmmiio99o.dev</h1>
         <p>| I'm a guy from Poland. |<br>| 15 yo | He/Him |<br>| Lazy | F1 fan | Anime lover |</br></p>
+        
+        <!-- Discord Status -->
+        <div class="discord-status" id="discordStatus">
+            <span>Ładowanie statusu Discord...</span>
+        </div>
+
         <div class="links">
             <a href="https://t.me/kmmiio99o1">
                 <i class="fab fa-telegram"></i>
@@ -347,7 +340,6 @@
                 <i class="fab fa-discord"></i>
             </a>
         </div>
-        <!-- Github Repo -->
         <a href="https://github.com/kmmiio99o/Themes" class="full-width-button">Vencord/BetterDiscord Themes</a>
     </div>
 
@@ -368,6 +360,7 @@
         const volumeControl = document.getElementById('volumeControl');
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeIcon = document.getElementById('volumeIcon');
+        const discordStatusElement = document.getElementById('discordStatus');
 
         // Initially mute and pause the video
         backgroundVideo.muted = true;
@@ -378,28 +371,17 @@
 
         // When welcome screen is clicked
         welcomeScreen.addEventListener('click', () => {
-            // Start fade out animation
             welcomeScreen.classList.add('hide');
             
-            // After animation completes, hide the element and show all other elements
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
-                
-                // Unmute and play the video
                 backgroundVideo.muted = false;
-                backgroundVideo.volume = volumeSlider.value; // Set initial volume
+                backgroundVideo.volume = volumeSlider.value;
                 backgroundVideo.play();
-                
-                // Show the main container
                 mainContainer.classList.add('visible');
-                
-                // Show the game link
                 gameLink.classList.add('visible');
-                
-                // Show volume control
                 volumeControl.classList.add('visible');
-                
-            }, 500); // Match this with the CSS transition duration
+            }, 500);
         });
 
         // Volume slider functionality
@@ -407,7 +389,6 @@
             const volumeValue = volumeSlider.value;
             backgroundVideo.volume = volumeValue;
             
-            // Update volume icon based on volume level
             if (volumeValue == 0) {
                 volumeIcon.className = 'fas fa-volume-mute';
             } else if (volumeValue < 0.5) {
@@ -431,7 +412,7 @@
 
         // Check if the video is playing, if not, show the fallback image
         video.addEventListener('error', () => {
-            fallbackImage.style.display = 'block'; // Show fallback image if video fails
+            fallbackImage.style.display = 'block';
         });
 
         // Update custom cursor position
@@ -442,8 +423,48 @@
 
         // Ensure the custom cursor stays on top of all elements
         document.querySelectorAll('a, button, input, .links').forEach(element => {
-            element.style.cursor = 'none'; // Remove default cursor on interactive elements
+            element.style.cursor = 'none';
         });
+
+        // Discord Status via Lanyard API
+        function updateDiscordStatus() {
+            fetch('https://api.lanyard.rest/v1/users/879393496627306587')
+                .then(response => response.json())
+                .then(data => {
+                    const status = data.data;
+                    let html = '';
+
+                    // Status online/offline
+                    const statusText = status.discord_status === 'dnd' ? 'Do Not Disturb' : 
+                                      status.discord_status === 'idle' ? 'Idle' : 
+                                      status.discord_status === 'online' ? 'Online' : 'Offline';
+                    
+                    html += `<span>Status: <strong>${statusText}</strong></span>`;
+
+                    // Aktualna gra
+                    const gameActivity = status.activities.find(a => a.type === 0);
+                    if (gameActivity) {
+                        html += `<span class="discord-activity">Gra: ${gameActivity.name}</span>`;
+                        if (gameActivity.details) html += `<span>${gameActivity.details}</span>`;
+                    }
+
+                    // Niestandardowy status
+                    const customStatus = status.activities.find(a => a.type === 4);
+                    if (customStatus?.state) {
+                        html += `<span>"${customStatus.state}"</span>`;
+                    }
+
+                    discordStatusElement.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error("Błąd Lanyard API:", error);
+                    discordStatusElement.innerHTML = '<span>Status Discord niedostępny</span>';
+                });
+        }
+
+        // Aktualizuj status co 10 sekund
+        updateDiscordStatus();
+        setInterval(updateDiscordStatus, 10000);
     </script>
 </body>
 </html>
