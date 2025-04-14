@@ -403,7 +403,8 @@
     </div>
 
     <video class="background-video" autoplay loop playsinline muted id="backgroundVideo">
-        <!-- Źródło wideo zostanie wstawione przez JS -->
+        <source src="icons/background.mp4" type="video/mp4">
+        Your browser does not support the video tag.
     </video>
 
     <img class="fallback-image" src="https://i.imgur.com/oKSApN5.gif" alt="Fallback Image">
@@ -512,31 +513,6 @@
         const spotifyCurrentTime = document.getElementById('spotifyCurrentTime');
         const spotifyEndTime = document.getElementById('spotifyEndTime');
 
-        // Lista dostępnych wideo w tle
-        const backgroundVideos = [
-            "background.mp4",
-            "background1.mp4"
-        ];
-
-        // Funkcja do losowania wideo
-        function setRandomBackgroundVideo() {
-            const randomVideo = backgroundVideos[Math.floor(Math.random() * backgroundVideos.length)];
-            const source = document.createElement('source');
-            source.src = randomVideo;
-            source.type = 'video/mp4';
-            
-            // Usuń poprzednie źródła wideo
-            while (backgroundVideo.firstChild) {
-                backgroundVideo.removeChild(backgroundVideo.firstChild);
-            }
-            
-            backgroundVideo.appendChild(source);
-            backgroundVideo.load();
-        }
-
-        // Ustaw losowe wideo przy załadowaniu strony
-        setRandomBackgroundVideo();
-
         // Initially mute and pause the video
         backgroundVideo.muted = true;
         backgroundVideo.pause();
@@ -544,23 +520,19 @@
         // Show custom cursor immediately
         customCursor.style.opacity = '1';
 
-        // When welcome screen is clicked - POPRAWIONA WERSJA
-        welcomeScreen.addEventListener('click', function() {
-            // Najpierw wykonaj wszystkie akcje
-            backgroundVideo.muted = false;
-            backgroundVideo.volume = volumeSlider.value;
-            backgroundVideo.play().catch(e => console.log("Autoplay error:", e));
-            mainContainer.classList.add('visible');
-            gameLink.classList.add('visible');
-            volumeControl.classList.add('visible');
-            
-            // Dopiero na końcu dodaj klasę hide
+        // When welcome screen is clicked
+        welcomeScreen.addEventListener('click', () => {
             welcomeScreen.classList.add('hide');
             
-            // Usuń element po zakończeniu animacji
-            welcomeScreen.addEventListener('transitionend', function() {
+            setTimeout(() => {
                 welcomeScreen.style.display = 'none';
-            }, { once: true });
+                backgroundVideo.muted = false;
+                backgroundVideo.volume = volumeSlider.value;
+                backgroundVideo.play();
+                mainContainer.classList.add('visible');
+                gameLink.classList.add('visible');
+                volumeControl.classList.add('visible');
+            }, 500);
         });
 
         // Volume slider functionality
