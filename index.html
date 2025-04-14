@@ -293,6 +293,14 @@
         .discord-custom-status {
             color: #dcddde;
             font-size: 13px;
+            display: flex;
+            align-items: center;
+        }
+        .discord-custom-status-emoji {
+            height: 16px;
+            width: 16px;
+            vertical-align: middle;
+            margin-right: 12px; /* Zwiększony odstęp z 6px na 12px */
         }
 
         /* NEW - Spotify listening status styles */
@@ -619,15 +627,33 @@
                         discordActivity.textContent = '';
                     }
                     
-                    // Custom status
+                    // Custom status with emojis (BEZ CUDZYSŁOWÓW)
                     const customStatus = discord.activities.find(a => a.type === 4);
+                    discordCustomStatus.innerHTML = '';
+                    
                     if (customStatus?.state) {
-                        discordCustomStatus.textContent = `"${customStatus.state}"`;
-                    } else {
-                        discordCustomStatus.textContent = '';
+                        // Najpierw dodaj emoji jeśli istnieje
+                        if (customStatus.emoji) {
+                            const emojiSpan = document.createElement('span');
+                            
+                            if (customStatus.emoji.id) {
+                                // Custom emoji
+                                emojiSpan.innerHTML = `<img class="discord-custom-status-emoji" src="https://cdn.discordapp.com/emojis/${customStatus.emoji.id}.${customStatus.emoji.animated ? 'gif' : 'png'}" alt="${customStatus.emoji.name}">`;
+                            } else {
+                                // Unicode emoji
+                                emojiSpan.textContent = customStatus.emoji.name;
+                            }
+                            
+                            discordCustomStatus.appendChild(emojiSpan);
+                        }
+                        
+                        // Potem dodaj tekst statusu BEZ CUDZYSŁOWÓW
+                        const textSpan = document.createElement('span');
+                        textSpan.textContent = customStatus.state; // Usunięto cudzysłowy
+                        discordCustomStatus.appendChild(textSpan);
                     }
 
-                    // Spotify activity - NEW
+                    // Spotify activity
                     if (discord.spotify) {
                         const spotify = discord.spotify;
                         
