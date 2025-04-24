@@ -188,16 +188,16 @@
             margin-bottom: 20px;
             animation: pulse 2s infinite;
         }
-        /* Zmieniony styl kontrolki głośności */
+        /* Zmodyfikowany styl kontrolki głośności - teraz po lewej stronie */
         .volume-control {
             position: fixed;
             top: 20px;
-            right: 20px; /* Zmienione z left na right */
+            left: 20px;
             z-index: 100;
             display: flex;
             align-items: center;
             background: rgba(0, 0, 0, 0.6);
-            padding: 5px 10px;
+            padding: 5px 5px;
             border-radius: 30px;
             opacity: 0.5;
             visibility: visible;
@@ -217,22 +217,25 @@
             margin-right: 10px;
             font-size: 18px;
             min-width: 20px;
+            flex-shrink: 0; /* Zapobiega zmianie rozmiaru ikonki */
         }
     
         .volume-slider {
             -webkit-appearance: none;
             appearance: none;
-            width: 100px;
-            height: 3px; /* Cieńszy suwak */
+            width: 0;
+            height: 3px;
             border-radius: 5px;
             background: #4d4d4d;
             outline: none;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, width 0.3s ease;
+            flex-grow: 1;
         }
     
         .volume-control:hover .volume-slider {
             opacity: 1;
+            width: 100px;
         }
         
         /* NOWY STYL STATUSU DISCORD */
@@ -297,7 +300,7 @@
             height: 16px;
             width: 16px;
             vertical-align: middle;
-            margin-right: 12px; /* Zwiększony odstęp z 6px na 12px */
+            margin-right: 12px;
         }
 
         /* NEW - Spotify listening status styles */
@@ -546,19 +549,23 @@
             
             if (volumeValue == 0) {
                 volumeIcon.className = 'fas fa-volume-mute';
-            } else if (volumeValue < 0.1)
-            volumeIcon.className = 'fas fa-volume-up'; {
+            } else if (volumeValue < 0.1) {
+                volumeIcon.className = 'fas fa-volume-down';
+            } else {
+                volumeIcon.className = 'fas fa-volume-up';
             }
         });
 
         // Mute/unmute when clicking the volume icon
         volumeIcon.addEventListener('click', () => {
             if (backgroundVideo.muted) {
-        backgroundVideo.muted = false;
-        volumeIcon.className = 'fas fa-volume-up'; // Zawsze pokazuj głośnik na max
+                backgroundVideo.muted = false;
+                volumeIcon.className = backgroundVideo.volume == 0 ? 'fas fa-volume-mute' : 
+                                      backgroundVideo.volume < 0.1 ? 'fas fa-volume-down' : 
+                                      'fas fa-volume-up';
             } else {
-        backgroundVideo.muted = true;
-        volumeIcon.className = 'fas fa-volume-mute'; // Tylko przy mutowaniu pokazuj ikonę mute
+                backgroundVideo.muted = true;
+                volumeIcon.className = 'fas fa-volume-mute';
             }
         });
 
