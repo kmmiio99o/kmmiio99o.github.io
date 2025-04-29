@@ -17,7 +17,6 @@
             color: white;
             font-family: 'Arial', sans-serif;
             overflow: hidden;
-            cursor: none; /* Ukryj domyślny kursor */
         }
 
         /* Styl dla kontenera gry */
@@ -27,28 +26,71 @@
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            width: 90%;
+            max-width: 500px; /* Maksymalna szerokość kontenera */
         }
 
         /* Styl dla planszy gry */
         #game-board {
             display: grid;
-            grid-template-columns: repeat(20, 20px); /* Domyślnie 20x20 siatka */
-            grid-template-rows: repeat(20, 20px);
-            gap: 1px;
+            width: 100%;
+            aspect-ratio: 1/1; /* Zachowaj proporcje kwadratowe */
+            margin: 0 auto;
             background-color: #333; /* Kolor tła planszy */
             border: 2px solid #444; /* Ramka planszy */
+        }
+
+        /* Styl dla komórek planszy (kratki) */
+        .cell {
+            background-color: #222;
+            border: 1px solid #3a3a3a;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
         }
 
         /* Styl dla segmentów węża */
         .snake {
             background-color: #4CAF50; /* Zielony kolor węża */
             border: 1px solid #388E3C; /* Ciemniejsza obramówka */
+            animation: snakePulse 2s infinite;
+            border-radius: 3px;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+
+        /* Styl dla głowy węża */
+        .snake-head {
+            background-color: #388E3C; /* Ciemniejszy zielony */
+            border-radius: 5px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.8);
+        }
+
+        /* Styl dla ogona węża */
+        .snake-tail {
+            background-color: #81C784; /* Jaśniejszy zielony */
+            border-radius: 4px;
+        }
+
+        @keyframes snakePulse {
+            0% { background-color: #4CAF50; box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); }
+            50% { background-color: #66BB6A; box-shadow: 0 0 8px rgba(76, 175, 80, 0.8); }
+            100% { background-color: #4CAF50; box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); }
         }
 
         /* Styl dla jedzenia */
         .food {
             background-color: #FF5252; /* Czerwony kolor jedzenia */
             border-radius: 50%; /* Okrągły kształt */
+            animation: foodPulse 1s infinite;
+        }
+
+        @keyframes foodPulse {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(0.8); }
         }
 
         /* Styl dla wyniku */
@@ -57,40 +99,70 @@
             margin-top: 20px;
         }
 
-        /* Styl dla przycisku restart */
-        #restart-button {
-            margin-top: 20px;
+        /* Menu końca gry */
+        .game-over-menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+            max-width: 300px;
+            display: none;
+            animation: fadeIn 0.5s forwards;
+            box-shadow: 0 0 30px rgba(255, 82, 82, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            to { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        }
+
+        .game-over-menu h2 {
+            color: #FF5252;
+            margin-top: 0;
+            animation: titlePulse 2s infinite;
+        }
+
+        @keyframes titlePulse {
+            0% { text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 82, 82, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
+        }
+
+        .game-over-menu p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .restart-button {
             padding: 10px 20px;
             font-size: 16px;
             background-color: #4CAF50; /* Zielony przycisk */
             color: white;
             border: none;
             border-radius: 5px;
-            cursor: none; /* Ukryj domyślny kursor na przycisku */
-            transition: background-color 0.3s ease;
+            cursor: default; /* Przycisk nie zmienia kursora na pointer */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            outline: none; /* Usuwa niebieski outline po kliknięciu */
         }
 
-        #restart-button:hover {
+        .restart-button:focus {
+            outline: none; /* Usuwa niebieski outline po użyciu klawiatury */
+        }
+
+        .restart-button:hover {
             background-color: #388E3C; /* Ciemniejszy zielony po najechaniu */
-        }
-
-        /* Niestandardowy kursor */
-        .custom-cursor {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background-color: red;
-            border-radius: 50%;
-            pointer-events: none; /* Zapobiega interferencji z kliknięciami */
-            box-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red; /* Czerwony cień */
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-            transition: transform 0.1s ease-out;
-            opacity: 0; /* Początkowo ukryty */
-        }
-
-        body:hover .custom-cursor {
-            opacity: 1; /* Pokaż kursor po najechaniu myszką */
+            transform: scale(1.05);
         }
 
         /* Przyciski sterujące */
@@ -107,12 +179,19 @@
             color: white;
             border: none;
             border-radius: 10px;
-            cursor: pointer;
+            cursor: default;
             flex: 1;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            outline: none; /* Usuwa niebieski outline po kliknięciu */
+        }
+
+        .controls button:focus {
+            outline: none; /* Usuwa niebieski outline po użyciu klawiatury */
         }
 
         .controls button:hover {
             background-color: #388E3C;
+            transform: scale(1.05);
         }
 
         /* Pokazuj przyciski tylko na urządzeniach mobilnych */
@@ -122,20 +201,6 @@
                 justify-content: center;
                 gap: 10px;
             }
-
-            .custom-cursor {
-                display: none; /* Ukryj kursor na urządzeniach mobilnych */
-            }
-
-            body {
-                cursor: default; /* Przywróć domyślny kursor na urządzeniach mobilnych */
-            }
-
-            /* Mniejsza plansza na urządzeniach mobilnych */
-            #game-board {
-                grid-template-columns: repeat(15, 15px); /* 15x15 siatka na mobilnych */
-                grid-template-rows: repeat(15, 15px);
-            }
         }
     </style>
 </head>
@@ -144,7 +209,6 @@
         <h1>Snake Game</h1>
         <div id="game-board"></div>
         <div id="score">Score: 0</div>
-        <button id="restart-button">Restart</button>
         <!-- Przyciski sterujące -->
         <div class="controls">
             <button id="left-button">←</button>
@@ -152,18 +216,38 @@
             <button id="down-button">↓</button>
             <button id="right-button">→</button>
         </div>
+        
+        <!-- Menu końca gry -->
+        <div class="game-over-menu" id="gameOverMenu">
+            <h2>Game Over!</h2>
+            <p id="final-score">Your score: 0</p>
+            <button class="restart-button" id="restart-button">Play Again</button>
+        </div>
     </div>
-
-    <!-- Niestandardowy kursor -->
-    <div class="custom-cursor" id="customCursor"></div>
 
     <script>
         // Zmienne gry
-        const boardSize = window.innerWidth <= 768 ? 15 : 20; // Mniejsza plansza na mobilnych
-        const board = document.getElementById('game-board');
+        const boardElement = document.getElementById('game-board');
         const scoreElement = document.getElementById('score');
         const restartButton = document.getElementById('restart-button');
-        const customCursor = document.getElementById('customCursor');
+        const gameOverMenu = document.getElementById('gameOverMenu');
+        const finalScoreElement = document.getElementById('final-score');
+        
+        // Stała prędkość ruchu (ms)
+        const GAME_SPEED = 150; 
+        // Czas animacji (ms) - musi być krótszy niż GAME_SPEED
+        const ANIMATION_SPEED = 120;
+
+        // Dynamiczny rozmiar planszy w zależności od urządzenia
+        let boardSize = determineBoardSize();
+        let cellSize;
+        
+        // Zmienne gry
+        let snake = [];
+        let food = { x: 0, y: 0 };
+        let direction = { x: 0, y: 0 };
+        let score = 0;
+        let gameInterval;
 
         // Przyciski sterujące
         const upButton = document.getElementById('up-button');
@@ -171,36 +255,89 @@
         const leftButton = document.getElementById('left-button');
         const rightButton = document.getElementById('right-button');
 
-        let snake = [{ x: Math.floor(boardSize / 2), y: Math.floor(boardSize / 2) }]; // Początkowa pozycja węża na środku
-        let food = { x: 5, y: 5 }; // Początkowa pozycja jedzenia
-        let direction = { x: 0, y: 0 }; // Początkowy kierunek ruchu (wąż stoi w miejscu)
-        let score = 0;
-        let gameInterval;
+        // Określ rozmiar planszy na podstawie urządzenia
+        function determineBoardSize() {
+            // Na urządzeniach mobilnych użyj mniejszego rozmiaru
+            return window.innerWidth <= 768 ? 15 : 20;
+        }
+
+        // Dostosuj siatkę do rozmiaru ekranu
+        function setupResponsiveGrid() {
+            // Pobierz aktualny rozmiar planszy
+            const boardWidth = boardElement.clientWidth;
+            
+            // Ustaw rozmiar komórki
+            cellSize = Math.floor(boardWidth / boardSize);
+            
+            // Ustaw rozmiar siatki
+            boardElement.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
+            boardElement.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`;
+        }
 
         // Generowanie planszy
         function createBoard() {
-            board.innerHTML = '';
+            boardElement.innerHTML = '';
+            setupResponsiveGrid();
+            
             for (let y = 0; y < boardSize; y++) {
                 for (let x = 0; x < boardSize; x++) {
                     const cell = document.createElement('div');
                     cell.classList.add('cell');
-                    board.appendChild(cell);
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    boardElement.appendChild(cell);
                 }
             }
         }
 
-        // Rysowanie węża i jedzenia
+        // Inicjalizacja gry
+        function initGame() {
+            // Ustaw początkową pozycję węża (środek planszy)
+            snake = [{ x: Math.floor(boardSize / 2), y: Math.floor(boardSize / 2) }];
+            direction = { x: 0, y: 0 };
+            score = 0;
+            scoreElement.textContent = `Score: ${score}`;
+            
+            // Umieść pierwsze jedzenie
+            placeFood();
+            
+            // Narysuj planszę
+            draw();
+        }
+
+        // Rysowanie węża i jedzenia z płynną animacją
         function draw() {
             // Usuń poprzednie elementy
             const cells = document.querySelectorAll('.cell');
             cells.forEach(cell => {
-                cell.classList.remove('snake', 'food');
+                cell.classList.remove('snake', 'food', 'snake-head', 'snake-tail');
+                cell.style.transition = '';
             });
 
             // Rysuj węża
-            snake.forEach(segment => {
-                const index = segment.y * boardSize + segment.x;
-                if (cells[index]) cells[index].classList.add('snake');
+            snake.forEach((segment, index) => {
+                const segmentIndex = segment.y * boardSize + segment.x;
+                
+                if (cells[segmentIndex]) {
+                    const cell = cells[segmentIndex];
+                    cell.classList.add('snake');
+                    
+                    // Dodaj płynną animację przejścia
+                    if (direction.x !== 0 || direction.y !== 0) {
+                        // Dodaj płynną animację tylko jeśli wąż się porusza
+                        cell.style.transition = `all ${ANIMATION_SPEED}ms ease`;
+                    }
+                    
+                    // Dodaj klasę dla głowy węża
+                    if (index === 0) {
+                        cell.classList.add('snake-head');
+                    }
+                    
+                    // Dodaj klasę dla ogona węża
+                    if (index === snake.length - 1) {
+                        cell.classList.add('snake-tail');
+                    }
+                }
             });
 
             // Rysuj jedzenie
@@ -219,7 +356,7 @@
                 snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)
             ) {
                 clearInterval(gameInterval);
-                alert(`Game Over! Your score: ${score}`);
+                showGameOverMenu();
                 return;
             }
 
@@ -228,7 +365,7 @@
 
             // Sprawdź, czy węż zjadł jedzenie
             if (head.x === food.x && head.y === food.y) {
-                score += 1; // Zmiana: 1 punkt za jedzenie
+                score += 1;
                 scoreElement.textContent = `Score: ${score}`;
                 placeFood();
             } else {
@@ -236,6 +373,7 @@
                 snake.pop();
             }
 
+            // Rysuj po aktualizacji pozycji
             draw();
         }
 
@@ -259,7 +397,7 @@
         function handleKeyPress(event) {
             // Jeśli gra nie jest jeszcze uruchomiona, zacznij grę po pierwszym naciśnięciu klawisza strzałki
             if (!gameInterval && (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
-                gameInterval = setInterval(update, 150); // Wąż porusza się wolniej (200 ms)
+                gameInterval = setInterval(update, GAME_SPEED);
             }
 
             switch (event.key) {
@@ -278,22 +416,54 @@
             }
         }
 
-        // Restart gry
-        function restartGame() {
-            snake = [{ x: Math.floor(boardSize / 2), y: Math.floor(boardSize / 2) }];
-            direction = { x: 0, y: 0 }; // Wąż stoi w miejscu na początku
-            score = 0;
-            scoreElement.textContent = `Score: ${score}`;
-            placeFood();
-            clearInterval(gameInterval);
-            gameInterval = null; // Zresetuj interwał gry
-            draw(); // Narysuj planszę po restarcie
+        // Pokazanie menu końca gry
+        function showGameOverMenu() {
+            finalScoreElement.textContent = `Your score: ${score}`;
+            gameOverMenu.style.display = 'block';
+            // Reset animacji
+            gameOverMenu.style.animation = 'none';
+            gameOverMenu.offsetHeight; // Trigger reflow
+            gameOverMenu.style.animation = 'fadeIn 0.5s forwards';
         }
 
-        // Inicjalizacja gry (bez automatycznego startu)
+        // Ukrycie menu końca gry
+        function hideGameOverMenu() {
+            // Dodaj animację zamykania
+            gameOverMenu.style.animation = 'fadeOut 0.5s forwards';
+            
+            // Ukryj element po zakończeniu animacji
+            setTimeout(() => {
+                gameOverMenu.style.display = 'none';
+            }, 500);
+        }
+
+        // Restart gry
+        function restartGame() {
+            hideGameOverMenu();
+            initGame();
+            clearInterval(gameInterval);
+            gameInterval = null; // Zresetuj interwał gry
+        }
+
+        // Obsługa zmiany rozmiaru okna
+        window.addEventListener('resize', function() {
+            // Aktualizuj rozmiar planszy
+            boardSize = determineBoardSize();
+            // Odśwież planszę
+            createBoard();
+            // Uruchom grę od nowa
+            initGame();
+            
+            // Jeśli gra była w trakcie, uruchom ją ponownie
+            if (gameInterval) {
+                clearInterval(gameInterval);
+                gameInterval = setInterval(update, GAME_SPEED);
+            }
+        });
+
+        // Inicjalizacja gry
         createBoard();
-        placeFood();
-        draw();
+        initGame();
 
         // Nasłuchiwanie klawiszy
         window.addEventListener('keydown', handleKeyPress);
@@ -301,36 +471,25 @@
         // Restart gry po kliknięciu przycisku
         restartButton.addEventListener('click', restartGame);
 
-        // Aktualizacja pozycji niestandardowego kursora
-        document.addEventListener('mousemove', function(e) {
-            customCursor.style.left = e.pageX + 'px';
-            customCursor.style.top = e.pageY + 'px';
-        });
-
-        // Ukryj domyślny kursor na wszystkich interaktywnych elementach
-        document.querySelectorAll('a, button, input, .links').forEach(element => {
-            element.style.cursor = 'none';
-        });
-
         // Obsługa przycisków sterujących
         upButton.addEventListener('click', () => {
             if (direction.y === 0) direction = { x: 0, y: -1 };
-            if (!gameInterval) gameInterval = setInterval(update, 200); // Wąż porusza się wolniej (200 ms)
+            if (!gameInterval) gameInterval = setInterval(update, GAME_SPEED);
         });
 
         downButton.addEventListener('click', () => {
             if (direction.y === 0) direction = { x: 0, y: 1 };
-            if (!gameInterval) gameInterval = setInterval(update, 200); // Wąż porusza się wolniej (200 ms)
+            if (!gameInterval) gameInterval = setInterval(update, GAME_SPEED);
         });
 
         leftButton.addEventListener('click', () => {
             if (direction.x === 0) direction = { x: -1, y: 0 };
-            if (!gameInterval) gameInterval = setInterval(update, 200); // Wąż porusza się wolniej (200 ms)
+            if (!gameInterval) gameInterval = setInterval(update, GAME_SPEED);
         });
 
         rightButton.addEventListener('click', () => {
             if (direction.x === 0) direction = { x: 1, y: 0 };
-            if (!gameInterval) gameInterval = setInterval(update, 200); // Wąż porusza się wolniej (200 ms)
+            if (!gameInterval) gameInterval = setInterval(update, GAME_SPEED);
         });
     </script>
 </body>
