@@ -454,6 +454,16 @@
                 font-size: 1.3rem;
                 opacity: 0.8;
             }
+            .music-icon {
+                font-size: 1.2rem;
+                padding: 0 5px;
+            }
+            .desktop-only {
+                display: none;
+            }
+            .mobile-only {
+                display: block;
+            }
         }
 
         .footer {
@@ -484,15 +494,27 @@
             transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent;
             outline: none;
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
         }
         
         .music-icon:hover {
-            transform: scale(1.2);
+            transform: translateY(-50%) scale(1.2);
             color: #ff8a5c;
         }
         
         .music-icon i {
-            font-size: 1.1rem;
+            font-size: 1.3rem;
+        }
+        
+        .desktop-only {
+            display: inline-block;
+        }
+        
+        .mobile-only {
+            display: none;
         }
         
         /* Style dla podświetlenia słów */
@@ -557,7 +579,9 @@
                 <li><a href="#social" class="nav-link" data-section="social-page">Social</a></li>
                 <li><a href="#game" class="nav-link" data-section="game-page">Game</a></li>
                 <li><a href="#contact" class="nav-link" data-section="contact-page">Contact</a></li>
+                <li class="mobile-only"><a href="#" id="mobile-music-btn"><i class="fas fa-music"></i> Music</a></li>
             </ul>
+            <div id="music-btn" class="music-icon desktop-only"><i class="fas fa-music"></i></div>
         </div>
     </nav>
     
@@ -643,7 +667,7 @@
 
     <footer class="footer">
         <div class="footer-content">
-            <p>&copy; 2025 kmmiio99o. Wszelkie prawa zastrzeżone. <span id="music-btn" class="music-icon"><i class="fas fa-music"></i></span></p>
+            <p>&copy; 2025 kmmiio99o. Wszelkie prawa zastrzeżone.</p>
         </div>
     </footer>
 
@@ -911,6 +935,17 @@
         
         // Obsługa przycisku muzycznego w stopce
         document.getElementById('music-btn').addEventListener('click', function() {
+            playRandomMusic();
+        });
+        
+        // Obsługa przycisku muzycznego w menu mobilnym
+        document.getElementById('mobile-music-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            playRandomMusic();
+        });
+        
+        // Funkcja do odtwarzania losowej muzyki
+        function playRandomMusic() {
             // Tablica linków do muzyki Spotify - tu możesz dodać własne linki
             const spotifyLinks = [
                 'https://open.spotify.com/track/1JdQibdvxgcrB8Rv1KFndw?si=f76e1c7bd1794bb7', //spotify music
@@ -932,7 +967,7 @@
             
             // Przekieruj na losową stronę
             window.open(randomLink, '_blank');
-        });
+        }
     </script>
 </body>
 </html>
