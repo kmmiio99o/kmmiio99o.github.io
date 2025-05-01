@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edits - kmmiio99o.github.io</title>
+    <link rel="icon" href="icons/icon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            background: #232527;
+            color: #fff;
+            overflow-x: hidden;
+            user-select: none;
+            cursor: default;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        h1 {
+            color: #ffd6c0;
+            margin-bottom: 1.5rem;
+        }
+        .video-wall {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .video-item {
+            background: rgba(35, 35, 35, 0.7);
+            border-radius: 8px;
+            overflow: hidden;
+            width: calc(25% - 12px);
+            position: relative;
+        }
+        .video-container {
+            position: relative;
+        }
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .video-container:hover .video-controls {
+            opacity: 1;
+        }
+        .control-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .control-btn:hover {
+            color: #ffd6c0;
+        }
+        .progress-container {
+            flex-grow: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #ffd6c0;
+            border-radius: 2px;
+            width: 0%;
+        }
+        .time {
+            font-size: 12px;
+            color: #fff;
+            margin: 0 5px;
+            min-width: 80px;
+            text-align: center;
+        }
+        .volume-container {
+            display: flex;
+            align-items: center;
+            margin-left: 5px;
+        }
+        .volume-slider {
+            width: 60px;
+            margin-left: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .volume-container:hover .volume-slider {
+            opacity: 1;
+        }
+        .video-item p {
+            padding: 0.8rem;
+            margin: 0;
+            text-align: center;
+            font-size: 0.9rem;
+            text-transform: capitalize;
+        }
+        .video-link {
+            display: block;
+            color: #ffd6c0;
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            text-align: center;
+            transition: color 0.2s, background-color 0.2s;
+            border-radius: 4px;
+            background: rgba(255, 214, 192, 0.1);
+            margin: 0.5rem auto;
+            width: 80%;
+        }
+        .video-link:hover {
+            color: #ff8a5c;
+            background: rgba(255, 214, 192, 0.2);
+        }
+        @media (max-width: 1000px) {
+            .video-item {
+                width: calc(33.333% - 10px);
+            }
+        }
+        @media (max-width: 700px) {
+            .container {
+                padding: 1rem;
+            }
+            .video-item {
+                width: calc(50% - 8px);
+            }
+        }
+        @media (max-width: 500px) {
+            .video-item {
+                width: 100%;
+            }
+        }
+        .fullscreen {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Video Edits</h1>
+        <div class="video-wall" id="video-wall"></div>
+    </div>
+
+    <script>
+        // Lista wszystkich plików wideo
+        const videoFiles = [
+            'best-manipulator.mp4', 'amg-performance.mp4', 'su-57.mp4', 
+            'papaoutes.mp4', 'im-uni.mp4', 'sword-fight.mp4', 'emo-girl.mp4',
+            'texting-me.mp4', 'kleszcz.mp4', 'herta-edit.mp4', 'milosc-nietykalna.mp4',
+            'built-yourself.mp4', 'listen.mp4', 'dont-stop.mp4', 'best-of-best.mp4',
+            'after-dark.mp4', 'lovely-masha.mp4', 'masha.mp4', 'perfection.mp4',
+            'her-heart.mp4', '1v4#-easy.mp4', 'hole.mp4', 'girl-bestie.mp4',
+            'cs-anime.mp4', 'waguri-edit.mp4', 'blossom-flower.mp4', 'glowsticks.mp4',
+            'vermeil.mp4', 'dance-dance.mp4', 'alya+masachika.mp4', 'f-18.mp4',
+            'banger.mp4', 'payphone.mp4', 'alya-edit.mp4', 'cars-chan.mp4',
+            'alya-president.mp4', 'zero-two.mp4', 'wuwa3.mp4', 'old-edit.mp4',
+            'zero-two1.mp4', 'kaoruko-edit.mp4', 'wuwa2.mp4', 'white-or-brown.mp4',
+            'summerpockets.mp4', 'femboy.mp4', 'Ouka.mp4', 'wuwa.mp4', 'boob.mp4',
+            'Esperienza.mp4', 'manipulator.mp4', 'windows.mp4', 'white.mp4',
+            'ayanokoji.mp4', 'beauti-edit.mp4', 'xiaomi-15-ultra.mp4', 'russia-core.mp4',
+            'wuwa1.mp4', 'rezero.mp4', 'megumin.mp4'
+        ];
+
+        const videoWall = document.getElementById('video-wall');
+
+        // Funkcja formatująca czas
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Funkcja tworząca element wideo z kontrolkami
+        function createVideoElement(file) {
+            const item = document.createElement('div');
+            item.className = 'video-item';
+            
+            const video = document.createElement('video');
+            video.src = `edits/${file}`;
+            video.preload = 'metadata';
+            video.controls = true;
+            video.style.width = '100%';
+            video.setAttribute('type', 'video/mp4');
+            
+            const name = document.createElement('p');
+            name.textContent = file.replace('.mp4', '')
+                                 .replace(/-/g, ' ')
+                                 .replace(/#/g, '')
+                                 .replace(/\b\w/g, l => l.toUpperCase());
+            
+            const link = document.createElement('a');
+            link.href = `https://kmmiio99o.github.io/edits/${file}`;
+            link.className = 'video-link';
+            link.textContent = 'Copy link';
+            link.target = '_blank';
+            link.onclick = (e) => {
+                e.preventDefault();
+                navigator.clipboard.writeText(link.href).then(() => {
+                    link.textContent = 'Copied!';
+                    setTimeout(() => link.textContent = 'Copy link', 2000);
+                });
+            };
+            
+            item.appendChild(video);
+            item.appendChild(name);
+            item.appendChild(link);
+            
+            return item;
+        }
+
+        // Inicjalizacja Masonry po załadowaniu wszystkich elementów
+        function initMasonry() {
+            new Masonry(videoWall, {
+                itemSelector: '.video-item',
+                columnWidth: '.video-item',
+                percentPosition: true,
+                gutter: 15,
+                fitWidth: true
+            });
+        }
+
+        // Dodaj wszystkie wideo do ściany
+        videoFiles.forEach(file => {
+            videoWall.appendChild(createVideoElement(file));
+        });
+
+        // Inicjalizuj Masonry po załadowaniu strony
+        window.addEventListener('load', () => {
+            // Poczekaj na załadowanie wszystkich wideo
+            const videos = document.querySelectorAll('video');
+            let loadedCount = 0;
+            
+            videos.forEach(video => {
+                video.addEventListener('loadedmetadata', () => {
+                    loadedCount++;
+                    if(loadedCount === videos.length) {
+                        initMasonry();
+                    }
+                });
+            });
+            
+            // Zabezpieczenie na wypadek problemów z ładowaniem
+            setTimeout(initMasonry, 2000);
+        });
+    </script>
+</body>
+</html>
