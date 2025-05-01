@@ -196,11 +196,22 @@
             item.className = 'video-item';
             
             const video = document.createElement('video');
-            video.src = `edits/${file}`;
-            video.preload = 'metadata';
             video.controls = true;
             video.style.width = '100%';
-            video.setAttribute('type', 'video/mp4');
+            
+            // Dodajemy źródło wideo z typem MIME
+            const source = document.createElement('source');
+            source.src = `edits/${file}`;
+            source.type = 'video/mp4';
+            video.appendChild(source);
+            
+            // Dodajemy komunikat fallback
+            const fallback = document.createElement('p');
+            fallback.textContent = 'Twoja przeglądarka nie obsługuje tego formatu wideo.';
+            fallback.style.color = '#ff6b6b';
+            fallback.style.padding = '1rem';
+            fallback.style.textAlign = 'center';
+            video.appendChild(fallback);
             
             const name = document.createElement('p');
             name.textContent = file.replace('.mp4', '')
@@ -209,15 +220,16 @@
                                  .replace(/\b\w/g, l => l.toUpperCase());
             
             const link = document.createElement('a');
-            link.href = `https://kmmiio99o.github.io/edits/${file}`;
+            link.href = `edits/${file}`;
             link.className = 'video-link';
-            link.textContent = 'Copy link';
-            link.target = '_blank';
+            link.textContent = 'Copy Link';
             link.onclick = (e) => {
                 e.preventDefault();
                 navigator.clipboard.writeText(link.href).then(() => {
                     link.textContent = 'Copied!';
-                    setTimeout(() => link.textContent = 'Copy link', 2000);
+                    setTimeout(() => {
+                        link.textContent = 'Copy Link';
+                    }, 2000);
                 });
             };
             

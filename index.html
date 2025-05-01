@@ -129,9 +129,11 @@
             max-width: 800px;
             padding: 0 2rem;
             text-shadow: 0 2px 10px rgba(0,0,0,0.25);
-            animation: pulse 3s infinite ease-in-out;
             transform: translateY(-20%);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            position: relative;
+            white-space: nowrap;
+            margin: 0 auto;
+            overflow: hidden;
         }
         .landing-text.hidden {
             opacity: 0;
@@ -563,6 +565,43 @@
         .spotify-activity .activity-image {
             margin-right: 5px;
         }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .landing-text::after {
+            content: '_';
+            position: absolute;
+            animation: blink-caret 0.75s step-end infinite;
+            color: #ffd6c0;
+        }
+
+        .typing-animation {
+            border-right: 0.15em solid #ffd6c0; /* Kursor */
+            animation: blink-caret 0.75s step-end infinite;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 0.15em;
+            height: 1em;
+            background: #ffd6c0;
+            margin-left: 2px;
+            vertical-align: middle;
+            animation: blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+            from, to { opacity: 0; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -679,105 +718,68 @@
             easing: 'ease-out'
         });
         
-        // Naprawianie problemu z napisem powitalnym
-        const navbar = document.getElementById('navbar');
-        const landingScreen = document.getElementById('landing');
-        const scrollArrow = document.querySelector('.scroll-down');
-        const landingText = document.getElementById('landing-text');
-        
-        // Funkcja sprawdzająca przewinięcie
-        function checkScroll() {
-            const landingHeight = landingScreen.offsetHeight;
+        // Funkcja do animacji pisania tekstu
+        function typeWriter() {
+            const text = "Scroll down to learn more about me";
+            const element = document.getElementById('landing-text');
+            let i = 0;
             
-            if (window.scrollY > landingHeight * 0.3) {
-                navbar.classList.add('visible');
-                scrollArrow.classList.add('hidden');
-                
-                // Animacja znikania napisu
-                if (!landingText.classList.contains('hidden')) {
-                    landingText.style.animation = 'none';
-                    landingText.classList.add('hidden');
-                }
-            } else {
-                navbar.classList.remove('visible');
-                scrollArrow.classList.remove('hidden');
-                
-                // Pokazujemy tekst powitalny jeśli użytkownik przewinął stronę do 30% wysokości ekranu startowego
-                if (window.scrollY < landingHeight * 0.3) {
-                    if (landingText.classList.contains('hidden')) {
-                        landingText.classList.remove('hidden');
-                        // Resetowanie i dodanie animacji pojawienia się
-                        void landingText.offsetWidth; // Trick do resetu animacji
-                        landingText.style.animation = 'fadeInUp 0.8s ease forwards';
-                    }
+            element.innerHTML = '<span class="typing-cursor"></span>';
+
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML = text.substring(0, i + 1) + '<span class="typing-cursor"></span>';
+                    i++;
+                    setTimeout(type, 45); // Szybsze pisanie (50ms na literę)
+                } else {
+                    element.textContent = text;
                 }
             }
+            
+            type();
         }
-        
-        // Sprawdź na starcie i przy każdym przewijaniu
-        window.addEventListener('load', checkScroll);
-        window.addEventListener('scroll', checkScroll);
-        
-        // Hamburger menu
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('nav-menu');
-        
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('open');
-        });
-        
-        // Scroll down on arrow click
-        document.querySelector('.scroll-down').addEventListener('click', () => {
-            document.getElementById('home-page').scrollIntoView({ behavior: 'smooth' });
-        });
-        
-        // Page section system with smooth transitions
-        const navLinks = document.querySelectorAll('.nav-link');
-        const pageSections = document.querySelectorAll('.page-section');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
+
+        // Inicjalizacja po załadowaniu strony
+        window.addEventListener('load', () => {
+            const navbar = document.getElementById('navbar');
+            const landingScreen = document.getElementById('landing');
+            const scrollArrow = document.querySelector('.scroll-down');
+            const landingText = document.getElementById('landing-text');
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('nav-menu');
+            
+            // Funkcja sprawdzająca przewinięcie
+            function checkScroll() {
+                const landingHeight = landingScreen.offsetHeight;
                 
-                // Get current active section
-                const currentActive = document.querySelector('.page-section.active');
-                const targetSection = link.getAttribute('data-section');
-                const targetElement = document.getElementById(targetSection);
-                
-                // If the same link was clicked, do nothing
-                if (currentActive === targetElement) return;
-                
-                // Remove active class from all links
-                navLinks.forEach(l => l.classList.remove('active'));
-                
-                // Add active class to clicked link
-                link.classList.add('active');
-                
-                // Close hamburger menu if open
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('open');
-                
-                // Smooth transition between sections
-                currentActive.style.animation = 'fadeOut 0.3s ease-out forwards';
-                
-                setTimeout(() => {
-                    // Hide all sections
-                    pageSections.forEach(section => {
-                        section.classList.remove('active');
-                        section.style.animation = '';
-                    });
-                    
-                    // Show selected section
-                    targetElement.classList.add('active');
-                    targetElement.style.animation = 'fadeIn 0.5s ease-out forwards';
-                    
-                    // Przewiń do początku kontenera bez animacji, aby uniknąć podwójnego przewijania
-                    window.scrollTo({
-                        top: landingScreen.offsetHeight
-                    });
-                }, 300); // fadeOut animation duration
+                if (window.scrollY > landingHeight * 0.3) {
+                    navbar.classList.add('visible');
+                    scrollArrow.classList.add('hidden');
+                } else {
+                    navbar.classList.remove('visible');
+                    scrollArrow.classList.remove('hidden');
+                }
+            }
+            
+            // Sprawdź na starcie i przy każdym przewijaniu
+            window.addEventListener('load', checkScroll);
+            window.addEventListener('scroll', checkScroll);
+            
+            // Hamburger menu
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('open');
             });
+            
+            // Scroll down on arrow click
+            document.querySelector('.scroll-down').addEventListener('click', () => {
+                document.getElementById('home-page').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Uruchom animację pisania
+            typeWriter();
+            
+            // ... reszta istniejącego kodu (np. fetchDiscordStatus) ...
         });
         
         async function fetchDiscordStatus() {

@@ -34,6 +34,7 @@ In the "[Game](https://kmmiio99o.github.io/game.html)" section, you'll find the 
 - `game.html` - page with the Snake game
 - `icons/` - directory containing icons and images
 - `style.css` - styles are built into the main HTML file
+- `edits.html` - just and website with edits. Link [Here](https://kmmiio99o.github.io/edits.html)
 
 ## 📱 Social Media
 
