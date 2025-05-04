@@ -202,7 +202,7 @@
             
             // Dodajemy źródło wideo z typem MIME
             const source = document.createElement('source');
-            source.src = `edits/${file}`;
+            source.src = `https://kmmiio99o.github.io/edits/${file}`;
             source.type = 'video/mp4';
             video.appendChild(source);
             
@@ -221,7 +221,7 @@
                                  .replace(/\b\w/g, l => l.toUpperCase());
             
             const link = document.createElement('a');
-            link.href = `edits/${file}`;
+            link.href = `https://kmmiio99o.github.io/edits/${file}`;
             link.className = 'video-link';
             link.textContent = 'Copy Link';
             link.onclick = (e) => {
