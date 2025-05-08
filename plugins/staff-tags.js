@@ -1,6 +1,12 @@
 // StaffTagsOnLeaderboard - Plugin dla Vendetta/Revenge/Bunny
 // Pokazuje tagi staffu obok nazw użytkowników na leaderboardzie
 
+// Metadane pluginu
+export const name = "Staff Tags";
+export const description = "Adds staff tags next to usernames on the leaderboard.";
+export const version = "1";
+export const author = "kmmiio99o.dev";
+
 const { React, channels } = vendetta;
 const { findByProps } = vendetta.metro;
 const { getModule } = vendetta.webpack;
