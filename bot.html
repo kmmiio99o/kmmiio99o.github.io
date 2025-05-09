@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ormi - Multi-Tool Discord Bot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #1a1a1a;
+            margin: 0;
+            padding: 0;
+            color: #e0e0e0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        header {
+            background: linear-gradient(135deg, #2c1e0f 0%, #4a3a2a 100%);
+            color: #f5e7d4;
+            text-align: center;
+            padding: 3rem 0;
+            animation: fadeIn 2s;
+            border-bottom: 3px solid #5a3921;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: linear-gradient(145deg, #2a2a2a 0%, #1e1e1e 100%);
+            border-radius: 12px;
+            border: 1px solid #5a3921;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            animation: slideUp 1.5s;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        h1, h2, h3 {
+            font-family: 'Times New Roman', serif;
+            color: #d4b483;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .invite-btn {
+            display: inline-block;
+            margin: 1.5rem 0;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #5a3921 0%, #8b5a2b 50%, #d4b483 100%);
+            background-size: 200% 200%;
+            animation: gradient 3s ease infinite;
+            color: #f5e7d4;
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: default !important;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .invite-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .pros-cons {
+            margin: 2.5rem 0;
+        }
+        .pros, .cons {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+            border-radius: 0 8px 8px 0;
+            transition: transform 0.3s ease;
+        }
+        .pros {
+            background: rgba(74, 107, 58, 0.1);
+            border-left-color: #4a6b3a;
+        }
+        .cons {
+            background: rgba(139, 58, 58, 0.1);
+            border-left-color: #8b3a3a;
+        }
+        .pros:hover, .cons:hover {
+            transform: translateX(5px);
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            color: #d4b483;
+            border-top: 1px solid #5a3921;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+            <img src="https://cdn.discordapp.com/avatars/1364942161707274301/a_ac13970f65a35f72a78d8cffecff5a8a.gif?size=1024" alt="Ormi Avatar" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #d4b483;">
+            <h1>Ormi</h1>
+        </div>
+    </header>
+    <div class="container">
+        <h2>Ormi - Your All-in-One Discord Assistant</h2>
+        <p>Ormi is an advanced, multi-functional Discord bot designed to streamline server management and deliver unique community experiences. It combines practical moderation tools with entertainment, offering everything you need in one place.</p>
+        <a href="https://discord.com/oauth2/authorize?client_id=1364942161707274301&permissions=8&integration_type=0&scope=bot" class="invite-btn">Invite Ormi to Your Server</a>
+        <div class="pros-cons">
+            <div class="pros">
+                <h3>Why Choose Ormi?</h3>
+                <ul>
+                    <li><strong>User-Friendly</strong> - Easy to set up and use, even for beginners.</li>
+                    <li><strong>Rich Feature Set</strong> - From moderation to games and integrations.</li>
+                    <li><strong>Community Support</strong> - Active development and quick responses to user needs.</li>
+                    <li><strong>Safety</strong> - Bot is safe and it's not possible to get bot token leaked.</li>
+                    <li><strong>Easy commands</strong> - Commands are easy and user-friendly, everything is fast to set.</li>
+                </ul>
+            </div>
+            <div class="cons">
+                <h3>Things to Know</h3>
+                <ul>
+                    <li><strong>Basic Configuration Required</strong> - Some features need customization.</li>
+                    <li><strong>Server Resources</strong> - May require optimization for very large servers.</li>
+                    <li><strong>Performance</strong> - Hosted on a weaker server, which may cause occasional delays(I'm hosting this bot on my phone, but everything is faster then expected).</li>
+                    <li><strong>Possible maintenance</strong> - Bot may be offline if I doesn't have internet connection or even my phone is gonna run out of battery.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 Ormi Bot. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
