@@ -19,10 +19,12 @@
             user-select: none;
         }
         header {
-            background: linear-gradient(135deg, #2c1e0f 0%, #4a3a2a 100%);
+            background-image: url('https://files.catbox.moe/7b7a8y.jpeg');
+            background-size: cover;
+            background-position: center;
             color: #f5e7d4;
             text-align: center;
-            padding: 3rem 0;
+            padding: 6rem 0;
             animation: fadeIn 2s;
             border-bottom: 3px solid #5a3921;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -85,6 +87,7 @@
             border-left: 4px solid;
             border-radius: 0 8px 8px 0;
             transition: transform 0.3s ease;
+            animation: slideUp 1.5s ease;
         }
         .pros {
             background: rgba(74, 107, 58, 0.1);
@@ -103,39 +106,68 @@
             margin-top: 3rem;
             color: #d4b483;
             border-top: 1px solid #5a3921;
+            animation: fadeIn 2s;
+        }
+        .pro-item, .con-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 2px solid #4a6b3a;
+            border-radius: 8px;
+            background: rgba(74, 107, 58, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .con-item {
+            border-color: #8b3a3a;
+            background: rgba(139, 58, 58, 0.1);
+        }
+        .pro-item:hover, .con-item:hover {
+            transform: translateX(5px);
+        }
+        img[alt="Ormi Avatar"] {
+            transition: transform 0.5s ease-in-out;
+        }
+        img[alt="Ormi Avatar"]:hover {
+            transform: scale(1.2) rotate(360deg);
         }
     </style>
 </head>
 <body>
     <header>
         <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
-            <img src="https://cdn.discordapp.com/avatars/1364942161707274301/a_ac13970f65a35f72a78d8cffecff5a8a.gif?size=256" alt="Ormi Avatar" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #d4b483; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+            <img src="https://cdn.discordapp.com/avatars/1364942161707274301/819616f259b2ed5e73a662ab974c06cd.webp?size=1024" alt="Ormi Avatar" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #d4b483; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
             <h1>Ormi</h1>
         </div>
     </header>
     <div class="container">
-        <h2>Ormi - Your All-in-One Discord Assistant</h2>
-        <p>Ormi is an advanced, multi-functional Discord bot designed to streamline server management and deliver unique community experiences. It combines practical moderation tools with entertainment, offering everything you need in one place.</p>
-        <a href="https://discord.com/oauth2/authorize?client_id=1364942161707274301&permissions=8&integration_type=0&scope=bot" class="invite-btn">Invite Ormi to Your Server</a>
+        <h2>Ormi - Multi-Tool Discord Bot. Fully configurable. Completely free.</h2>
+        <p>Ormi is on over 100 servers, reaching millions of users. Discover features such as moderation, notifications, and entertainment.</p>
+        <a href="https://discord.com/oauth2/authorize?client_id=1364942161707274301&permissions=8&integration_type=0&scope=bot" class="invite-btn">Add Ormi to your server</a>
         <div class="pros-cons">
             <div class="pros">
                 <h3>Why Choose Ormi?</h3>
-                <ul>
-                    <li><strong>User-Friendly</strong> - Easy to set up and use, even for beginners.</li>
-                    <li><strong>Rich Feature Set</strong> - From moderation to games and integrations.</li>
-                    <li><strong>Community Support</strong> - Active development and quick responses to user needs.</li>
-                    <li><strong>Safety</strong> - Bot is safe and it's not possible to get bot token leaked.</li>
-                    <li><strong>Easy commands</strong> - Commands are easy and user-friendly, everything is fast to set.</li>
-                </ul>
+                <div class="pro-item">
+                    <strong>User-Friendly</strong> - Easy to set up and use, even for beginners. This makes managing the bot easy for new users.
+                    <p>Additional description: Thanks to the intuitive interface, configuration takes only a few minutes.</p>
+                </div>
+                <div class="pro-item">
+                    <strong>Rich Feature Set</strong> - From moderation to games and integrations. It includes tools for moderation and entertainment.
+                    <p>Additional description: The bot offers integrations with games, making it ideal for servers of various themes.</p>
+                </div>
+                <div class="pro-item">
+                    <strong>Community Support</strong> - Active development and quick responses. Community support is always available.
+                    <p>Additional description: Regular updates and a help forum ensure that the bot evolves with user needs.</p>
+                </div>
             </div>
             <div class="cons">
                 <h3>Things to Know</h3>
-                <ul>
-                    <li><strong>Basic Configuration Required</strong> - Some features need customization.</li>
-                    <li><strong>Server Resources</strong> - May require optimization for very large servers.</li>
-                    <li><strong>Performance</strong> - Hosted on a weaker server, which may cause occasional delays(I'm hosting this bot on my phone, but everything is faster then expected).</li>
-                    <li><strong>Possible maintenance</strong> - Bot may be offline if I doesn't have internet connection or even my phone is gonna run out of battery.</li>
-                </ul>
+                <div class="con-item">
+                    <strong>Basic Configuration Required</strong> - Some features need customization. Some functions require settings.
+                    <p>Additional description: The configuration process is simple but may take some time on large servers.</p>
+                </div>
+                <div class="con-item">
+                    <strong>Performance</strong> - Hosted on a weaker server, which may cause delays. There may be delays.
+                    <p>Additional description: Hosting on a weaker server means that responsiveness may drop during peak hours.</p>
+                </div>
             </div>
         </div>
     </div>
