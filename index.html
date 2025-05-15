@@ -40,8 +40,8 @@
             color: #fff;
             overflow-x: hidden;
             scroll-behavior: smooth;
-            user-select: none;  /* Wyłącza możliwość zaznaczania tekstu */
-            cursor: default;    /* Ustawia domyślny kursor zamiast tekstowego */
+            user-select: none;  /* Disables text selection */
+            cursor: default;    /* Sets the default cursor instead of text cursor */
         }
         .navbar {
             width: 100%;
@@ -97,7 +97,7 @@
         }
         .navbar a.active {
             color: #ffd6c0;
-            border-bottom: 2px solid #ffd6c0;
+            transform: scale(1.05);
         }
         .hamburger {
             display: none;
@@ -396,7 +396,7 @@
             margin: 1.5rem 0;
             border: 2px solid rgba(90, 90, 90, 0.3);
         }
-        /* Usunięcie niebieskigo highlightu na mobilnych */
+        /* Removes blue highlight on mobile */
         * {
             -webkit-tap-highlight-color: transparent;
         }
@@ -407,52 +407,80 @@
             cursor: default;
         }
         
-        /* Modyfikacja dla zachowania kursora pointer na linkach i przyciskach */
-        /* Usunięto regułę nadającą cursor: pointer */
+        /* Modification for pointer cursor behavior on links and buttons */
+        /* Removed rule setting cursor: pointer */
         @media (max-width: 700px) {
             .navbar-container {
-                justify-content: flex-start;
+                justify-content: space-between;
+                padding: 0.8rem 1rem;
             }
             .hamburger {
                 display: flex;
-                width: 35px;
-                height: 25px;
-                padding: 10px;
-                margin-right: -10px;
+                width: 30px;
+                height: 21px;
+                padding: 0;
+                margin-right: 0;
             }
             .navbar ul {
                 position: fixed;
                 top: 0;
                 right: -100%;
-                flex-direction: column;
-                background: rgba(20, 20, 20, 0.97);
-                backdrop-filter: blur(10px);
-                width: 70%;
+                width: 280px;
                 height: 100vh;
-                padding-top: 5rem;
+                background: rgba(25, 25, 25, 0.98);
+                backdrop-filter: blur(12px);
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: stretch;
                 transition: right 0.3s ease;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+                box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+            }
+            .navbar li {
+                width: 100%;
+                display: flex;
                 justify-content: center;
                 align-items: center;
+                min-height: 60px;
+                margin: 0;
+                padding: 0;
+                border-bottom: 1px solid rgba(255,255,255,0.1); /* Linia oddzielająca */
+            }
+            .navbar a,
+            #mobile-music-btn {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+                color: #fff;
+                text-decoration: none;
+                transition: all 0.2s ease;
+                padding: 0 25px;
+            }
+            .navbar a:hover,
+            #mobile-music-btn:hover {
+                background: transparent;
+            }
+            .navbar a:active,
+            #mobile-music-btn:active {
+                transform: scale(1.05); /* Powiększenie tylko tekstu */
             }
             .navbar ul.open {
                 right: 0;
             }
-            .navbar li {
-                margin: 1rem 0;
-                text-align: center;
-                width: 100%;
-                display: flex;
-                justify-content: center;
+            
+            /* Ikona nuty */
+            #mobile-music-btn i {
+                margin-right: 10px;
             }
-            .navbar a {
-                display: block;
-                padding: 0.7rem 1.5rem;
-                width: 100%;
-                text-align: center;
-                max-width: 200px;
-                padding-top: 0.5rem;
-                padding-bottom: 0.5rem;
+            .music-icon {
+                position: static;
+                transform: none;
+                margin-left: 0;
             }
             .container { 
                 padding: 2rem 0.5rem 1rem 0.5rem; 
@@ -532,53 +560,6 @@
         
         .mobile-only {
             display: none;
-        }
-        
-        /* Style dla podświetlenia słów */
-        .word {
-            display: inline-block;
-            position: relative;
-            cursor: default;
-        }
-        
-        .word:hover::after {
-            content: '';
-            position: absolute;
-            left: -4px;
-            top: -2px;
-            width: calc(100% + 8px);
-            height: calc(100% + 4px);
-            background-color: rgba(255, 255, 255, 0.15);
-            z-index: -1;
-            border-radius: 3px;
-            animation: fadeIn 0.2s ease forwards;
-        }
-        
-        .word:not(:hover)::after {
-            content: '';
-            position: absolute;
-            left: -4px;
-            top: -2px;
-            width: calc(100% + 8px);
-            height: calc(100% + 4px);
-            background-color: rgba(255, 255, 255, 0.15);
-            z-index: -1;
-            border-radius: 3px;
-            animation: fadeOut 0.3s ease forwards;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        
-        .spotify-activity .activity-image {
-            margin-right: 5px;
         }
     </style>
 </head>
@@ -684,7 +665,7 @@
 
     <footer class="footer">
         <div class="footer-content">
-            <p>&copy; 2025 kmmiio99o. Wszelkie prawa zastrzeżone.</p>
+            <p>&copy; 2025 kmmiio99o. All rights reserved.</p>
         </div>
     </footer>
 
@@ -697,13 +678,13 @@
             easing: 'ease-out'
         });
         
-        // Naprawianie problemu z napisem powitalnym
+        // Fixing the welcome text issue
         const navbar = document.getElementById('navbar');
         const landingScreen = document.getElementById('landing');
         const scrollArrow = document.querySelector('.scroll-down');
         const landingText = document.getElementById('landing-text');
         
-        // Funkcja sprawdzająca przewinięcie
+        // Function to check scrolling
         function checkScroll() {
             const landingHeight = landingScreen.offsetHeight;
             
@@ -711,7 +692,7 @@
                 navbar.classList.add('visible');
                 scrollArrow.classList.add('hidden');
                 
-                // Animacja znikania napisu
+                // Animation for hiding the text
                 if (!landingText.classList.contains('hidden')) {
                     landingText.style.animation = 'none';
                     landingText.classList.add('hidden');
@@ -720,12 +701,12 @@
                 navbar.classList.remove('visible');
                 scrollArrow.classList.remove('hidden');
                 
-                // Pokazujemy tekst powitalny jeśli użytkownik przewinął stronę do 30% wysokości ekranu startowego
+                // Show the welcome text if the user scrolls back to 30% of the landing screen height
                 if (window.scrollY < landingHeight * 0.3) {
                     if (landingText.classList.contains('hidden')) {
                         landingText.classList.remove('hidden');
-                        // Resetowanie i dodanie animacji pojawienia się
-                        void landingText.offsetWidth; // Trick do resetu animacji
+                        // Reset and add the appearance animation
+                        void landingText.offsetWidth; // Trick to reset the animation
                         landingText.style.animation = 'fadeInUp 0.8s ease forwards';
                     }
                 }
@@ -743,6 +724,16 @@
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('open');
+            document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : 'auto';
+        });
+        
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('open');
+                document.body.style.overflow = 'auto';
+            });
         });
         
         // Scroll down on arrow click
@@ -910,44 +901,6 @@
             
             // Set up refresh interval (100 miliseconds)
             setInterval(fetchDiscordStatus, 100);
-            
-            // Funkcja do zawijania słów w elementy span
-            function wrapWordsInElements() {
-                // Wybierz wszystkie elementy p i h1-h6
-                const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
-                
-                textElements.forEach(element => {
-                    // Nie przetwarzaj elementów w navbar, social-link ani music-btn
-                    if (element.closest('.navbar') || 
-                        element.closest('.social-link') || 
-                        element.closest('#music-btn') ||
-                        element.closest('.activity-item')) {
-                        return;
-                    }
-                    
-                    // Podziel treść elementu na słowa i zawijaj je w spany
-                    const text = element.textContent;
-                    const words = text.split(' ');
-                    
-                    // Jeśli to już było przetworzone, pomiń
-                    if (element.querySelector('.word')) {
-                        return;
-                    }
-                    
-                    // Stwórz nową zawartość HTML
-                    const newContent = words.map(word => {
-                        // Pomiń puste słowa
-                        if (!word.trim()) return ' ';
-                        return `<span class="word">${word}</span>`;
-                    }).join(' ');
-                    
-                    // Podmień zawartość elementu
-                    element.innerHTML = newContent;
-                });
-            }
-            
-            // Uruchom funkcję po załadowaniu strony
-            wrapWordsInElements();
         });
         
         // Obsługa przycisku muzycznego w stopce
@@ -961,9 +914,9 @@
             playRandomMusic();
         });
         
-        // Funkcja do odtwarzania losowej muzyki
+        // Function to play random music
         function playRandomMusic() {
-            // Tablica linków do muzyki Spotify - tu możesz dodać własne linki
+            // Array of Spotify music links - you can add your own links here
             const spotifyLinks = [
                 'https://open.spotify.com/track/1JdQibdvxgcrB8Rv1KFndw?si=f76e1c7bd1794bb7', //spotify music
                 'https://open.spotify.com/track/2zAi85TQB7mLzl8P1ySAj9?si=378f509deb024afe', //spotify music
@@ -978,11 +931,11 @@
                 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', //rick roll
             ];
             
-            // Wybierz losowy link
+            // Select a random link
             const randomIndex = Math.floor(Math.random() * spotifyLinks.length);
             const randomLink = spotifyLinks[randomIndex];
             
-            // Przekieruj na losową stronę
+            // Redirect to the random link
             window.open(randomLink, '_blank');
         }
     </script>
