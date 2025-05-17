@@ -530,31 +530,39 @@
 
         #randomQuote {
             margin-top: 20px;
-            font-style: italic;
             color: rgba(255, 255, 255, 0.7);
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .typewriter {
-            display: inline-block;
+            text-align: center;
+            max-width: 100%;
+            word-wrap: break-word;
             overflow: hidden;
-            white-space: nowrap;
-            margin: 0 auto;
-            letter-spacing: 1px;
-            animation: typing 3.5s steps(40, end) forwards;
+            min-height: 60px;
+            line-height: 1.5;
         }
 
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        @media (max-width: 768px) {
+            #randomQuote {
+                font-size: 0.9rem;
+                min-height: 40px;
+            }
         }
     </style>
 </head>
 <body>
     <section class="hero">
-        <img src="https://cdn.discordapp.com/avatars/1364942161707274301/33874cbdbb4017155e77e9b45c3b0e0c.webp?size=1024" alt="Ormi Logo" class="logo animate__animated animate__fadeInDown">
+        <div style="position: relative; display: inline-block;">
+            <img src="https://cdn.discordapp.com/avatars/1364942161707274301/33874cbdbb4017155e77e9b45c3b0e0c.webp?size=1024" alt="Ormi Logo" class="logo animate__animated animate__fadeInDown">
+            <!-- Ukryty przycisk (większy, ale całkowicie niewidoczny) -->
+            <div id="hiddenMobileButton" style="
+                position: absolute;
+                bottom: -50px;
+                left: 0;
+                right: 0;
+                height: 100px;
+                opacity: 0;
+                cursor: pointer;
+                display: none;
+            "></div>
+        </div>
         <div class="hero-content">
             <h1 class="animate__animated animate__fadeIn" data-text="Ormi Bot">Ormi Bot</h1>
             <p class="tagline animate__animated animate__fadeIn animate-delay-1">Your ultimate and cringe companion with powerful features</p>
@@ -912,17 +920,17 @@
         function typeWriter(text, element, speed = 30) {
             let i = 0;
             element.innerHTML = '';
-            element.style.display = 'inline-block';
-            element.style.overflow = 'hidden';
-            element.style.width = '0';
-            element.style.whiteSpace = 'nowrap';
             
             function type() {
                 if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
+                    // Dodaj pojedynczą literę (uwzględniając emoji)
+                    const char = text.charAt(i);
+                    element.innerHTML += char;
                     i++;
-                    element.style.width = (i / text.length * 100) + '%';
-                    setTimeout(type, speed);
+                    
+                    // Szybsze pisanie spacji i znaków specjalnych
+                    const delay = (char === ' ' || char === '!') ? speed / 2 : speed;
+                    setTimeout(type, delay);
                 }
             }
             
@@ -931,7 +939,40 @@
 
         // Wybierz losowy cytat i uruchom animację
         const randomIndex = Math.floor(Math.random() * quotes.length);
-        typeWriter(quotes[randomIndex], randomQuote);
+        typeWriter(quotes[randomIndex], randomQuote, 50); // 50ms na literę
+
+        // Ukryty przycisk dla urządzeń mobilnych
+        const hiddenMobileButton = document.getElementById('hiddenMobileButton');
+
+        if (isMobileDevice()) {
+            hiddenMobileButton.style.display = 'block';
+            
+            hiddenMobileButton.addEventListener('click', () => {
+                // Animacja logo
+                logo.style.animation = 'spin 1s linear infinite, colorChange 3s linear infinite';
+                
+                // Komunikat
+                const feedback = document.createElement('div');
+                feedback.textContent = '🎉 Secret activated!';
+                feedback.style.position = 'fixed';
+                feedback.style.bottom = '20px';
+                feedback.style.left = '0';
+                feedback.style.right = '0';
+                feedback.style.textAlign = 'center';
+                feedback.style.color = 'var(--secondary)';
+                feedback.style.fontWeight = 'bold';
+                document.body.appendChild(feedback);
+                
+                setTimeout(() => {
+                    logo.style.animation = 'pulse 2s infinite';
+                    feedback.remove();
+                }, 3000);
+            });
+        }
+
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
     </script>
 </body>
 </html>
