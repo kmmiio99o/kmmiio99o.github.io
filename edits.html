@@ -153,53 +153,6 @@
         .fullscreen {
             margin-right: 10px;
         }
-        .embed-style {
-            background: #2f3136;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            transition: transform 0.2s;
-        }
-        .embed-style:hover {
-            transform: scale(1.02);
-        }
-        .embed-container {
-            display: flex;
-            padding: 10px;
-        }
-        .embed-thumbnail {
-            width: 80px;
-            height: 80px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-        .embed-info {
-            flex: 1;
-        }
-        .embed-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #fff;
-        }
-        .embed-description {
-            font-size: 0.9rem;
-            color: #b9bbbe;
-            margin-bottom: 10px;
-        }
-        .embed-button {
-            display: inline-block;
-            padding: 5px 10px;
-            background: #5865F2;
-            color: white;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.8rem;
-        }
-        .embed-button:hover {
-            background: #4752c4;
-        }
     </style>
 </head>
 <body>
@@ -324,32 +277,6 @@
             
             // Zabezpieczenie na wypadek problemów z ładowaniem
             setTimeout(initMasonry, 2000);
-        });
-
-        // Funkcja generująca embed na Discord dla danego pliku wideo
-        function generateDiscordEmbed(file) {
-            const baseUrl = "https://kmmiio99o.github.io/edits/";
-            const videoUrl = `${baseUrl}${file}`;
-            const fileName = file.replace('.mp4', '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-            return {
-                title: `${fileName} Edit`,
-                description: `Some random edits, heh`,
-                url: videoUrl,
-                thumbnail: {
-                    url: videoUrl,
-                },
-                color: 0xff6b6b, // Kolor embeda (opcjonalny)
-            };
-        }
-
-        // Przykład użycia:
-        const embed = generateDiscordEmbed('R9woIdbab.mp4');
-        console.log(embed);
-
-        videoFiles.forEach(file => {
-            const embed = generateDiscordEmbed(file);
-            console.log(embed); // Wyświetli embed dla każdego pliku
         });
     </script>
 </body>
