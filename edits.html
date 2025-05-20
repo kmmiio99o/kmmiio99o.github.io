@@ -169,16 +169,19 @@
             'texting-me.mp4', 'kleszcz.mp4', 'herta-edit.mp4', 'milosc-nietykalna.mp4',
             'built-yourself.mp4', 'listen.mp4', 'dont-stop.mp4', 'best-of-best.mp4',
             'after-dark.mp4', 'lovely-masha.mp4', 'masha.mp4', 'perfection.mp4',
-            'her-heart.mp4', '1v4#-easy.mp4', 'hole.mp4', 'girl-bestie.mp4',
+            'her-heart.mp4', '1v4-easy.mp4', 'hole.mp4', 'girl-bestie.mp4',
             'cs-anime.mp4', 'waguri-edit.mp4', 'blossom-flower.mp4', 'glowsticks.mp4',
             'vermeil.mp4', 'dance-dance.mp4', 'alya+masachika.mp4', 'f-18.mp4',
             'banger.mp4', 'payphone.mp4', 'alya-edit.mp4', 'cars-chan.mp4',
             'alya-president.mp4', 'zero-two.mp4', 'wuwa3.mp4', 'old-edit.mp4',
             'zero-two1.mp4', 'kaoruko-edit.mp4', 'wuwa2.mp4', 'white-or-brown.mp4',
+            'skiski.mp4', 'yeah.mp4', 'shadow.mp4', 'datealive.mp4', 'bestgirls.mp4', 'drinks.mp4', 'mushake.mp4',
             'summerpockets.mp4', 'femboy.mp4', 'Ouka.mp4', 'wuwa.mp4', 'boob.mp4',
+            'jrP1QHR.mp4', 'BS29yCg.mp4', 'lSPRlyb.mp4', 'pByGJ3m.mp4', 'oXT5YUU.mp4', 'rfzeB7M.mov', 'Xuvjl1r.mp4',
             'Esperienza.mp4', 'manipulator.mp4', 'windows.mp4', 'white.mp4',
             'ayanokoji.mp4', 'beauti-edit.mp4', 'xiaomi-15-ultra.mp4', 'russia-core.mp4',
-            'wuwa1.mp4', 'rezero.mp4', 'megumin.mp4'
+            'wuwa1.mp4', 'rezero.mp4', 'megumin.mp4',
+            'zani-drift.mp4', 'may-the-god.mp4', '2-phut-hon.mp4', 'F22.mp4'
         ];
 
         const videoWall = document.getElementById('video-wall');
@@ -201,7 +204,7 @@
             
             // Dodajemy źródło wideo z typem MIME
             const source = document.createElement('source');
-            source.src = `edits/${file}`;
+            source.src = `https://kmmiio99o.github.io/edits/${file}`;
             source.type = 'video/mp4';
             video.appendChild(source);
             
@@ -220,7 +223,7 @@
                                  .replace(/\b\w/g, l => l.toUpperCase());
             
             const link = document.createElement('a');
-            link.href = `edits/${file}`;
+            link.href = `https://kmmiio99o.github.io/edits/${file}`;
             link.className = 'video-link';
             link.textContent = 'Copy Link';
             link.onclick = (e) => {
