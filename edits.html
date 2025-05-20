@@ -181,7 +181,8 @@
             'Esperienza.mp4', 'manipulator.mp4', 'windows.mp4', 'white.mp4',
             'ayanokoji.mp4', 'beauti-edit.mp4', 'xiaomi-15-ultra.mp4', 'russia-core.mp4',
             'wuwa1.mp4', 'rezero.mp4', 'megumin.mp4',
-            'zani-drift.mp4', 'may-the-god.mp4', '2-phut-hon.mp4', 'F22.mp4'
+            'F22.mp4', 'R9woIdbab.mp4', 'OsbKzbsjb.mp4', 'Kdbakzb.mp4', 'JdJbfjaN.mp4', 'IsJdbamBsj.mp4',
+            'zani-drift.mp4', 'may-the-god.mp4', '2-phut-hon.mp4'
         ];
 
         const videoWall = document.getElementById('video-wall');
@@ -276,6 +277,32 @@
             
             // Zabezpieczenie na wypadek problemów z ładowaniem
             setTimeout(initMasonry, 2000);
+        });
+
+        // Funkcja generująca embed na Discord dla danego pliku wideo
+        function generateDiscordEmbed(file) {
+            const baseUrl = "https://kmmiio99o.github.io/edits/";
+            const videoUrl = `${baseUrl}${file}`;
+            const fileName = file.replace('.mp4', '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+            return {
+                title: `${fileName} Edit`,
+                description: `Some random edits, heh`,
+                url: videoUrl,
+                thumbnail: {
+                    url: videoUrl,
+                },
+                color: 0xff6b6b, // Kolor embeda (opcjonalny)
+            };
+        }
+
+        // Przykład użycia:
+        const embed = generateDiscordEmbed('R9woIdbab.mp4');
+        console.log(embed);
+
+        videoFiles.forEach(file => {
+            const embed = generateDiscordEmbed(file);
+            console.log(embed); // Wyświetli embed dla każdego pliku
         });
     </script>
 </body>
