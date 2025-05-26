@@ -164,25 +164,28 @@
     <script>
         // Lista wszystkich plików wideo
         const videoFiles = [
-            'best-manipulator.mp4', 'amg-performance.mp4', 'su-57.mp4', 
-            'papaoutes.mp4', 'im-uni.mp4', 'sword-fight.mp4', 'emo-girl.mp4',
-            'texting-me.mp4', 'kleszcz.mp4', 'herta-edit.mp4', 'milosc-nietykalna.mp4',
-            'built-yourself.mp4', 'listen.mp4', 'dont-stop.mp4', 'best-of-best.mp4',
-            'after-dark.mp4', 'lovely-masha.mp4', 'masha.mp4', 'perfection.mp4',
-            'her-heart.mp4', '1v4-easy.mp4', 'hole.mp4', 'girl-bestie.mp4',
-            'cs-anime.mp4', 'waguri-edit.mp4', 'blossom-flower.mp4', 'glowsticks.mp4',
-            'vermeil.mp4', 'dance-dance.mp4', 'alya+masachika.mp4', 'f-18.mp4',
-            'banger.mp4', 'payphone.mp4', 'alya-edit.mp4', 'cars-chan.mp4',
-            'alya-president.mp4', 'zero-two.mp4', 'wuwa3.mp4', 'old-edit.mp4',
-            'zero-two1.mp4', 'kaoruko-edit.mp4', 'wuwa2.mp4', 'white-or-brown.mp4',
-            'skiski.mp4', 'yeah.mp4', 'shadow.mp4', 'datealive.mp4', 'bestgirls.mp4', 'drinks.mp4', 'mushake.mp4',
-            'summerpockets.mp4', 'femboy.mp4', 'Ouka.mp4', 'wuwa.mp4', 'boob.mp4',
-            'jrP1QHR.mp4', 'BS29yCg.mp4', 'lSPRlyb.mp4', 'pByGJ3m.mp4', 'oXT5YUU.mp4', 'rfzeB7M.mov', 'Xuvjl1r.mp4',
-            'Esperienza.mp4', 'manipulator.mp4', 'windows.mp4', 'white.mp4',
-            'ayanokoji.mp4', 'beauti-edit.mp4', 'xiaomi-15-ultra.mp4', 'russia-core.mp4',
-            'wuwa1.mp4', 'rezero.mp4', 'megumin.mp4',
-            'F22.mp4', 'R9woIdbab.mp4', 'OsbKzbsjb.mp4', 'Kdbakzb.mp4', 'JdJbfjaN.mp4', 'IsJdbamBsj.mp4',
-            'zani-drift.mp4', 'may-the-god.mp4', '2-phut-hon.mp4', 'funbasufnasfwafs.mp4', 'aB3xK9pR2s.mp4'
+            'aB3xK9pR2s.mp4', 'G0uB9nL2wC.mp4', 'R9woIdbab.mp4', 
+            'OsbKzbsjb.mp4', 'Kdbakzb.mp4', 'JdJbfjaN.mp4', 'IsJdbamBsj.mp4',
+            'jrP1QHR.mp4', 'BS29yCg.mp4', 'lSPRlyb.mp4', 'pByGJ3m.mp4',
+            'oXT5YUU.mp4', '8mB3kX6oJ1.mov', 'Xuvjl1r.mp4', '3pI5cT1vL4.mp4',
+            'rF5nK9dL2x.mp4', 'Y9wU2iA7gK.mp4', '0jC8pG1uY5.mp4', 'M4kL8eZ2wD.mp4',
+            'R6kE3vN7dJ.mp4', 'P3mY0kI6wB.mp4', '2lN6aX8eM5.mp4', '8qY3mP1vT6.mp4',
+            '5nV6aM2sR3.mp4', 'p5Qr8T3yM0.mp4', '7fG2hJ9kL1.mp4', '9cN4iA2uR5.mp4',
+            'zW7bH0jS4g.mp4', '6wI2tC9vB5.mp4', 'E4jM8kD6wZ.mp4', '1bU0hQ5iN7.mp4',
+            '7dS1qG9eW4.mp4', 'H6vA9sK4pD.mp4', '2iT7lF0jY1.mp4', '5xN0rB8wU2.mp4',
+            'J4oE3mZ1dQ.mp4', '9gC2fV7lI6.mp4', '0aM4jS6uX3.mp4', 'D7eR9nH0qO.mp4',
+            '6sQ0dF4hN2.mp4', 'V5lZ7yE9aP.mp4', '4uG1bR2tM8.mp4', 'C0jO3nW5xS.mp4',
+            '2fK9pD4eQ7.mp4', 'T6iH8vL0cU.mp4', '7rA5sN1jF9.mp4', '1oE4hZ9uD5.mp4',
+            'Q2tX8bC7lG.mp4', '9dJ1qW4iY0.mp4', 'L7gF3eK8dO.mp4', '0kS5vH2rP6.mp4',
+            'B4wN9jU1mT.mp4', '8yC7oZ3kA4.mp4', 'F1iD6lQ2pX.mp4', '3aR8sE9bY7.mp4',
+            'X9cO3dU5hQ.mp4', '6eK2rI7fW1.mp4', '4vP6yA1jS8.mp4', '5qT7mZ4iR0.mp4',
+            'D8jH1sK3oF.mp4', '7bW3gV0kD9.mp4', 'S4fY9cP2qI.mp4', '1xU5oL8hW0.mp4',
+            '9mZ4iT2rB6.mp4', 'H7nA2sQ4lO.mp4', '3zD9wF6yR1.mp4', 'E5tK3mX9bV.mp4',
+            '8oP1jI4gU6.mp4', 'W2uS7rC5oN.mp4', '6iV0qA9tH3.mp4', 'c3Y6pB1vF4.mp4',
+            '5sX9nR0mG7.mp4', 'Q8aJ2dK4lZ.mp4', '9vE3hP6oM2.mp4', 'T1wF5gU7iC.mp4',
+            '4bN7kD0xR8.mp4', 'L3mZ8cV1qA.mp4', '2dR7sW4eN9.mp4', 'j6H5tY9uS2.mp4',
+            'W1kP8bY5tG.mp4', 'K9nB4vX6zP.mp4', 'J5hM0tG4nV.mp4', 'O8uL5cR3nM.mp4',
+            'K3yX6oP2aV.mp4'
         ];
 
         const videoWall = document.getElementById('video-wall');
