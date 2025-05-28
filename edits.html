@@ -270,16 +270,61 @@
             return item;
         }
 
+        let masonryInstance = null; // Przechowuje instancję Masonry
+
         function initMasonry() {
-            imagesLoaded(videoWall, () => {
-                new Masonry(videoWall, {
-                    itemSelector: '.video-item',
-                    columnWidth: '.video-item',
-                    percentPosition: true,
-                    gutter: 15,
-                    fitWidth: true
+            // Usuń istniejącą instancję Masonry, jeśli istnieje
+            if (masonryInstance) {
+                masonryInstance.destroy();
+            }
+
+            // Inicjalizuj Masonry po załadowaniu metadanych wszystkich wideo
+            const videos = document.querySelectorAll('video');
+            let loadedVideos = 0;
+
+            videos.forEach(video => {
+                video.addEventListener('loadedmetadata', () => {
+                    loadedVideos++;
+                    if (loadedVideos === videos.length) {
+                        // Wszystkie wideo załadowane - inicjalizuj Masonry
+                        masonryInstance = new Masonry(videoWall, {
+                            itemSelector: '.video-item',
+                            columnWidth: '.video-item',
+                            percentPosition: true,
+                            gutter: 15,
+                            fitWidth: true
+                        });
+
+                        // Dodatkowe dostosowanie po zmianie rozmiaru okna
+                        window.addEventListener('resize', () => {
+                            if (masonryInstance) {
+                                masonryInstance.layout();
+                            }
+                        });
+                    }
+                });
+
+                // Zabezpieczenie na wypadek błędu ładowania
+                video.addEventListener('error', () => {
+                    loadedVideos++;
+                    if (loadedVideos === videos.length && masonryInstance) {
+                        masonryInstance.layout();
+                    }
                 });
             });
+
+            // Inicjalizuj Masonry nawet jeśli nie wszystkie wideo się załadują
+            setTimeout(() => {
+                if (!masonryInstance) {
+                    masonryInstance = new Masonry(videoWall, {
+                        itemSelector: '.video-item',
+                        columnWidth: '.video-item',
+                        percentPosition: true,
+                        gutter: 15,
+                        fitWidth: true
+                    });
+                }
+            }, 3000); // Opóźnienie awaryjne
         }
 
         // Dodaj wszystkie wideo do ściany
@@ -287,8 +332,8 @@
             videoWall.appendChild(createVideoElement(file));
         });
 
-        // Inicjalizuj Masonry po załadowaniu strony
-        window.addEventListener('load', () => {
+        // Wywołaj initMasonry po załadowaniu DOM
+        document.addEventListener('DOMContentLoaded', () => {
             initMasonry();
         });
     </script>
