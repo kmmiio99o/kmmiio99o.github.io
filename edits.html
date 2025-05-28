@@ -31,12 +31,17 @@
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
+            justify-content: flex-start;
+            margin: 0 auto;
+            width: 100%;
+            max-width: none;
         }
         .video-item {
             background: rgba(35, 35, 35, 0.7);
             border-radius: 8px;
             overflow: hidden;
             width: calc(25% - 12px);
+            min-width: 250px;
             position: relative;
         }
         .video-container {
@@ -133,17 +138,14 @@
             color: #ff8a5c;
             background: rgba(255, 214, 192, 0.2);
         }
-        @media (max-width: 1000px) {
+        @media (max-width: 1200px) {
             .video-item {
-                width: calc(33.333% - 10px);
+                width: calc(33.333% - 12px);
             }
         }
-        @media (max-width: 700px) {
-            .container {
-                padding: 1rem;
-            }
+        @media (max-width: 800px) {
             .video-item {
-                width: calc(50% - 8px);
+                width: calc(50% - 12px);
             }
         }
         @media (max-width: 500px) {
@@ -189,6 +191,7 @@
         ];
 
         const videoWall = document.getElementById('video-wall');
+        let masonryInstance = null;
 
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
@@ -270,72 +273,45 @@
             return item;
         }
 
-        let masonryInstance = null; // Przechowuje instancję Masonry
-
         function initMasonry() {
-            // Usuń istniejącą instancję Masonry, jeśli istnieje
             if (masonryInstance) {
                 masonryInstance.destroy();
             }
 
-            // Inicjalizuj Masonry po załadowaniu metadanych wszystkich wideo
-            const videos = document.querySelectorAll('video');
-            let loadedVideos = 0;
-
-            videos.forEach(video => {
-                video.addEventListener('loadedmetadata', () => {
-                    loadedVideos++;
-                    if (loadedVideos === videos.length) {
-                        // Wszystkie wideo załadowane - inicjalizuj Masonry
-                        masonryInstance = new Masonry(videoWall, {
-                            itemSelector: '.video-item',
-                            columnWidth: '.video-item',
-                            percentPosition: true,
-                            gutter: 15,
-                            fitWidth: true
-                        });
-
-                        // Dodatkowe dostosowanie po zmianie rozmiaru okna
-                        window.addEventListener('resize', () => {
-                            if (masonryInstance) {
-                                masonryInstance.layout();
-                            }
-                        });
-                    }
-                });
-
-                // Zabezpieczenie na wypadek błędu ładowania
-                video.addEventListener('error', () => {
-                    loadedVideos++;
-                    if (loadedVideos === videos.length && masonryInstance) {
-                        masonryInstance.layout();
-                    }
-                });
+            masonryInstance = new Masonry(videoWall, {
+                itemSelector: '.video-item',
+                columnWidth: '.video-item',
+                percentPosition: false,
+                gutter: 15,
+                horizontalOrder: true,
+                fitWidth: false
             });
 
-            // Inicjalizuj Masonry nawet jeśli nie wszystkie wideo się załadują
-            setTimeout(() => {
-                if (!masonryInstance) {
-                    masonryInstance = new Masonry(videoWall, {
-                        itemSelector: '.video-item',
-                        columnWidth: '.video-item',
-                        percentPosition: true,
-                        gutter: 15,
-                        fitWidth: true
-                    });
-                }
-            }, 3000); // Opóźnienie awaryjne
+            const resizeObserver = new ResizeObserver(() => {
+                masonryInstance.layout();
+            });
+            resizeObserver.observe(videoWall);
+
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => {
+                video.addEventListener('loadedmetadata', () => {
+                    masonryInstance.layout();
+                });
+            });
         }
 
-        // Dodaj wszystkie wideo do ściany
-        videoFiles.forEach(file => {
-            videoWall.appendChild(createVideoElement(file));
+        document.addEventListener('DOMContentLoaded', () => {
+            videoFiles.forEach(file => {
+                videoWall.appendChild(createVideoElement(file));
+            });
+
+            initMasonry();
+
+            setTimeout(initMasonry, 1000);
         });
 
-        // Wywołaj initMasonry po załadowaniu DOM
-        document.addEventListener('DOMContentLoaded', () => {
-            initMasonry();
-        });
+        window.addEventListener('orientationchange', initMasonry);
     </script>
 </body>
+</html>
 </html>
