@@ -162,7 +162,6 @@
     </div>
 
     <script>
-        // Lista wszystkich plików wideo
         const videoFiles = [
             'aB3xK9pR2s.mp4', 'G0uB9nL2wC.mp4', 'R9woIdbab.mp4', 
             'OsbKzbsjb.mp4', 'Kdbakzb.mp4', 'JdJbfjaN.mp4', 'IsJdbamBsj.mp4',
@@ -190,14 +189,12 @@
 
         const videoWall = document.getElementById('video-wall');
 
-        // Funkcja formatująca czas
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
             return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        // Funkcja tworząca element wideo z kontrolkami
         function createVideoElement(file) {
             const item = document.createElement('div');
             item.className = 'video-item';
@@ -206,11 +203,17 @@
             video.controls = true;
             video.style.width = '100%';
             
-            // Dodajemy źródło wideo z typem MIME
-            const source = document.createElement('source');
-            source.src = `https://kmmiio99o.github.io/edits/${file}`;
-            source.type = 'video/mp4';
-            video.appendChild(source);
+            // Dodajemy źródło wideo w formacie MP4
+            const sourceMp4 = document.createElement('source');
+            sourceMp4.src = `https://kmmiio99o.github.io/edits/${file}`;
+            sourceMp4.type = 'video/mp4';
+            video.appendChild(sourceMp4);
+            
+            // Dodajemy źródło wideo w formacie WebM (dla lepszej kompatybilności)
+            const sourceWebm = document.createElement('source');
+            sourceWebm.src = `https://kmmiio99o.github.io/edits/${file.replace('.mp4', '.webm')}`;
+            sourceWebm.type = 'video/webm';
+            video.appendChild(sourceWebm);
             
             // Dodajemy komunikat fallback
             const fallback = document.createElement('p');
@@ -247,7 +250,6 @@
             return item;
         }
 
-        // Inicjalizacja Masonry po załadowaniu wszystkich elementów
         function initMasonry() {
             new Masonry(videoWall, {
                 itemSelector: '.video-item',
@@ -265,7 +267,6 @@
 
         // Inicjalizuj Masonry po załadowaniu strony
         window.addEventListener('load', () => {
-            // Poczekaj na załadowanie wszystkich wideo
             const videos = document.querySelectorAll('video');
             let loadedCount = 0;
             
@@ -276,9 +277,15 @@
                         initMasonry();
                     }
                 });
+                
+                video.addEventListener('error', () => {
+                    loadedCount++;
+                    if(loadedCount === videos.length) {
+                        initMasonry();
+                    }
+                });
             });
             
-            // Zabezpieczenie na wypadek problemów z ładowaniem
             setTimeout(initMasonry, 2000);
         });
     </script>
