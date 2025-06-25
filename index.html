@@ -592,7 +592,7 @@
         <div class="page-section active" id="home-page">
             <section id="home" data-aos="fade-up">
                 <h1>Hello!</h1>
-                <p>Welcome on my website that I created with passion! (In reality, retyped old one)</p>
+                <p>Welcome to my website, which I created with passion! (In reality, I retyped the old one)</p>
                 <div class="discord-status" id="discord-status">
                     Loading Discord status...
                 </div>
@@ -602,8 +602,8 @@
         <div class="page-section" id="about-page">
             <section id="about" data-aos="fade-up">
                 <h2>About me</h2>
-                <p>I'm a web developer that trying to get a stable and well-paid job.</p>
-                <p>I know languages like HTML, CSS, JS. In time I'm gonna learn more.</p>
+                <p>I'm a web developer who is trying to get a stable and well-paid job.</p>
+                <p>I know languages like HTML, CSS, and JS. Over time, I'm going to learn more(cap).</p>
                 <p>I'm 16 years old and I live in Poland.</p>
             </section>
         </div>
@@ -656,7 +656,7 @@
         <div class="page-section" id="contact-page">
             <section id="contact" data-aos="fade-up">
                 <h2>Contact</h2>
-                <p>Questions? Contact me via email or Discord. (More I'm active on Discord)</p>
+                <p>Questions? Contact me via email or Discord. (I'm more active on Discord)</p>
                 <p>Email: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kmmiio99o@gmail.com" style="color: #ffd6c0;" target="_blank">kmmiio99o@gmail.com</a></p>
                 <p>Discord: Check the Social tab to see my Discord profile.</p>
             </section>
@@ -888,10 +888,10 @@
                         ${activitiesHTML}
                     `;
                 } else {
-                    statusElement.innerHTML = 'Failed to load Discord status(Lanyard API is down or you have bad internet connection)';
+                    statusElement.innerHTML = 'Failed to load Discord status (Lanyard API is down or you have a bad internet connection)';
                 }
             } catch (error) {
-                document.getElementById('discord-status').innerHTML = 'Error while loading Discord status';
+                document.getElementById('discord-status').innerHTML = 'Error while loading the Discord status';
             }
         }
         
@@ -899,7 +899,7 @@
         window.addEventListener('load', () => {
             fetchDiscordStatus();
             
-            // Set up refresh interval (100 miliseconds)
+            // Set up refresh interval (100 milliseconds)
             setInterval(fetchDiscordStatus, 100);
         });
         
