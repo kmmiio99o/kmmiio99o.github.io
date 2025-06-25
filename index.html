@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kmmiio99o.github.io</title>
-    <link rel="icon" href="icons/icon.png" type="image/png">
+    <link rel="icon" href="http://kmmiio99o.github.io/icons/icon.png" type="image/png">
     <meta name="twitter:site" content="Discord Age minimum age in some countries">
     <meta name="twitter:title" content="Discord Age minimum age in some countries">
     <meta name="twitter:description" content="Europe
@@ -561,6 +561,37 @@
         .mobile-only {
             display: none;
         }
+
+        .badge-icon {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-left: 4px;
+            filter: brightness(0.8);
+        }
+        .bleh-container {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 214, 192, 0.1);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 214, 192, 0.3);
+            padding: 2px 6px;
+            margin-left: 4px;
+        }
+        .bleh-container .badge-icon {
+            margin-right: 6px;
+        }
+        .bleh-tag {
+            color: #ffd6c0;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        h1 {
+            font-size: 2.5rem; /* Dostosuj rozmiar czcionki według potrzeb */
+            margin: 0 0 1rem 0; /* Dostosuj marginesy: górny, prawy, dolny, lewy */
+            color: #fff; /* Kolor tekstu */
+            font-weight: bold; /* Pogrubienie tekstu */
+        }
     </style>
 </head>
 <body>
@@ -881,7 +912,13 @@
                         <div class="user-profile">
                             <img src="${avatarUrl}" alt="Avatar" class="avatar">
                             <div>
-                                <p><strong>${status.discord_user.username}</strong></p>
+                                <p>
+                                    <strong>${status.discord_user.username}</strong>
+                                    <span class="bleh-container">
+                                        <img src="https://cdn.discordapp.com/clan-badges/1219787816461008896/40a7aa796426347d6b76d20dfed2c273.png?size=16" class="badge-icon" alt="Tag icon">
+                                        <span class="bleh-tag">BLEH</span>
+                                    </span>
+                                </p>
                                 <p>Status: ${status.discord_status}</p>
                             </div>
                         </div>
@@ -909,10 +946,13 @@
         });
         
         // Obsługa przycisku muzycznego w menu mobilnym
-        document.getElementById('mobile-music-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            playRandomMusic();
-        });
+        const mobileMusicBtn = document.getElementById('mobile-music-btn');
+        if (mobileMusicBtn) {
+            mobileMusicBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                playRandomMusic();
+            });
+        }
         
         // Function to play random music
         function playRandomMusic() {
