@@ -1134,6 +1134,54 @@
             color: #f7768e;
             font-weight: bold;
         }
+
+        .interactive-terminal {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            color: #e0e0e0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .terminal-output {
+            min-height: 200px;
+            margin-bottom: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .terminal-disclaimer {
+            color: #7f7f7f;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .terminal-input {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #terminal-command {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            outline: none;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -1174,59 +1222,14 @@
 
         <div class="page-section" id="about-page">
             <section id="about" data-aos="fade-up">
-                <div class="vim-header">
-                    <div class="vim-tabbar">
-                        <span class="vim-tab active" data-tab="about">about.txt</span>
-                        <span class="vim-tab" data-tab="skills">skills.txt</span>
-                        <span class="vim-tab" data-tab="hobbies">hobbies.txt</span>
+                <div class="interactive-terminal">
+                    <div class="terminal-output" id="terminal-output"></div>
+                    <div class="terminal-disclaimer">
+                        <p>Click below to start typing commands.</p>
                     </div>
-                    <div class="vim-statusbar">
-                        <span id="vim-mode">NORMAL</span>
-                        <span>UTF-8</span>
-                        <span id="vim-position">Ln 1, Col 1</span>
-                    </div>
-                </div>
-
-                <div class="vim-container">
-                    <div class="vim-line-numbers">
-                        <span>1</span>
-                        <span>2</span>
-                        <span>3</span>
-                        <span>4</span>
-                        <span>5</span>
-                        <span>6</span>
-                        <span>7</span>
-                        <span>8</span>
-                    </div>
-                    
-                    <!-- Zawartość zakładek -->
-                    <div class="vim-content-wrapper">
-                        <div class="vim-content active" data-tab-content="about">
-                            <div class="vim-line"><span class="vim-comment">" ===== ABOUT ME =====</span></div>
-                            <div class="vim-line"><span class="vim-keyword">let</span> <span class="vim-var">name</span> = <span class="vim-string">"kmmiio99o"</span></div>
-                            <div class="vim-line"><span class="vim-keyword">let</span> <span class="vim-var">age</span> = <span class="vim-number">16</span></div>
-                            <div class="vim-line"><span class="vim-keyword">let</span> <span class="vim-var">location</span> = <span class="vim-string">"Poland"</span></div>
-                            <div class="vim-line"><span class="vim-comment">" --------------------</span></div>
-                            <div class="vim-line"><span class="vim-keyword">let</span> <span class="vim-var">interests</span> = [<span class="vim-string">"Anime"</span>, <span class="vim-string">"Coding"</span>]</div>
-                            <div class="vim-line"><span class="vim-comment">" Press </span><span class="vim-key">i</span><span class="vim-comment"> to edit...</span></div>
-                        </div>
-                        <div class="vim-content" data-tab-content="skills">
-                            <div class="vim-line"><span class="vim-comment">" ===== SKILLS =====</span></div>
-                            <div class="vim-line"><span class="vim-keyword">const</span> <span class="vim-var">frontend</span> = [</div>
-                            <div class="vim-line">  <span class="vim-string">"HTML5"</span>,</div>
-                            <div class="vim-line">  <span class="vim-string">"CSS3"</span>,</div>
-                            <div class="vim-line">  <span class="vim-string">"JavaScript (ES6+)"</span></div>
-                            <div class="vim-line">]</div>
-                            <div class="vim-line"><span class="vim-keyword">const</span> <span class="vim-var">learning</span> = <span class="vim-string">"React & Node.js"</span></div>
-                        </div>
-                        <div class="vim-content" data-tab-content="hobbies">
-                            <div class="vim-line"><span class="vim-comment">" ===== HOBBIES =====</span></div>
-                            <div class="vim-line"><span class="vim-keyword">let</span> <span class="vim-var">hobbies</span> = {</div>
-                            <div class="vim-line">  <span class="vim-string">"Anime"</span>: <span class="vim-string">"MyAnimeList: kmmiio99o"</span>,</div>
-                            <div class="vim-line">  <span class="vim-string">"Game Dev"</span>: <span class="vim-string">"Unity, Godot"</span>,</div>
-                            <div class="vim-line">  <span class="vim-string">"Music"</span>: <span class="vim-string">"Spotify playlists"</span></div>
-                            <div class="vim-line">}</div>
-                        </div>
+                    <div class="terminal-input">
+                        <span class="prompt">user@kmmiio99o:~$</span>
+                        <input type="text" id="terminal-command" autocomplete="off" spellcheck="false">
                     </div>
                 </div>
             </section>
@@ -1461,15 +1464,12 @@
                         }
                         
                         status.activities.forEach(activity => {
-                            // Pomijamy aktywność Spotify z głównej listy, ponieważ obsługujemy ją osobno
                             if (activity.name.toLowerCase() === 'spotify') {
                                 return;
                             }
                             
-                            // Sprawdzamy, czy aktywność posiada obrazy (assets)
                             let activityImage = '';
                             if (activity.assets) {
-                                // Pobieranie obrazu aktywności (duży obraz - large_image)
                                 if (activity.assets.large_image) {
                                     let imageUrl = '';
                                     // Obrazy mogą być przechowywane na różnych serwerach
@@ -1600,7 +1600,7 @@
                     newContent.classList.add('active');
                     newContent.style.opacity = '1';
                     newContent.style.transform = 'translateX(0)';
-                }, 300); // Dopasuj do czasu trwania animacji
+                }, 300);
             });
         });
 
@@ -1612,6 +1612,77 @@
                     document.getElementById('vim-mode').textContent = 'NORMAL';
                 }, 2000);
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminalOutput = document.getElementById('terminal-output');
+            const terminalInput = document.getElementById('terminal-command');
+            
+            // Wyświetl powitanie bez promptu
+            terminalOutput.innerHTML = 'Terminal v1.0\nType "help" for available commands\n';
+
+            terminalInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const command = terminalInput.value.trim();
+                    terminalInput.value = '';
+                    
+                    const disclaimer = document.querySelector('.terminal-disclaimer');
+                    if (disclaimer) {
+                        disclaimer.style.display = 'none';
+                    }
+                    
+                    if (command) {
+                        terminalOutput.innerHTML += `> ${command}\n`;
+                    }
+                    
+                    // Obsłuż komendy
+                    if (command === 'cat about.txt') {
+                        terminalOutput.innerHTML += `" ===== ABOUT ME =====\n` +
+                                                   `let name = "kmmiio99o"\n` +
+                                                   `let age = 16\n` +
+                                                   `let location = "Poland"\n` +
+                                                   `" --------------------\n` +
+                                                   `let interests = ["Anime", "Coding"]\n\n`;
+                    } 
+                    else if (command === 'cat skills.txt') {
+                        terminalOutput.innerHTML += `" ===== SKILLS =====\n` +
+                                                   `const frontend = [\n` +
+                                                   `  "HTML5",\n` +
+                                                   `  "CSS3",\n` +
+                                                   `  "JavaScript (ES6+)"\n` +
+                                                   `]\n` +
+                                                   `const learning = "Python discord.py library"\n\n`;
+                    }
+                    else if (command === 'cat hobbies.txt') {
+                        terminalOutput.innerHTML += `" ===== HOBBIES =====\n` +
+                                                   `let hobbies = {\n` +
+                                                   `  "Anime": "MyAnimeList: kmmiio99o",\n` +
+                                                   `  "Dev": "HTML, CSS, JS, Python",\n` +
+                                                   `  "Music": "Spotify playlists"\n` +
+                                                   `}\n\n`;
+                    }
+                    else if (command === 'help') {
+                        terminalOutput.innerHTML += 'Available commands:\n' +
+                                                   'cat about.txt - Show about info\n' +
+                                                   'cat skills.txt - Show skills\n' +
+                                                   'cat hobbies.txt - Show hobbies\n' +
+                                                   'clear - Clear terminal\n';
+                    }
+                    else if (command === 'clear') {
+                        terminalOutput.innerHTML = 'Terminal v1.0\nType "help" for available commands\n';
+                    }
+                    else if (command) {
+                        terminalOutput.innerHTML += `Command not found: ${command}\n` +
+                                                   `Type "help" for available commands\n\n`;
+                    }
+                    
+                    // Przewiń do dołu
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                }
+            });
+
+            // Automatyczne focusowanie inputa
+            terminalInput.focus();
         });
     </script>
 </body>
