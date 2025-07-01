@@ -28,7 +28,7 @@
     Serbia: 15+
     Slovakia: 16+">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         html {
             scroll-behavior: smooth;
@@ -1617,72 +1617,130 @@
         document.addEventListener('DOMContentLoaded', function() {
             const terminalOutput = document.getElementById('terminal-output');
             const terminalInput = document.getElementById('terminal-command');
+            const commandHistory = [];
+            let historyIndex = -1;
             
-            // Wyświetl powitanie bez promptu
-            terminalOutput.innerHTML = 'Terminal v1.0\nType "help" for available commands\n';
+            // Wyświetl powitanie
+            terminalOutput.innerHTML = 'Terminal v1.0\nType "help" for available commands\n\n';
+            terminalInput.focus();
 
+            // Obsługa historii komend
             terminalInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    const command = terminalInput.value.trim();
-                    terminalInput.value = '';
-                    
-                    const disclaimer = document.querySelector('.terminal-disclaimer');
-                    if (disclaimer) {
-                        disclaimer.style.display = 'none';
+                if (e.key === 'ArrowUp' && commandHistory.length > 0) {
+                    e.preventDefault();
+                    if (historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
                     }
-                    
-                    if (command) {
-                        terminalOutput.innerHTML += `> ${command}\n`;
+                    terminalInput.value = commandHistory[commandHistory.length - 1 - historyIndex];
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        terminalInput.value = commandHistory[commandHistory.length - 1 - historyIndex];
+                    } else {
+                        historyIndex = -1;
+                        terminalInput.value = '';
                     }
-                    
-                    // Obsłuż komendy
-                    if (command === 'cat about.txt') {
-                        terminalOutput.innerHTML += `" ===== ABOUT ME =====\n` +
-                                                   `let name = "kmmiio99o"\n` +
-                                                   `let age = 16\n` +
-                                                   `let location = "Poland"\n` +
-                                                   `" --------------------\n` +
-                                                   `let interests = ["Anime", "Coding"]\n\n`;
-                    } 
-                    else if (command === 'cat skills.txt') {
-                        terminalOutput.innerHTML += `" ===== SKILLS =====\n` +
-                                                   `const frontend = [\n` +
-                                                   `  "HTML5",\n` +
-                                                   `  "CSS3",\n` +
-                                                   `  "JavaScript (ES6+)"\n` +
-                                                   `]\n` +
-                                                   `const learning = "Python discord.py library"\n\n`;
-                    }
-                    else if (command === 'cat hobbies.txt') {
-                        terminalOutput.innerHTML += `" ===== HOBBIES =====\n` +
-                                                   `let hobbies = {\n` +
-                                                   `  "Anime": "MyAnimeList: kmmiio99o",\n` +
-                                                   `  "Dev": "HTML, CSS, JS, Python",\n` +
-                                                   `  "Music": "Spotify playlists"\n` +
-                                                   `}\n\n`;
-                    }
-                    else if (command === 'help') {
-                        terminalOutput.innerHTML += 'Available commands:\n' +
-                                                   'cat about.txt - Show about info\n' +
-                                                   'cat skills.txt - Show skills\n' +
-                                                   'cat hobbies.txt - Show hobbies\n' +
-                                                   'clear - Clear terminal\n';
-                    }
-                    else if (command === 'clear') {
-                        terminalOutput.innerHTML = 'Terminal v1.0\nType "help" for available commands\n';
-                    }
-                    else if (command) {
-                        terminalOutput.innerHTML += `Command not found: ${command}\n` +
-                                                   `Type "help" for available commands\n\n`;
-                    }
-                    
-                    // Przewiń do dołu
-                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    // Podstawowe autouzupełnianie
+                    const commands = ['cat about.txt', 'cat skills.txt', 'cat hobbies.txt', 'help', 'clear', 'neofetch', 'ls', 'whoami', 'echo'];
+                    const input = terminalInput.value.trim();
+                    const match = commands.find(cmd => cmd.startsWith(input));
+                    if (match) terminalInput.value = match;
                 }
             });
 
-            // Automatyczne focusowanie inputa
-            terminalInput.focus();
+            terminalInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const command = terminalInput.value.trim();
+                    terminalInput.value = '';
+                    
+                    // Ukryj disclaimer
+                    const disclaimer = document.querySelector('.terminal-disclaimer');
+                    if (disclaimer) disclaimer.style.display = 'none';
+                    
+                    // Dodaj komendę do historii
+                    if (command) {
+                        commandHistory.push(command);
+                        historyIndex = -1;
+                    }
+                    
+                    // Symulacja opóźnienia odpowiedzi
+                    setTimeout(() => {
+                        if (command === 'cat about.txt') {
+                            terminalOutput.innerHTML += `" ===== ABOUT ME =====\n` +
+                                                       `let name = "kmmiio99o"\n` +
+                                                       `let age = 16\n` +
+                                                       `let location = "Poland"\n` +
+                                                       `" --------------------\n` +
+                                                       `let interests = ["Anime", "Coding"]\n\n`;
+                        } 
+                        else if (command === 'cat skills.txt') {
+                            terminalOutput.innerHTML += `" ===== SKILLS =====\n` +
+                                                       `const frontend = [\n` +
+                                                       `  "HTML5",\n` +
+                                                       `  "CSS3",\n` +
+                                                       `  "JavaScript (ES6+)"\n` +
+                                                       `]\n` +
+                                                       `const learning = "Python discord.py library"\n\n`;
+                        }
+                        else if (command === 'cat hobbies.txt') {
+                            terminalOutput.innerHTML += `" ===== HOBBIES =====\n` +
+                                                       `let hobbies = {\n` +
+                                                       `  "Anime": "MyAnimeList: kmmiio99o",\n` +
+                                                       `  "Dev": "HTML, CSS, JS, Python",\n` +
+                                                       `  "Music": "Spotify playlists"\n` +
+                                                       `}\n\n`;
+                        }
+                        else if (command === 'help') {
+                            terminalOutput.innerHTML += 'Available commands:\n' +
+                                                       'cat about.txt - Show about info\n' +
+                                                       'cat skills.txt - Show skills\n' +
+                                                       'cat hobbies.txt - Show hobbies\n' +
+                                                       'clear - Clear terminal\n' +
+                                                       'ls - List files\n' +
+                                                       'whoami - Show user info\n' +
+                                                       'neofetch - Show system info\n';
+                        }
+                        else if (command === 'clear') {
+                            terminalOutput.innerHTML = 'Terminal v1.0\nType "help" for available commands\n\n';
+                            // Przywróć disclaimer
+                            const disclaimer = document.querySelector('.terminal-disclaimer');
+                            if (disclaimer) disclaimer.style.display = 'block';
+                        }
+                        else if (command === 'neofetch') {
+                            terminalOutput.innerHTML += 
+                                '  ██████╗  ██╗ ████████╗ ██╗  ██╗ ██╗   ██╗ ██████╗\n' +
+                                ' ██╔════╝  ██║ ╚══██╔══╝ ██║  ██║ ██║   ██║ ██╔══██╗\n' +
+                                ' ██║  ███╗ ██║    ██║    ███████║ ██║   ██║ ██████╔╝\n' +
+                                ' ██║   ██║ ██║    ██║    ██╔══██║ ██║   ██║ ██╔══██╗\n' +
+                                ' ╚██████╔╝ ██║    ██║    ██║  ██║ ╚██████╔╝ ██████╔╝\n' +
+                                '  ╚═════╝  ╚═╝    ╚═╝    ╚═╝  ╚═╝  ╚═════╝  ╚═════╝\n' +
+                                'user@kmmiio99o\n' +
+                                '---------------------\n' +
+                                'OS: GitHub Pages\n' +
+                                'Kernel: Github\n' +
+                                'Uptime: Since 2023\n' +
+                                'Shell: Web Terminal v1.0\n\n';
+                        }
+                        else if (command === 'ls') {
+                            terminalOutput.innerHTML += 'about.txt  skills.txt  hobbies.txt\n\n';
+                        }
+                        else if (command === 'whoami') {
+                            terminalOutput.innerHTML += 'kmmiio99o\n';
+                        }
+                        else if (command) {
+                            terminalOutput.innerHTML += `Command not found: ${command}\n` +
+                                                       `Type "help" for available commands\n\n`;
+                        }
+                        
+                        // Wyświetl nowy prompt
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    }, 200); // Opóźnienie 200ms
+                }
+            });
         });
     </script>
 </body>
