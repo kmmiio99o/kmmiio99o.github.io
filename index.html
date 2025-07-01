@@ -446,7 +446,7 @@
                 min-height: 60px;
                 margin: 0;
                 padding: 0;
-                border-bottom: 1px solid rgba(255,255,255,0.1); /* Linia oddzielająca */
+                border-bottom: 1px solid rgba(255,255,255,0.1);
             }
             .navbar a,
             #mobile-music-btn {
@@ -467,7 +467,7 @@
             }
             .navbar a:active,
             #mobile-music-btn:active {
-                transform: scale(1.05); /* Powiększenie tylko tekstu */
+                transform: scale(1.05);
             }
             .navbar ul.open {
                 right: 0;
@@ -744,7 +744,6 @@
             }
         }
         
-        // Sprawdź na starcie i przy każdym przewijaniu
         window.addEventListener('load', checkScroll);
         window.addEventListener('scroll', checkScroll);
         
@@ -812,7 +811,6 @@
                     targetElement.classList.add('active');
                     targetElement.style.animation = 'fadeIn 0.5s ease-out forwards';
                     
-                    // Przewiń do początku kontenera bez animacji, aby uniknąć podwójnego przewijania
                     window.scrollTo({
                         top: landingScreen.offsetHeight
                     });
