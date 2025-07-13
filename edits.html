@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edits - kmmiio99o.github.io</title>
+    <title>Edits - kmmiio99o</title>
     <link rel="icon" href="icons/icon.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
@@ -219,13 +219,13 @@
             
             // Dodajemy źródło wideo w formacie MP4
             const sourceMp4 = document.createElement('source');
-            sourceMp4.src = `https://kmmiio99o.github.io/edits/${file}`;
+            sourceMp4.src = `https://kmmiio99o.pages.dev/edits/${file}`;
             sourceMp4.type = 'video/mp4';
             video.appendChild(sourceMp4);
             
             // Dodajemy źródło wideo w formacie WebM (dla lepszej kompatybilności)
             const sourceWebm = document.createElement('source');
-            sourceWebm.src = `https://kmmiio99o.github.io/edits/${file.replace('.mp4', '.webm')}`;
+            sourceWebm.src = `https://kmmiio99o.pages.dev/edits/${file.replace('.mp4', '.webm')}`;
             sourceWebm.type = 'video/webm';
             video.appendChild(sourceWebm);
             
@@ -244,7 +244,7 @@
                                  .replace(/\b\w/g, l => l.toUpperCase());
             
             const link = document.createElement('a');
-            link.href = `https://kmmiio99o.github.io/edits/${file}`;
+            link.href = `https://kmmiio99o.pages.dev/edits/${file}`;
             link.className = 'video-link';
             link.textContent = 'Copy Link';
             link.onclick = (e) => {
