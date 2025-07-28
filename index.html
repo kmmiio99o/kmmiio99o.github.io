@@ -682,55 +682,178 @@
             }
         }
 
-        .about-content {
+        /* Nowe style dla About Me */
+        .about-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .about-header .subtitle {
+            color: #ff8a5c;
+            font-size: 1.2rem;
+            margin-top: -1rem;
+        }
+
+        .modern-about-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
         }
 
-        .about-section {
-            background: rgba(45, 45, 45, 0.3);
-            border-radius: 8px;
-            padding: 1.5rem;
-            border-left: 3px solid #ffd6c0;
+        .modern-card {
+            background: rgba(40, 40, 45, 0.6);
+            border-radius: 12px;
+            padding: 1.8rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
         }
 
-        .about-section h3 {
-            color: #ffd6c0;
-            margin-top: 0;
+        .modern-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 214, 192, 0.3);
+        }
+
+        .card-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .about-section h3 i {
-            font-size: 1.2rem;
+        .card-header i {
+            font-size: 1.5rem;
+            color: #ff8a5c;
+            background: rgba(255, 214, 192, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .skills-list {
-            padding-left: 1.2rem;
+        .card-header h3 {
+            margin: 0;
+            color: #ffd6c0;
+            font-size: 1.3rem;
         }
 
-        .skills-list li {
-            margin-bottom: 0.5rem;
+        .about-details p {
+            margin: 0.8rem 0;
             color: #e0e0e0;
         }
 
+        .about-details strong {
+            color: #ffd6c0;
+        }
+
+        .skill-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.html { background: rgba(227, 76, 38, 0.2); color: #e34c26; border: 1px solid #e34c26; }
+        .badge.css { background: rgba(21, 114, 182, 0.2); color: #1572b6; border: 1px solid #1572b6; }
+        .badge.js { background: rgba(240, 219, 79, 0.2); color: #f0db4f; border: 1px solid #f0db4f; }
+        .badge.python { background: rgba(48, 105, 152, 0.2); color: #306998; border: 1px solid #306998; }
+        .badge.git { background: rgba(240, 81, 51, 0.2); color: #f05133; border: 1px solid #f05133; }
+
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: var(--progress);
+            background: var(--color);
+            border-radius: 4px;
+        }
+
+        .progress-bar span:first-child {
+            position: absolute;
+            top: -22px;
+            font-size: 0.8rem;
+            color: #e0e0e0;
+        }
+
+        .progress-bar span:last-child {
+            position: absolute;
+            top: -22px;
+            right: 0;
+            font-size: 0.8rem;
+            color: var(--color);
+        }
+
+        .hobby-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .hobby-list li {
+            margin-bottom: 1rem;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .hobby-list i {
+            color: #ff8a5c;
+            width: 20px;
+            text-align: center;
+        }
+
+        .hobby-list a {
+            color: #4dabf7;
+            text-decoration: none;
+        }
+
+        .hobby-list a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsywność */
         @media (max-width: 700px) {
-            .about-content {
-                grid-template-columns: 1fr; /* Jedna kolumna na telefonach */
-                gap: 1rem; /* Mniejszy odstęp */
-                padding: 0 0.5rem; /* Mniejsze marginesy boczne */
+            .modern-about-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 0.5rem;
             }
-            .about-section {
-                padding: 1rem; /* Mniejsze paddingi */
+
+            .modern-card {
+                padding: 1.5rem;
             }
-            .terminal-content {
-                padding: 0.8rem; /* Mniejsze paddingi */
-            }
-            .terminal-output {
-                min-height: 150px; /* Mniejsza wysokość */
+
+            .about-header {
+                margin-bottom: 1.5rem;
             }
         }
 
@@ -812,73 +935,9 @@
             margin-bottom: 2.5rem;
         }
 
-        .terminal-prompt {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.8rem 1.2rem;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.95rem;
-            margin-top: 1rem;
-            display: inline-block;
-            border-left: 3px solid #ff8a5c;
-        }
-
-        .prompt-user { color: #4dabf7; }
-        .prompt-host { color: #69db7c; }
-        .prompt-path { color: #ffd6c0; }
-        .prompt-command { color: #e0e0e0; }
-        .prompt-cursor {
-            animation: blink 1s infinite;
-            color: #ff8a5c;
-        }
-
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
-        }
-
-        .terminal-content {
-            background: rgba(30, 30, 32, 0.6);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 214, 192, 0.15);
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            font-family: 'Courier New', monospace;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .terminal-output {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .terminal-line {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-
-        .terminal-prefix {
-            color: #ff8a5c;
-            font-weight: bold;
-            min-width: 20px;
-            text-align: right;
-        }
-
-        .terminal-text {
-            color: #e0e0e0;
-            line-height: 1.5;
-        }
-
-        .terminal-highlight {
-            color: #ffd6c0;
-            font-weight: bold;
-        }
-
-        /* Dodatkowy styl dla sekcji ">" */
-        .terminal-line .terminal-prefix:nth-child(1) {
-            color: #69db7c; /* Zielony dla podsekcji */
         }
 
         .modern-about-grid {
@@ -988,238 +1047,180 @@
             font-size: 0.8rem;
             color: var(--color);
         }
+    </style>
+    <style>
+        .hobby-item {
+            margin-bottom: 1rem;
+        }
 
-        .terminal-content {
-            background: rgba(30, 30, 32, 0.6);
+        .hobby-button {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(45, 45, 45, 0.3);
             border-radius: 8px;
-            border: 1px solid rgba(255, 214, 192, 0.15);
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            font-family: 'Courier New', monospace;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 214, 192, 0.1);
+            width: 100%; /* Nowe - pełna szerokość */
+            box-sizing: border-box; /* Nowe - uwzględnia padding w szerokości */
+        }
+
+        .hobby-button:hover {
+            background: rgba(45, 45, 45, 0.5);
+            transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .terminal-output {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .terminal-line {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-
-        .terminal-prefix {
+        .hobby-button i {
             color: #ff8a5c;
-            font-weight: bold;
-            min-width: 20px;
-            text-align: right;
-        }
-
-        .terminal-text {
-            color: #e0e0e0;
-            line-height: 1.5;
-        }
-
-        .terminal-highlight {
-            color: #ffd6c0;
-            font-weight: bold;
-        }
-
-        /* Dodatkowy styl dla sekcji ">" */
-        .terminal-line .terminal-prefix:nth-child(1) {
-            color: #69db7c; /* Zielony dla podsekcji */
-        }
-
-        .vim-header {
-            background: #1e2030;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            padding: 0.5rem 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .vim-tabbar {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .vim-tab {
-            background: #2a2e3a;
-            color: #a0a8d0;
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px 4px 0 0;
-            font-size: 0.9rem;
-            font-family: 'Courier New', monospace;
-            cursor: default;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .vim-tab:hover {
-            background: #3b4261 !important;
-            transform: translateY(-2px);
-        }
-
-        .vim-tab::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #7aa2f7;
-            transition: width 0.3s ease;
-        }
-
-        .vim-tab:hover::after {
-            width: 100%;
-        }
-
-        .vim-tab.active {
-            background: #3b4261;
-            color: #c0caf5;
-            font-weight: bold;
-        }
-
-        .vim-statusbar {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #7aa2f7;
-            font-family: 'Courier New', monospace;
-        }
-
-        .vim-container {
-            display: flex;
-            background: #1a1b26;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            overflow: hidden;
-        }
-
-        .vim-line-numbers {
-            background: #1e2030;
-            color: #545c7e;
-            padding: 0.8rem 0.5rem;
-            text-align: right;
-            font-family: 'Courier New', monospace;
-            user-select: none;
-        }
-
-        .vim-line-numbers span {
-            display: block;
-            line-height: 1.6;
-        }
-
-        .vim-content-wrapper {
-            position: relative;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        .vim-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transform: translateX(10px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            padding: 0.8rem 1rem;
-            font-family: 'Courier New', monospace;
-            color: #c0caf5;
-            line-height: 1.6;
-        }
-
-        .vim-content.active {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .vim-line {
-            white-space: pre;
-        }
-
-        .vim-comment {
-            color: #565f89;
-            font-style: italic;
-        }
-
-        .vim-keyword {
-            color: #7aa2f7;
-            font-weight: bold;
-        }
-
-        .vim-string {
-            color: #9ece6a;
-        }
-
-        .vim-number {
-            color: #ff9e64;
-        }
-
-        .vim-var {
-            color: #c0caf5;
-        }
-
-        .vim-key {
-            color: #f7768e;
-            font-weight: bold;
-        }
-
-        .interactive-terminal {
-            background: #1e1e1e;
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            color: #e0e0e0;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .terminal-output {
-            min-height: 200px;
-            margin-bottom: 1rem;
-            white-space: pre-wrap;
-        }
-
-        .terminal-disclaimer {
-            color: #7f7f7f;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            width: 24px;
             text-align: center;
-            font-style: italic;
         }
 
-        .terminal-input {
+        .hobby-button span {
+            color: #e0e0e0;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+
+        .mal-badge {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            background: rgba(46, 81, 144, 0.2);
+            border-radius: 16px;
+            padding: 0.3rem 0.8rem 0.3rem 0.3rem;
+            border: 1px solid rgba(46, 81, 144, 0.4);
         }
 
-        #terminal-command {
-            flex-grow: 1;
-            background: transparent;
-            border: none;
-            color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            outline: none;
+        .mal-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
         }
 
-        .cursor {
-            animation: blink 1s infinite;
+        .mal-badge span {
+            color: #2e5190;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        @media (max-width: 500px) {
+            .hobby-button {
+                flex-direction: column;
+                align-items: center;
+                padding: 0.8rem;
+                width: 100%;
+            }
+            
+            .hobby-button span {
+                font-size: 0.95rem;
+                white-space: nowrap;
+                margin-right: 0.5rem;
+            }
+            
+            .mal-badge {
+                margin: 0.3rem 0 0 0;
+                padding: 0.2rem 0.5rem;
+                background: rgba(46, 81, 144, 0.3);
+            }
+            
+            .mal-icon {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .mal-badge span {
+                display: none;
+            }
+            
+            .mal-badge::after {
+                content: "My Anime List";
+                color: #4d8fe8;
+                font-size: 0.7rem;
+                font-weight: bold;
+            }
         }
+        .skills-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .skill {
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    .skill-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    .skill-meta i {
+        width: 20px;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .skill-meta span {
+        color: #ffd6c0;
+    }
+
+    .skill-track {
+        height: 24px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .skill-level {
+        height: 100%;
+        border-radius: 12px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 10px;
+        box-sizing: border-box;
+        min-width: 50px;
+    }
+
+    .skill-percent {
+        color: white;
+        font-size: 0.75rem;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* Kolory pasków */
+    .html { background: #e34c26; }
+    .css { background: #1572b6; }
+    .js { background: #f0db4f; }
+    .python { background: #306998; }
+
+    @media (max-width: 700px) {
+        .skills-grid {
+            gap: 1.2rem;
+        }
+        
+        .skill-track {
+            height: 20px;
+        }
+        
+        .skill-percent {
+            font-size: 0.7rem;
+        }
+    }
     </style>
 </head>
 <body>
@@ -1260,14 +1261,123 @@
 
         <div class="page-section" id="about-page">
             <section id="about" data-aos="fade-up">
-                <div class="interactive-terminal">
-                    <div class="terminal-output" id="terminal-output"></div>
-                    <div class="terminal-disclaimer">
-                        <p>Click below to start typing commands.</p>
+                <div class="about-header">
+                    <h2>About Me</h2>
+                    <p class="subtitle">Developer & Anime Enthusiast</p>
+                </div>
+
+                <div class="modern-about-grid">
+                    <!-- Sekcja 1 - Podstawowe informacje -->
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <i class="fas fa-user"></i>
+                            <h3>Basic Info</h3>
+                        </div>
+                        <div class="about-details">
+                            <p><strong>Name:</strong> kmmiio99o</p>
+                            <p><strong>Age:</strong> 16</p>
+                            <p><strong>Location:</strong> Poland</p>
+                            <p><strong>Languages:</strong> Polish (native), English (B2)</p>
+                            <p><strong>Interests:</strong> Web Dev, Anime, Music</p>
+                            <p><strong>Status:</strong> Student & Freelancer</p>
+                        </div>
                     </div>
-                    <div class="terminal-input">
-                        <span class="prompt">user@kmmiio99o:~$</span>
-                        <input type="text" id="terminal-command" autocomplete="off" spellcheck="false">
+
+                    <!-- Sekcja Edukacji -->
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h3>Education</h3>
+                        </div>
+                        <div class="about-details">
+                            <p><strong>School:</strong> Technical School - Logistics Profile</p>
+                            <p><strong>Key Subjects:</strong> Supply Chain, Warehouse Management</p>
+                            <p><strong>IT Skills:</strong> Self-taught programming alongside learning</p>
+                        </div>
+                    </div>
+
+                    <!-- Sekcja 2 - Umiejętności -->
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <i class="fas fa-code"></i>
+                            <h3>Skills</h3>
+                        </div>
+                        <div class="skills-grid">
+                            <!-- HTML -->
+                            <div class="skill">
+                                <div class="skill-meta">
+                                    <i class="fab fa-html5"></i>
+                                    <span>HTML5</span>
+                                </div>
+                                <div class="skill-track">
+                                    <div class="skill-level html" style="width: 95%">
+                                        <span class="skill-percent">95%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- CSS -->
+                            <div class="skill">
+                                <div class="skill-meta">
+                                    <i class="fab fa-css3-alt"></i>
+                                    <span>CSS3</span>
+                                </div>
+                                <div class="skill-track">
+                                    <div class="skill-level css" style="width: 93%">
+                                        <span class="skill-percent">93%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- JavaScript -->
+                            <div class="skill">
+                                <div class="skill-meta">
+                                    <i class="fab fa-js"></i>
+                                    <span>JavaScript</span>
+                                </div>
+                                <div class="skill-track">
+                                    <div class="skill-level js" style="width: 86%">
+                                        <span class="skill-percent">86%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Python -->
+                            <div class="skill">
+                                <div class="skill-meta">
+                                    <i class="fab fa-python"></i>
+                                    <span>Python</span>
+                                </div>
+                                <div class="skill-track">
+                                    <div class="skill-level python" style="width: 74%">
+                                        <span class="skill-percent">74%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sekcja 3 - Hobby (zwiększone czcionki) -->
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <i class="fas fa-heart" style="font-size: 1.4rem;"></i>
+                            <h3 style="font-size: 1.5rem;">Hobbies</h3>
+                        </div>
+                        <ul class="hobby-list" style="font-size: 1.15rem;">
+                            <li class="hobby-item">
+                                <div class="hobby-button" onclick="window.open('https://myanimelist.net/animelist/kmmiio99o', '_blank')" style="font-size: 1.15rem;">
+                                    <i class="fas fa-tv" style="font-size: 1.3rem;"></i>
+                                    <span>Anime Collection</span>
+                                    <div class="mal-badge" style="font-size: 0.95rem;">
+                                        <img src="https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png" alt="MAL Icon" class="mal-icon">
+                                        <span>MyAnimeList</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><i class="fas fa-code" style="font-size: 1.3rem;"></i> Coding projects</li>
+                            <li><i class="fas fa-music" style="font-size: 1.3rem;"></i> Music production</li>
+                            <li><i class="fas fa-gamepad" style="font-size: 1.3rem;"></i> Gaming</li>
+                        </ul>
                     </div>
                 </div>
             </section>
@@ -1613,173 +1723,7 @@
             // Redirect to the random link
             window.open(randomLink, '_blank');
         }
-
-        // Obsługa zakładek Vim
-        document.querySelectorAll('.vim-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Animacja wyjścia aktualnej zawartości
-                const currentActive = document.querySelector('.vim-content.active');
-                if (currentActive) {
-                    currentActive.style.opacity = '0';
-                    currentActive.style.transform = 'translateX(-10px)';
-                }
-
-                // Zmiana zakładki
-                document.querySelectorAll('.vim-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-
-                // Nowa zawartość
-                const tabName = this.getAttribute('data-tab');
-                const newContent = document.querySelector(`.vim-content[data-tab-content="${tabName}"]`);
-
-                // Animacja wejścia nowej zawartości
-                setTimeout(() => {
-                    if (currentActive) currentActive.classList.remove('active');
-                    newContent.classList.add('active');
-                    newContent.style.opacity = '1';
-                    newContent.style.transform = 'translateX(0)';
-                }, 300);
-            });
-        });
-
-        // Symulacja trybu Vim (NORMAL/INSERT)
-        document.querySelectorAll('.vim-content').forEach(content => {
-            content.addEventListener('click', () => {
-                document.getElementById('vim-mode').textContent = 'INSERT';
-                setTimeout(() => {
-                    document.getElementById('vim-mode').textContent = 'NORMAL';
-                }, 2000);
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const terminalOutput = document.getElementById('terminal-output');
-            const terminalInput = document.getElementById('terminal-command');
-            const commandHistory = [];
-            let historyIndex = -1;
-            
-            // Wyświetl powitanie
-            terminalOutput.innerHTML = 'Terminal v1.0\nType "help" for available commands\n\n';
-            terminalInput.focus();
-
-            // Obsługa historii komend
-            terminalInput.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowUp' && commandHistory.length > 0) {
-                    e.preventDefault();
-                    if (historyIndex < commandHistory.length - 1) {
-                        historyIndex++;
-                    }
-                    terminalInput.value = commandHistory[commandHistory.length - 1 - historyIndex];
-                } else if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    if (historyIndex > 0) {
-                        historyIndex--;
-                        terminalInput.value = commandHistory[commandHistory.length - 1 - historyIndex];
-                    } else {
-                        historyIndex = -1;
-                        terminalInput.value = '';
-                    }
-                } else if (e.key === 'Tab') {
-                    e.preventDefault();
-                    // Podstawowe autouzupełnianie
-                    const commands = ['cat about.txt', 'cat skills.txt', 'cat hobbies.txt', 'help', 'clear', 'neofetch', 'ls', 'whoami', 'echo'];
-                    const input = terminalInput.value.trim();
-                    const match = commands.find(cmd => cmd.startsWith(input));
-                    if (match) terminalInput.value = match;
-                }
-            });
-
-            terminalInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const command = terminalInput.value.trim();
-                    terminalInput.value = '';
-                    
-                    // Ukryj disclaimer
-                    const disclaimer = document.querySelector('.terminal-disclaimer');
-                    if (disclaimer) disclaimer.style.display = 'none';
-                    
-                    // Dodaj komendę do historii
-                    if (command) {
-                        commandHistory.push(command);
-                        historyIndex = -1;
-                    }
-                    
-                    // Symulacja opóźnienia odpowiedzi
-                    setTimeout(() => {
-                        if (command === 'cat about.txt') {
-                            terminalOutput.innerHTML += `" ===== ABOUT ME =====\n` +
-                                                       `let name = "kmmiio99o"\n` +
-                                                       `let age = 16\n` +
-                                                       `let location = "Poland"\n` +
-                                                       `" --------------------\n` +
-                                                       `let interests = ["Anime", "Coding"]\n\n`;
-                        } 
-                        else if (command === 'cat skills.txt') {
-                            terminalOutput.innerHTML += `" ===== SKILLS =====\n` +
-                                                       `const frontend = [\n` +
-                                                       `  "HTML5",\n` +
-                                                       `  "CSS3",\n` +
-                                                       `  "JavaScript (ES6+)"\n` +
-                                                       `]\n` +
-                                                       `const learning = "Python discord.py library"\n\n`;
-                        }
-                        else if (command === 'cat hobbies.txt') {
-                            terminalOutput.innerHTML += `" ===== HOBBIES =====\n` +
-                                                       `let hobbies = {\n` +
-                                                       `  "Anime": "MyAnimeList: kmmiio99o",\n` +
-                                                       `  "Dev": "HTML, CSS, JS, Python",\n` +
-                                                       `  "Music": "Spotify playlists"\n` +
-                                                       `}\n\n`;
-                        }
-                        else if (command === 'help') {
-                            terminalOutput.innerHTML += 'Available commands:\n' +
-                                                       'cat about.txt - Show about info\n' +
-                                                       'cat skills.txt - Show skills\n' +
-                                                       'cat hobbies.txt - Show hobbies\n' +
-                                                       'clear - Clear terminal\n' +
-                                                       'ls - List files\n' +
-                                                       'whoami - Show user info\n' +
-                                                       'neofetch - Show system info\n';
-                        }
-                        else if (command === 'clear') {
-                            terminalOutput.innerHTML = 'Terminal v1.0\nType "help" for available commands\n\n';
-                            // Przywróć disclaimer
-                            const disclaimer = document.querySelector('.terminal-disclaimer');
-                            if (disclaimer) disclaimer.style.display = 'block';
-                        }
-                        else if (command === 'neofetch') {
-                            terminalOutput.innerHTML += 
-                                '  ██████╗  ██╗ ████████╗ ██╗  ██╗ ██╗   ██╗ ██████╗\n' +
-                                ' ██╔════╝  ██║ ╚══██╔══╝ ██║  ██║ ██║   ██║ ██╔══██╗\n' +
-                                ' ██║  ███╗ ██║    ██║    ███████║ ██║   ██║ ██████╔╝\n' +
-                                ' ██║   ██║ ██║    ██║    ██╔══██║ ██║   ██║ ██╔══██╗\n' +
-                                ' ╚██████╔╝ ██║    ██║    ██║  ██║ ╚██████╔╝ ██████╔╝\n' +
-                                '  ╚═════╝  ╚═╝    ╚═╝    ╚═╝  ╚═╝  ╚═════╝  ╚═════╝\n' +
-                                'user@kmmiio99o\n' +
-                                '---------------------\n' +
-                                'OS: GitHub Pages\n' +
-                                'Kernel: Github\n' +
-                                'Uptime: Since 2025\n' +
-                                'Shell: Web Terminal v1.0\n\n';
-                        }
-                        else if (command === 'ls') {
-                            terminalOutput.innerHTML += 'about.txt  skills.txt  hobbies.txt\n\n';
-                        }
-                        else if (command === 'whoami') {
-                            terminalOutput.innerHTML += 'kmmiio99o\n';
-                        }
-                        else if (command) {
-                            terminalOutput.innerHTML += `Command not found: ${command}\n` +
-                                                       `Type "help" for available commands\n\n`;
-                        }
-                        
-                        // Wyświetl nowy prompt
-                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                    }, 200); // Opóźnienie 200ms
-                }
-            });
-        });
     </script>
+
 </body>
 </html>
