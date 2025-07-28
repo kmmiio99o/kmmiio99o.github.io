@@ -1222,6 +1222,35 @@
         }
     }
     </style>
+    <style>
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ffd6c0;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background: rgba(255,214,192,0.1);
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-link:hover {
+            background: rgba(255,214,192,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .contact-link i {
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 700px) {
+            .modern-about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar" id="navbar">
@@ -1434,12 +1463,48 @@
             </section>
         </div>
 
+        <!-- Sekcja Contact (rebuild) -->
         <div class="page-section" id="contact-page">
             <section id="contact" data-aos="fade-up">
-                <h2>Contact</h2>
-                <p>Questions? Contact me via email or Discord. (I'm more active on Discord)</p>
-                <p>Email: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kmmiio99o@gmail.com" style="color: #ffd6c0;" target="_blank">kmmiio99o@gmail.com</a></p>
-                <p>Discord: Check the Social tab to see my Discord profile.</p>
+                <div class="about-header">
+                    <h2>Get In Touch</h2>
+                    <p class="subtitle">Let's work together or just chat</p>
+                </div>
+
+                <div class="modern-about-grid">
+                    <!-- Email -->
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <i class="fas fa-envelope"></i>
+                            <h3>Email</h3>
+                        </div>
+                        <div class="about-details">
+                            <p>For professional inquiries:</p>
+                            <a href="mailto:kmmiio99o@gmail.com" class="contact-link">
+                                <i class="fas fa-paper-plane"></i> kmmiio99o@gmail.com
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Social Media -->
+                    <div class="modern-card">
+                        <div class="card-header">
+                            <i class="fas fa-share-alt"></i>
+                            <h3>Social Media</h3>
+                        </div>
+                        <div class="about-details">
+                            <p>Connect with me on:</p>
+                            <div class="social-links">
+                                <a href="https://discord.com/users/879393496627306587" target="_blank" class="social-link">
+                                    <i class="fab fa-discord"></i> Discord
+                                </a>
+                                <a href="https://github.com/kmmiio99o" target="_blank" class="social-link">
+                                    <i class="fab fa-github"></i> GitHub
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
     </div>
