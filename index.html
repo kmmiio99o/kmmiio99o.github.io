@@ -491,7 +491,7 @@
             .landing-text { 
                 font-size: 1.5rem; 
             }
-            .social-links { 
+            .social-links {
                 justify-content: center; 
             }
             .scroll-down {
@@ -597,7 +597,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            width: 100%;
+            width: fixed;
             max-width: 800px;
             margin: 0 auto;
             padding: 0 1.5rem;
@@ -648,17 +648,37 @@
 
         @media (max-width: 700px) {
             .social-grid {
-                gap: 0.8rem; /* Zmniejszony odstęp między kartami */
+                gap: 0.5rem; /* Zmniejszony odstęp między kartami */
+                padding: 0 0.5rem; /* Dodatkowe boczne marginesy dla siatki */
             }
             .social-card {
-                width: calc(50% - 0.4rem); /* 2 kolumny z mniejszym odstępem */
-                padding: 1rem 0.5rem; /* Mniejsze paddingi */
+                width: calc(50% - 0.5rem); /* Lepsze wykorzystanie przestrzeni */
+                padding: 0.8rem 0.3rem; /* Mniejsze paddingi wewnątrz kart */
             }
             .social-card i {
                 font-size: 1.5rem; /* Mniejsza ikona */
             }
             .social-card span {
                 font-size: 0.9rem; /* Mniejszy tekst */
+            }
+        }
+
+        @media (max-width: 700px) {
+            .social-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.8rem !important;
+                padding: 0 0.5rem !important;
+            }
+
+            .social-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 1rem !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+                background: rgba(255,255,255,0.05) !important;
+                border: 1px solid rgba(255,255,255,0.1) !important;
             }
         }
 
@@ -701,12 +721,13 @@
             .about-content {
                 grid-template-columns: 1fr; /* Jedna kolumna na telefonach */
                 gap: 1rem; /* Mniejszy odstęp */
+                padding: 0 0.5rem; /* Mniejsze marginesy boczne */
             }
             .about-section {
                 padding: 1rem; /* Mniejsze paddingi */
             }
             .terminal-content {
-                padding: 1rem; /* Mniejsze paddingi */
+                padding: 0.8rem; /* Mniejsze paddingi */
             }
             .terminal-output {
                 min-height: 150px; /* Mniejsza wysokość */
@@ -732,7 +753,7 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
-
+        
         .code-header {
             background: rgba(255, 214, 192, 0.1);
             padding: 1rem 1.5rem;
