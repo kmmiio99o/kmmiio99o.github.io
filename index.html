@@ -648,10 +648,17 @@
 
         @media (max-width: 700px) {
             .social-grid {
-                gap: 1rem;
+                gap: 0.8rem; /* Zmniejszony odstęp między kartami */
             }
             .social-card {
-                width: calc(50% - 0.5rem); /* 2 kolumny z odstępem 1rem */
+                width: calc(50% - 0.4rem); /* 2 kolumny z mniejszym odstępem */
+                padding: 1rem 0.5rem; /* Mniejsze paddingi */
+            }
+            .social-card i {
+                font-size: 1.5rem; /* Mniejsza ikona */
+            }
+            .social-card span {
+                font-size: 0.9rem; /* Mniejszy tekst */
             }
         }
 
@@ -692,7 +699,17 @@
 
         @media (max-width: 700px) {
             .about-content {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* Jedna kolumna na telefonach */
+                gap: 1rem; /* Mniejszy odstęp */
+            }
+            .about-section {
+                padding: 1rem; /* Mniejsze paddingi */
+            }
+            .terminal-content {
+                padding: 1rem; /* Mniejsze paddingi */
+            }
+            .terminal-output {
+                min-height: 150px; /* Mniejsza wysokość */
             }
         }
 
