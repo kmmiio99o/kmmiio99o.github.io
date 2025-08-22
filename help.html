@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Discord Modding Link Hub | Plugins & Themes</title>
+        <!-- Open Graph / Discord Embed Meta Tags -->
+        <meta
+            property="og:title"
+            content="Discord Modding Help Hub | Plugins & Themes Resources"
+        />
+        <meta
+            property="og:description"
+            content="Website with all sort of useful and useless links for kettu and revenge"
+        />
+        <meta property="og:type" content="website" />
+        <meta
+            property="og:url"
+            content="https://kmmiio99o.github.io/help.html"
+        />
+        <meta
+            property="og:image"
+            content="https://via.placeholder.com/1200x630/1f1f1f/b0b0b0?text=Modding+Link+Hub"
+        />
+        <meta property="og:color" content="#1f1f1f" />
+        <!-- Very dark background color for embed -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <style>
+            :root {
+                --bg-color: #121212; /* Very dark background */
+                --text-color: #b0b0b0; /* Lighter grey for text */
+                --primary-color: #6a8cd9; /* Darker blue accent */
+                --secondary-color: #7cb342; /* Darker green accent */
+                --border-color: #2a2a2a; /* Darker grey border */
+                --card-bg: #1f1f1f; /* Even darker background for cards/sections */
+                --link-hover-bg: #2a2a2a; /* Darker hover state for sidebar links */
+                --button-bg: #5a7aba; /* Darker blue for buttons */
+                --button-hover-bg: #6a8cd9; /* Slightly lighter blue on hover */
+                --disclaimer-bg: #4d4000; /* Darker yellow/brown for warnings */
+                --disclaimer-text: #ffcc00; /* Vibrant yellow for warning text */
+                --shadow-color: rgba(0, 0, 0, 0.6); /* Darker shadow */
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                display: flex;
+                min-height: 100vh;
+                overflow-x: hidden;
+                scroll-behavior: smooth;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            /* Animations */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .section {
+                opacity: 0; /* Hidden by default */
+                animation: fadeIn 0.8s ease-out forwards;
+                animation-delay: var(--delay, 0s);
+                background-color: var(--card-bg);
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 8px 16px var(--shadow-color);
+                margin-bottom: 40px;
+                transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+            }
+
+            .section:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7); /* Darker shadow on hover */
+            }
+
+            .container {
+                flex: 1;
+                padding: 40px;
+                box-sizing: border-box;
+                max-width: 900px;
+                margin: 0 auto;
+            }
+
+            h1 {
+                color: var(--primary-color);
+                text-align: center;
+                margin-bottom: 40px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid var(--border-color);
+                font-size: 2.8em;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); /* Darker text shadow */
+                animation: fadeIn 1s ease-out forwards;
+                animation-delay: 0.2s;
+            }
+
+            h2,
+            h3 {
+                color: var(--secondary-color);
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 8px;
+                margin-top: 30px;
+                margin-bottom: 20px;
+                font-size: 2em;
+            }
+
+            h3 {
+                font-size: 1.5em;
+                color: var(--primary-color);
+                border-bottom: none; /* Remove border for sub-headers */
+            }
+
+            p {
+                margin-bottom: 15px;
+                line-height: 1.7;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin-bottom: 20px;
+            }
+
+            ul li {
+                margin-bottom: 10px;
+                position: relative;
+                padding-left: 25px; /* Space for custom bullet */
+            }
+
+            ul li::before {
+                content: "•"; /* Custom bullet point */
+                color: var(--secondary-color);
+                position: absolute;
+                left: 0;
+                top: 0;
+                font-size: 1.2em;
+                line-height: inherit;
+            }
+
+            a {
+                color: var(--primary-color);
+                text-decoration: none;
+                transition:
+                    color 0.3s ease,
+                    text-decoration 0.3s ease;
+            }
+
+            a:hover {
+                text-decoration: underline;
+                color: var(--secondary-color);
+            }
+
+            .disclaimer {
+                background-color: var(--disclaimer-bg);
+                border: 1px solid var(--disclaimer-text);
+                color: var(--disclaimer-text);
+                padding: 15px;
+                border-radius: 8px;
+                margin-top: 25px;
+                font-weight: bold;
+                font-size: 0.95em;
+                box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3); /* Darker inner shadow */
+                animation: pulseWarning 1.5s infinite alternate;
+            }
+
+            @keyframes pulseWarning {
+                from {
+                    box-shadow: inset 0 0 8px rgba(255, 204, 0, 0.2);
+                } /* Adjusted rgba to reflect new disclaimer colors */
+                to {
+                    box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.4);
+                }
+            }
+
+            .link-group {
+                margin-bottom: 20px;
+                border-left: 3px solid var(--border-color);
+                padding-left: 15px;
+            }
+
+            .link-group a {
+                display: inline-block;
+                padding: 8px 15px;
+                background-color: var(--button-bg);
+                color: var(--bg-color);
+                border-radius: 5px;
+                text-decoration: none;
+                transition:
+                    background-color 0.3s ease,
+                    transform 0.2s ease,
+                    box-shadow 0.3s ease;
+                font-weight: bold;
+                margin-right: 10px; /* Space between links */
+                margin-bottom: 10px;
+            }
+
+            .link-group a:hover {
+                background-color: var(
+                    --link-hover-bg
+                ); /* Use dark grey for hover */
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Softer shadow */
+                text-decoration: none;
+            }
+
+            /* Sidebar Navigation (Desktop) */
+            .sidebar {
+                width: 280px;
+                background-color: var(--card-bg);
+                padding: 30px 0;
+                box-shadow: 2px 0 10px var(--shadow-color);
+                flex-shrink: 0;
+                position: fixed; /* Changed from sticky to fixed */
+                top: 0;
+                left: 0;
+                height: 100vh;
+                overflow-y: auto;
+                border-right: 1px solid var(--border-color);
+                z-index: 100; /* Ensure it's above other content */
+            }
+
+            .sidebar h3 {
+                color: var(--primary-color);
+                text-align: center;
+                margin-bottom: 30px;
+                border-bottom: none;
+                font-size: 1.8em;
+            }
+
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .sidebar ul li a {
+                display: block;
+                padding: 15px 25px;
+                color: var(--text-color);
+                text-decoration: none;
+                transition:
+                    background-color 0.3s ease,
+                    color 0.3s ease,
+                    transform 0.2s ease;
+                font-size: 1.1em;
+                border-left: 3px solid transparent;
+            }
+
+            .sidebar ul li a:hover {
+                background-color: var(--link-hover-bg);
+                color: var(--secondary-color);
+                transform: translateX(5px);
+                border-left: 3px solid var(--secondary-color);
+            }
+
+            /* Mobile Menu (Floating Bubble & Hamburger) */
+            .mobile-nav-toggle {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+                background-color: var(--button-bg);
+                border-radius: 50%;
+                display: flex;
+                flex-direction: column; /* For stacking hamburger lines */
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 1000;
+                box-shadow: 0 6px 12px var(--shadow-color);
+                transition:
+                    background-color 0.3s ease,
+                    transform 0.2s ease; /* transition for button scale */
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            .mobile-nav-toggle:hover {
+                background-color: var(--button-hover-bg);
+                transform: scale(1.05);
+            }
+
+            .hamburger-line {
+                width: 30px;
+                height: 3px;
+                background-color: var(
+                    --bg-color
+                ); /* Lines should be background color */
+                border-radius: 2px;
+                transition: all 0.3s ease-in-out;
+                margin: 3px 0; /* Space between lines */
+            }
+
+            .mobile-nav-toggle.is-open .hamburger-line:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+
+            .mobile-nav-toggle.is-open .hamburger-line:nth-child(2) {
+                opacity: 0;
+            }
+
+            .mobile-nav-toggle.is-open .hamburger-line:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+
+            .mobile-nav-overlay {
+                display: flex; /* Always display flex, control visibility with opacity/transform */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.98);
+                z-index: 999;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                pointer-events: none;
+                transform: translateX(100%); /* Start off-screen to the right */
+                transition:
+                    opacity 0.4s ease-out,
+                    transform 0.4s ease-out; /* Animate both opacity and transform */
+            }
+
+            .mobile-nav-overlay.active {
+                opacity: 1;
+                pointer-events: all;
+                transform: translateX(0); /* Slide in */
+            }
+
+            .mobile-nav-overlay ul {
+                list-style: none;
+                padding: 0;
+                text-align: center;
+                width: 90%;
+                max-width: 400px;
+            }
+
+            .mobile-nav-overlay ul li {
+                margin-bottom: 10px;
+            }
+
+            .mobile-nav-overlay ul li a {
+                color: var(--text-color);
+                font-size: 1.8em;
+                padding: 18px 0;
+                display: block;
+                text-decoration: none;
+                border-bottom: 1px solid var(--border-color);
+                transition:
+                    color 0.3s ease,
+                    background-color 0.3s ease;
+            }
+
+            .mobile-nav-overlay ul li:last-child a {
+                border-bottom: none;
+            }
+
+            .mobile-nav-overlay ul li a:hover {
+                color: var(--secondary-color); /* Change to green hover */
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            /* Media Queries for Responsiveness */
+            @media (min-width: 769px) {
+                body {
+                    padding-left: 280px; /* Offset for the fixed sidebar */
+                }
+                .mobile-nav-toggle {
+                    display: none;
+                }
+            }
+
+            @media (max-width: 768px) {
+                body {
+                    flex-direction: column;
+                    padding: 0; /* Ensure no padding on mobile */
+                }
+                .sidebar {
+                    display: none;
+                }
+                .content {
+                    width: 100%;
+                    padding: 0 5px; /* Minimal horizontal padding */
+                }
+                h1 {
+                    font-size: 2.2em;
+                    line-height: 1.2;
+                }
+                h2 {
+                    font-size: 1.8em;
+                    line-height: 1.3;
+                }
+                h3 {
+                    font-size: 1.3em;
+                    line-height: 1.4;
+                }
+                p {
+                    font-size: 1em;
+                    line-height: 1.6;
+                }
+                .section {
+                    padding: 15px 5px; /* Further reduced horizontal padding */
+                    margin-bottom: 25px;
+                    box-shadow: none; /* Remove embed-like shadow on mobile */
+                    background-color: transparent; /* Remove background to remove embed look */
+                    border-radius: 0; /* Remove border-radius to remove embed look */
+                }
+                .mobile-nav-toggle {
+                    display: flex;
+                }
+
+                /* Disable hover effects on mobile where they are not intuitive */
+                .link-group a:hover {
+                    transform: none;
+                    box-shadow: none;
+                    background-color: var(
+                        --button-bg
+                    ); /* Revert to non-hover background */
+                }
+
+                .mobile-nav-toggle:hover {
+                    transform: none; /* Remove scale effect */
+                    background-color: var(
+                        --button-bg
+                    ); /* Revert to non-hover background */
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Desktop Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <h3>Modding Links</h3>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#plugins">Plugins List</a></li>
+                <li><a href="#themes">Themes (Vendetta & Revenge)</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="container">
+            <section id="home" class="section" style="--delay: 0.1s">
+                <h1>Discord Modding: Link Hub</h1>
+                <p>
+                    Welcome to the Discord Modding Link Hub! This page serves as
+                    a centralized repository for useful links and resources
+                    related to Discord client modifications, including popular
+                    plugin lists and theme communities for Vendetta, Revenge and
+                    Kettu.
+                </p>
+                <p>
+                    Use the sidebar on desktop or the floating menu on mobile to
+                    quickly navigate between different sections.
+                </p>
+            </section>
+
+            <section id="plugins" class="section" style="--delay: 0.3s">
+                <h2>Plugins List & Resources</h2>
+                <p>
+                    Explore a comprehensive list of plugins available for
+                    Discord modifications. This external resource is a great
+                    place to find new functionalities and enhancements for your
+                    modded Discord client.
+                </p>
+                <div class="link-group">
+                    <a
+                        href="https://plugins-list.pages.dev/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >Official Plugin List Website</a
+                    >
+                </div>
+                <p>
+                    *Note: The compatibility of plugins may vary depending on
+                    your specific modding client and Discord version. Always
+                    check the plugin's documentation or community for the latest
+                    information.
+                </p>
+            </section>
+
+            <section id="themes" class="section" style="--delay: 0.5s">
+                <h2>Themes (Vendetta & Revenge)</h2>
+                <p>
+                    Find Discord servers and channels related to Vendetta and
+                    Revenge communities, which often provide resources for
+                    themes and general discussions.
+                </p>
+
+                <h3>Vendetta Themes & Community</h3>
+                <div class="link-group">
+                    <a
+                        href="https://discord.gg/vendetta-1015931589865246730"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >Vendetta Discord Server</a
+                    >
+                    <a
+                        href="https://discord.com/channels/1015931589865246730/1091880434939482202"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >Vendetta Themes Channel</a
+                    >
+                </div>
+
+                <h3>Revenge Themes & Community</h3>
+                <div class="link-group">
+                    <a
+                        href="https://discord.gg/revenge-1205207689832038522"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >Revenge Discord Server</a
+                    >
+                    <a
+                        href="https://discord.com/channels/1205207689832038522/1205876424188104715"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >Revenge Themes Channel</a
+                    >
+                </div>
+
+                <div class="disclaimer">
+                    The Vendetta theme system is no longer actively maintained.
+                    Consequently, there is no official support channel for
+                    reporting bugs. If you encounter issues, official fixes are
+                    unavailable. However, you have two options: resolve the bugs
+                    yourself by searching the GitHub repository for solutions,
+                    or create your own custom theme using JSON files.
+                </div>
+            </section>
+        </div>
+
+        <!-- Mobile Navigation Toggle Button (Hamburger) -->
+        <div class="mobile-nav-toggle" id="mobile-nav-toggle">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </div>
+
+        <!-- Mobile Navigation Overlay -->
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+            <ul>
+                <li><a href="#home" class="mobile-nav-link">Home</a></li>
+                <li>
+                    <a href="#plugins" class="mobile-nav-link">Plugins List</a>
+                </li>
+                <li><a href="#themes" class="mobile-nav-link">Themes</a></li>
+            </ul>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const mobileNavToggle =
+                    document.getElementById("mobile-nav-toggle");
+                const mobileNavOverlay =
+                    document.getElementById("mobile-nav-overlay");
+                const mobileNavLinks =
+                    document.querySelectorAll(".mobile-nav-link");
+
+                mobileNavToggle.addEventListener("click", () => {
+                    mobileNavOverlay.classList.toggle("active");
+                    mobileNavToggle.classList.toggle(
+                        "is-open",
+                    ); /* Toggle class for icon animation */
+                });
+
+                mobileNavLinks.forEach((link) => {
+                    link.addEventListener("click", () => {
+                        mobileNavOverlay.classList.remove("active");
+                    });
+                });
+
+                mobileNavOverlay.addEventListener("click", (event) => {
+                    if (event.target === mobileNavOverlay) {
+                        mobileNavOverlay.classList.remove("active");
+                    }
+                });
+
+                // Smooth scrolling for sidebar and mobile menu links
+                document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                    anchor.addEventListener("click", function (e) {
+                        e.preventDefault();
+
+                        const targetId = this.getAttribute("href");
+                        const targetElement = document.querySelector(targetId);
+
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 20, // Adjust offset as needed for fixed headers/spacing
+                                behavior: "smooth",
+                            });
+                        }
+                    });
+                });
+
+                // Intersection Observer for section animations
+                const sections = document.querySelectorAll(".section");
+
+                const observer = new IntersectionObserver(
+                    (entries, observer) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add("visible");
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    },
+                    {
+                        threshold: 0.1, // Trigger when 10% of the section is visible
+                    },
+                );
+
+                sections.forEach((section) => {
+                    observer.observe(section);
+                });
+            });
+        </script>
+    </body>
+</html>
