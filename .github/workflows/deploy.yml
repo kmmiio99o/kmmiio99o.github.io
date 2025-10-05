@@ -28,7 +28,15 @@ jobs:
         with:
           node-version: "18"
           cache: "npm"
-          cache-dependency-path: nextjs-site/package-lock.json
+          cache-dependency-path: "nextjs-site/package-lock.json"
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: nextjs-site/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('nextjs-site/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -36,14 +44,12 @@ jobs:
           static_site_generator: next
 
       - name: Install dependencies
-        run: |
-          cd nextjs-site
-          npm ci
+        working-directory: nextjs-site
+        run: npm ci
 
       - name: Build with Next.js
-        run: |
-          cd nextjs-site
-          npm run build
+        working-directory: nextjs-site
+        run: npm run build
 
       - name: Copy build to root
         run: |
