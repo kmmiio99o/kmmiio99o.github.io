@@ -1,0 +1,31 @@
+{
+  "name": "kmmiio99o",
+  "version": "1.0.0",
+  "description": "Personal portfolio website with Material You design deployed as Cloudflare Worker",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev --local",
+    "build": "echo 'No build step required for Worker'",
+    "start": "wrangler dev"
+  },
+  "dependencies": {
+    "itty-router": "^5.0.17"
+  },
+  "devDependencies": {
+    "wrangler": "^4.42.0"
+  },
+  "keywords": [
+    "portfolio",
+    "cloudflare",
+    "worker",
+    "material-you",
+    "personal-website"
+  ],
+  "author": "kmmiio99o",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}
