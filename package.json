@@ -4,16 +4,23 @@
   "description": "Personal portfolio website with Material You design deployed as Cloudflare Worker",
   "private": true,
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "preview": "wrangler dev --local",
-    "build": "echo 'No build step required for Worker'",
-    "start": "wrangler dev"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "itty-router": "^5.0.17"
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.4",
+    "@mui/lab": "^7.0.1-beta.18",
+    "@mui/material": "^7.3.4",
+    "itty-router": "^5.0.17",
+    "react-router-dom": "^7.9.4"
   },
   "devDependencies": {
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "vite": "^7.1.9",
     "wrangler": "^4.42.0"
   },
   "keywords": [
