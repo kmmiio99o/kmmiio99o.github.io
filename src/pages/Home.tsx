@@ -74,17 +74,21 @@ const stats = [
 
 const Home: React.FC<HomeProps> = ({ onTabSwitch }) => {
   const [mounted, setMounted] = useState(false);
+  const [starSpeed, setStarSpeed] = useState<"slow" | "fast">("slow");
 
   useEffect(() => {
     onTabSwitch();
     setMounted(true);
+    setStarSpeed("fast");
+    const timeout = setTimeout(() => setStarSpeed("slow"), 900);
+    return () => clearTimeout(timeout);
   }, [onTabSwitch]);
 
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "background.default",
+        backgroundColor: "transparent",
         position: "relative",
         overflow: "hidden",
       }}

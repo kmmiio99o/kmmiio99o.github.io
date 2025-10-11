@@ -61,9 +61,9 @@ const Footer: React.FC = () => {
           borderRadius: 6,
           background:
             theme.palette.mode === "dark"
-              ? "rgba(30, 30, 30, 0.3)"
-              : "rgba(255, 255, 255, 0.3)",
-          backdropFilter: "blur(20px) saturate(180%) brightness(1.05)",
+              ? "rgba(30, 30, 30, 0.7)"
+              : "rgba(255, 255, 255, 0.7)", // fallback background for unsupported browsers
+          position: "relative",
           border: `1px solid ${
             theme.palette.mode === "dark"
               ? "rgba(255, 255, 255, 0.1)"
@@ -91,7 +91,17 @@ const Footer: React.FC = () => {
                 : "linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0.02) 100%)",
             zIndex: -1,
           },
-          position: "relative",
+          // CSS @supports for backdrop-filter
+          "@supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))":
+            {
+              background:
+                theme.palette.mode === "dark"
+                  ? "rgba(30, 30, 30, 0.3)"
+                  : "rgba(255, 255, 255, 0.3)",
+              backdropFilter: "blur(20px) saturate(180%) brightness(1.05)",
+              WebkitBackdropFilter:
+                "blur(20px) saturate(180%) brightness(1.05)",
+            },
           "&:hover": {
             boxShadow:
               "0 8px 30px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)",

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,6 +8,7 @@ import {
   Button,
   Container,
   Grid,
+  Fade,
 } from "@mui/material";
 
 import SmartToyIcon from "@mui/icons-material/SmartToy";
@@ -80,206 +81,221 @@ const projects = [
 ];
 
 const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
+  const [starSpeed, setStarSpeed] = useState<"slow" | "fast">("slow");
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     onTabSwitch();
+    setMounted(true);
+    setStarSpeed("fast");
+    const timer = setTimeout(() => setStarSpeed("slow"), 900);
+    return () => clearTimeout(timer);
   }, [onTabSwitch]);
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "background.default",
-        py: 4,
-      }}
-    >
-      <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ textAlign: "center", mb: 6 }}>
-          <Typography variant="h3" fontWeight={700} sx={{ mb: 2 }}>
-            My Projects
-          </Typography>
-          <Typography
-            variant="h6"
-            color="text.secondary"
-            sx={{ maxWidth: 600, mx: "auto" }}
-          >
-            Explore my work in Discord bot development and client modifications
-          </Typography>
-        </Box>
+    <Fade in={mounted} timeout={900}>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "transparent", // fully transparent for starfield visibility
+          py: 4,
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <Container>
+          <Box sx={{ textAlign: "center", mb: 6 }}>
+            <Typography variant="h3" fontWeight={700} sx={{ mb: 2 }}>
+              My Projects
+            </Typography>
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              sx={{ maxWidth: 600, mx: "auto" }}
+            >
+              Explore my work in Discord bot development and client
+              modifications
+            </Typography>
+          </Box>
 
-        {/* Projects Grid */}
-        <Grid container spacing={4} sx={{ mb: 8, justifyContent: "center" }}>
-          {projects.map((project) => (
-            <Grid item xs={12} sm={6} md={4} key={project.id}>
-              <Card
-                elevation={2}
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  borderRadius: 2,
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    boxShadow: 4,
-                  },
-                }}
-              >
-                <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                  {/* Header */}
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Box
-                      sx={{
-                        backgroundColor: "primary.main",
-                        borderRadius: "50%",
-                        width: 48,
-                        height: 48,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        mr: 2,
-                        color: "white",
-                        boxShadow: 2,
-                      }}
-                    >
-                      {React.cloneElement(project.icon, { fontSize: "medium" })}
+          {/* Projects Grid */}
+          <Grid container spacing={4} sx={{ mb: 8, justifyContent: "center" }}>
+            {projects.map((project) => (
+              <Grid item xs={12} sm={6} md={4} key={project.id}>
+                <Card
+                  elevation={2}
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: 2,
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      boxShadow: 4,
+                    },
+                  }}
+                >
+                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                    {/* Header */}
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <Box
+                        sx={{
+                          backgroundColor: "primary.main",
+                          borderRadius: "50%",
+                          width: 48,
+                          height: 48,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          mr: 2,
+                          color: "white",
+                          boxShadow: 2,
+                        }}
+                      >
+                        {React.cloneElement(project.icon, {
+                          fontSize: "medium",
+                        })}
+                      </Box>
+                      <Chip
+                        label={
+                          project.status === "paused" ? "Paused" : "Active"
+                        }
+                        size="small"
+                        sx={{
+                          backgroundColor: `${project.statusColor}20`,
+                          color: project.statusColor,
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          fontSize: "0.7rem",
+                        }}
+                      />
                     </Box>
-                    <Chip
-                      label={project.status === "paused" ? "Paused" : "Active"}
-                      size="small"
+
+                    {/* Title and Description */}
+                    <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
+                      {project.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 3, lineHeight: 1.6 }}
+                    >
+                      {project.description}
+                    </Typography>
+
+                    {/* Technologies */}
+                    <Box sx={{ mb: 3 }}>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={600}
+                        sx={{ mb: 1 }}
+                      >
+                        Technologies:
+                      </Typography>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        {project.technologies.map((tech) => (
+                          <Chip
+                            key={tech}
+                            label={tech}
+                            size="small"
+                            sx={{
+                              backgroundColor: "primary.main",
+                              color: "primary.contrastText",
+                              fontSize: "0.7rem",
+                              fontWeight: 600,
+                            }}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
+
+                    {/* Features */}
+                    <Box sx={{ mb: 3 }}>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={600}
+                        sx={{ mb: 1 }}
+                      >
+                        Features:
+                      </Typography>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        {project.features.slice(0, 4).map((feature) => (
+                          <Chip
+                            key={feature}
+                            label={feature}
+                            size="small"
+                            variant="outlined"
+                            sx={{ fontSize: "0.7rem" }}
+                          />
+                        ))}
+                        {project.features.length > 4 && (
+                          <Chip
+                            label={`+${project.features.length - 4}`}
+                            size="small"
+                            variant="outlined"
+                            sx={{ fontSize: "0.7rem", opacity: 0.7 }}
+                          />
+                        )}
+                      </Box>
+                    </Box>
+
+                    {/* Action Button */}
+                    <Button
+                      variant="contained"
+                      startIcon={<LaunchIcon />}
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      disabled={project.status === "paused"}
+                      fullWidth
                       sx={{
-                        backgroundColor: `${project.statusColor}20`,
-                        color: project.statusColor,
+                        mt: "auto",
+                        borderRadius: 2,
+                        textTransform: "none",
                         fontWeight: 600,
-                        textTransform: "uppercase",
-                        fontSize: "0.7rem",
                       }}
-                    />
-                  </Box>
-
-                  {/* Title and Description */}
-                  <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
-                    {project.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 3, lineHeight: 1.6 }}
-                  >
-                    {project.description}
-                  </Typography>
-
-                  {/* Technologies */}
-                  <Box sx={{ mb: 3 }}>
-                    <Typography
-                      variant="subtitle2"
-                      fontWeight={600}
-                      sx={{ mb: 1 }}
                     >
-                      Technologies:
-                    </Typography>
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {project.technologies.map((tech) => (
-                        <Chip
-                          key={tech}
-                          label={tech}
-                          size="small"
-                          sx={{
-                            backgroundColor: "primary.main",
-                            color: "primary.contrastText",
-                            fontSize: "0.7rem",
-                            fontWeight: 600,
-                          }}
-                        />
-                      ))}
-                    </Box>
-                  </Box>
+                      {project.status === "paused" ? "View Code" : "Explore"}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
 
-                  {/* Features */}
-                  <Box sx={{ mb: 3 }}>
-                    <Typography
-                      variant="subtitle2"
-                      fontWeight={600}
-                      sx={{ mb: 1 }}
-                    >
-                      Features:
-                    </Typography>
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {project.features.slice(0, 4).map((feature) => (
-                        <Chip
-                          key={feature}
-                          label={feature}
-                          size="small"
-                          variant="outlined"
-                          sx={{ fontSize: "0.7rem" }}
-                        />
-                      ))}
-                      {project.features.length > 4 && (
-                        <Chip
-                          label={`+${project.features.length - 4}`}
-                          size="small"
-                          variant="outlined"
-                          sx={{ fontSize: "0.7rem", opacity: 0.7 }}
-                        />
-                      )}
-                    </Box>
-                  </Box>
-
-                  {/* Action Button */}
-                  <Button
-                    variant="contained"
-                    startIcon={<LaunchIcon />}
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    disabled={project.status === "paused"}
-                    fullWidth
-                    sx={{
-                      mt: "auto",
-                      borderRadius: 2,
-                      textTransform: "none",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {project.status === "paused" ? "View Code" : "Explore"}
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Call to Action */}
-        <Box sx={{ textAlign: "center" }}>
-          <Typography variant="h5" fontWeight={600} sx={{ mb: 2 }}>
-            Want to collaborate?
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ mb: 3, maxWidth: 500, mx: "auto" }}
-          >
-            Check out my code repositories and open-source contributions on
-            GitHub.
-          </Typography>
-          <Button
-            variant="contained"
-            size="large"
-            href="https://github.com/kmmiio99o"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{
-              px: 4,
-              py: 1.5,
-              borderRadius: 2,
-              textTransform: "none",
-              fontWeight: 600,
-            }}
-          >
-            View GitHub
-          </Button>
-        </Box>
-      </Container>
-    </Box>
+          {/* Call to Action */}
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="h5" fontWeight={600} sx={{ mb: 2 }}>
+              Want to collaborate?
+            </Typography>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ mb: 3, maxWidth: 500, mx: "auto" }}
+            >
+              Check out my code repositories and open-source contributions on
+              GitHub.
+            </Typography>
+            <Button
+              variant="contained"
+              size="large"
+              href="https://github.com/kmmiio99o"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                px: 4,
+                py: 1.5,
+                borderRadius: 2,
+                textTransform: "none",
+                fontWeight: 600,
+              }}
+            >
+              View GitHub
+            </Button>
+          </Box>
+        </Container>
+      </Box>
+    </Fade>
   );
 };
 
