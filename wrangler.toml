@@ -9,3 +9,6 @@ name = "kmmiio99o"
 
 [env.development]
 name = "kmmiio99o-dev"
+
+[assets]
+directory = "./dist"
