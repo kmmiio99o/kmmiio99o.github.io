@@ -20,7 +20,19 @@ interface ProjectsProps {
   onTabSwitch: () => void;
 }
 
-const projects = [
+type Project = {
+  id: string;
+  title: string;
+  description: string;
+  technologies: string[];
+  status: "active" | "paused";
+  statusColor: string;
+  icon: React.ReactElement;
+  githubUrl: string;
+  features: string[];
+};
+
+const projects: Project[] = [
   {
     id: "kaoruko-bot-next",
     title: "Kaoruko Bot Next",
@@ -60,6 +72,25 @@ const projects = [
     ],
   },
   {
+    id: "shiggycord",
+    title: "ShiggyCord",
+    description:
+      "An unofficial fork of Kettu, made just for fun. Mobile-focused client modifications with themes, fonts and plugins support. Star the repo :3",
+    technologies: ["JavaScript", "TypeScript", "Bun", "React"],
+    status: "active",
+    statusColor: "#1976d2",
+    icon: <ExtensionIcon />,
+    githubUrl: "https://github.com/kmmiio99o/ShiggyCord",
+    features: [
+      "Injectable bundle (shiggycord.js)",
+      "Supports Xposed & Manager",
+      "Local bundle serving",
+      "Build scripts with bun",
+      "Mobile client modifications",
+      "Theming & UI tweaks",
+    ],
+  },
+  {
     id: "ormi-bot",
     title: "Ormi Bot",
     description:
@@ -81,23 +112,21 @@ const projects = [
 ];
 
 const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
-  const [starSpeed, setStarSpeed] = useState<"slow" | "fast">("slow");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     onTabSwitch();
     setMounted(true);
-    setStarSpeed("fast");
-    const timer = setTimeout(() => setStarSpeed("slow"), 900);
+    const timer = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(timer);
   }, [onTabSwitch]);
 
   return (
-    <Fade in={mounted} timeout={900}>
+    <Fade in={mounted} timeout={300}>
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: "transparent", // fully transparent for starfield visibility
+          backgroundColor: "transparent",
           py: 4,
           position: "relative",
           zIndex: 1,
@@ -119,13 +148,25 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
           </Box>
 
           {/* Projects Grid */}
-          <Grid container spacing={4} sx={{ mb: 8, justifyContent: "center" }}>
+          <Grid
+            container
+            spacing={4}
+            sx={{ mb: 8, justifyContent: "center", alignItems: "stretch" }}
+          >
             {projects.map((project) => (
-              <Grid item xs={12} sm={6} md={4} key={project.id}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                key={project.id}
+                sx={{ display: "flex" }}
+              >
                 <Card
                   elevation={2}
                   sx={{
                     height: "100%",
+                    minHeight: 360,
                     display: "flex",
                     flexDirection: "column",
                     borderRadius: 2,
@@ -156,6 +197,7 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                           fontSize: "medium",
                         })}
                       </Box>
+
                       <Chip
                         label={
                           project.status === "paused" ? "Paused" : "Active"
@@ -178,7 +220,14 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      sx={{ mb: 3, lineHeight: 1.6 }}
+                      sx={{
+                        mb: 3,
+                        lineHeight: 1.6,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
                     >
                       {project.description}
                     </Typography>
@@ -193,7 +242,7 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                         Technologies:
                       </Typography>
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {project.technologies.map((tech) => (
+                        {project.technologies.slice(0, 3).map((tech) => (
                           <Chip
                             key={tech}
                             label={tech}
@@ -201,11 +250,25 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                             sx={{
                               backgroundColor: "primary.main",
                               color: "primary.contrastText",
-                              fontSize: "0.7rem",
+                              fontSize: "0.65rem",
                               fontWeight: 600,
+                              height: 24,
+                              px: 0.6,
                             }}
                           />
                         ))}
+                        {project.technologies.length > 3 && (
+                          <Chip
+                            label={`+${project.technologies.length - 3}`}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              fontSize: "0.65rem",
+                              height: 24,
+                              opacity: 0.85,
+                            }}
+                          />
+                        )}
                       </Box>
                     </Box>
 
@@ -219,21 +282,25 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                         Features:
                       </Typography>
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {project.features.slice(0, 4).map((feature) => (
+                        {project.features.slice(0, 3).map((feature) => (
                           <Chip
                             key={feature}
                             label={feature}
                             size="small"
                             variant="outlined"
-                            sx={{ fontSize: "0.7rem" }}
+                            sx={{ fontSize: "0.65rem", height: 24 }}
                           />
                         ))}
-                        {project.features.length > 4 && (
+                        {project.features.length > 3 && (
                           <Chip
-                            label={`+${project.features.length - 4}`}
+                            label={`+${project.features.length - 3}`}
                             size="small"
                             variant="outlined"
-                            sx={{ fontSize: "0.7rem", opacity: 0.7 }}
+                            sx={{
+                              fontSize: "0.65rem",
+                              height: 24,
+                              opacity: 0.7,
+                            }}
                           />
                         )}
                       </Box>
