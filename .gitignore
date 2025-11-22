@@ -2,3 +2,4 @@ node_modules/
 .well-known/
 .wrangler/
 package-lock.json
+dist/
