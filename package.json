@@ -7,34 +7,39 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "bun run build && wrangler deploy",
+    "type-check": "tsc"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.4.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.4",
-    "@mui/lab": "^7.0.1-beta.18",
-    "@mui/material": "^7.3.4",
-    "itty-router": "^5.0.17",
-    "react-router-dom": "^7.9.4"
+    "@mui/icons-material": "^7.3.5",
+    "@mui/lab": "^7.0.1-beta.19",
+    "@mui/material": "^7.3.5",
+    "itty-router": "^5.0.22",
+    "react-router-dom": "^7.9.6"
   },
   "devDependencies": {
-    "@types/react-dom": "^19.2.1",
-    "@vitejs/plugin-react": "^5.0.4",
-    "vite": "^7.1.9",
-    "wrangler": "^4.42.0"
+    "@types/bun": "latest",
+    "@types/react": "^19.2.6",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "wrangler": "^4.50.0"
   },
   "keywords": [
     "portfolio",
     "cloudflare",
     "worker",
     "material-you",
-    "personal-website"
+    "personal-website",
+    "bun"
   ],
   "author": "kmmiio99o",
   "license": "MIT",
   "engines": {
-    "node": ">=18.17.0"
+    "bun": ">=1.0.0"
   }
 }
