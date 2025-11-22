@@ -81,8 +81,6 @@ export function generateDiscordHTML(data) {
     const badges = [];
     const flags = user.public_flags;
 
-    // Discord badges based on public flags
-    // HypeSquad Bravery (example, you can add more if you want)
     if (flags & 64)
       badges.push({
         name: "HypeSquad Bravery",
@@ -94,7 +92,7 @@ export function generateDiscordHTML(data) {
         name: "Active Developer",
         url: "https://cdn.discordapp.com/badge-icons/6bdc42827a38498929a4920da12695d9.png",
       });
-    // Custom badge (always show, or add your own logic)
+    // Custom badge
     badges.push({
       name: "Custom Badge",
       url: "https://gb.obamabot.me/04b5f1aeb78dee22295d532d8030d53c104bf8e1.png",
