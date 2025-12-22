@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
+import useThemeMode from "./hooks/useThemeMode";
 import { ThemeProvider, CssBaseline, Box, GlobalStyles } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { getTheme } from "./theme";
@@ -9,7 +10,7 @@ import About from "./pages/About";
 import Projects from "./pages/Projects";
 
 const App: React.FC = () => {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+  const { mode: themeMode, toggleMode } = useThemeMode();
 
   useEffect(() => {
     // Inject Google Sans from Google Fonts for the whole app if not present
@@ -25,8 +26,8 @@ const App: React.FC = () => {
   }, []);
 
   const handleThemeToggle = useCallback(() => {
-    setThemeMode((prev) => (prev === "dark" ? "light" : "dark"));
-  }, []);
+    toggleMode();
+  }, [toggleMode]);
 
   // Simple stub for tab switch - kept for pages that call it.
   const handleTabSwitch = useCallback(() => {

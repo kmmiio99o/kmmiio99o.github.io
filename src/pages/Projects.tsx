@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Typography,
   Card,
   CardContent,
   Chip,
   Button,
   Container,
-  Grid,
-  Fade,
-  Slide,
   Stack,
   alpha,
   useTheme,
-  IconButton,
-  Divider,
   Skeleton,
+  Avatar,
+  Paper,
 } from "@mui/material";
 
 import SmartToyIcon from "@mui/icons-material/SmartToy";
@@ -25,8 +21,9 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import CodeIcon from "@mui/icons-material/Code";
 import StarIcon from "@mui/icons-material/Star";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import UpdateIcon from "@mui/icons-material/Update";
+import EmailIcon from "@mui/icons-material/Email";
+import FolderIcon from "@mui/icons-material/Folder";
 
 interface ProjectsProps {
   onTabSwitch: () => void;
@@ -86,7 +83,7 @@ const projects: Project[] = [
     title: "Revenge/Kettu Plugins",
     description:
       "High-performance plugin collection for Discord clients. Enhanced user experience with custom UI components and advanced functionality.",
-    technologies: ["TypeScript", "React", "Discord API", "Vite", "CSS3"],
+    technologies: ["TypeScript", "React", "Discord API"],
     status: "active",
     statusColor: "#51cf66",
     accentColor: "#51cf66",
@@ -97,7 +94,6 @@ const projects: Project[] = [
       "UI Enhancements",
       "Performance Optimized",
       "Easy Installation",
-      "Theme Support",
       "Custom Commands",
       "Plugin API",
     ],
@@ -107,7 +103,7 @@ const projects: Project[] = [
     title: "ShiggyCord",
     description:
       "An unofficial fork of Kettu, made just for fun. Mobile-focused client modifications with themes, fonts and plugins support. Star the repo :3",
-    technologies: ["JavaScript", "TypeScript", "Bun", "React", "CSS"],
+    technologies: ["JavaScript", "TypeScript", "Bun", "React"],
     status: "active",
     statusColor: "#51cf66",
     accentColor: "#51cf66",
@@ -128,7 +124,7 @@ const projects: Project[] = [
     title: "Ormi Bot",
     description:
       "Lightweight Discord bot focused on simplicity and reliability. Perfect for communities seeking essential moderation tools with zero complexity.",
-    technologies: ["Python", "Discord.py", "SQLite", "Docker"],
+    technologies: ["Python", "Discord.py"],
     status: "active",
     statusColor: "#51cf66",
     accentColor: "#51cf66",
@@ -147,22 +143,16 @@ const projects: Project[] = [
 ];
 
 const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
-  const [mounted, setMounted] = useState(false);
-  const [visibleProjects, setVisibleProjects] = useState<boolean[]>([]);
   const [githubData, setGithubData] = useState<Record<string, GitHubRepoData>>(
     {},
   );
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
 
-  const frostStyle = {
-    background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.9)}, ${alpha(theme.palette.background.paper, 0.7)})`,
-    backdropFilter: "blur(12px)",
-    border: `1px solid ${alpha(theme.palette.divider, 0.15)}`,
-    boxShadow: `0 8px 32px ${alpha(theme.palette.common.black, 0.1)}`,
-  };
+  useEffect(() => {
+    onTabSwitch();
+  }, [onTabSwitch]);
 
-  // Fetch GitHub data for all projects
   useEffect(() => {
     const fetchGitHubData = async () => {
       try {
@@ -171,7 +161,6 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
 
         for (const project of projects) {
           try {
-            // Extract owner and repo from the repoName
             const [owner, repo] = project.repoName.split("/");
             const response = await fetch(
               `https://api.github.com/repos/${owner}/${repo}`,
@@ -204,53 +193,27 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
     fetchGitHubData();
   }, []);
 
-  useEffect(() => {
-    onTabSwitch();
-    setMounted(true);
-
-    const timers = projects.map((_, index) =>
-      setTimeout(
-        () => {
-          setVisibleProjects((prev) => {
-            const newState = [...prev];
-            newState[index] = true;
-            return newState;
-          });
-        },
-        100 + index * 100,
-      ),
-    );
-
-    return () => timers.forEach((timer) => clearTimeout(timer));
-  }, [onTabSwitch]);
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatTimeAgo = (iso?: string) => {
+    if (!iso) return "Unknown";
     const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffSeconds = Math.floor(diffTime / 1000);
-    const diffMinutes = Math.floor(diffSeconds / 60);
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
+    const then = new Date(iso);
+    const diffMs = now.getTime() - then.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffSeconds < 60) return "just now";
-    if (diffMinutes < 60)
-      return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
-    if (diffHours < 24)
-      return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-    if (diffDays === 1) return "1 day ago";
-    if (diffDays < 30) return `${diffDays} days ago`;
-    if (diffDays < 365)
-      return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) > 1 ? "s" : ""} ago`;
-    return `${Math.floor(diffDays / 365)} year${Math.floor(diffDays / 365) > 1 ? "s" : ""} ago`;
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
+    return `${Math.floor(diffDays / 365)}y ago`;
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "active":
-        return "Active";
+        return "Active Development";
       case "paused":
-        return "Paused";
+        return "On Hold";
       case "completed":
         return "Completed";
       default:
@@ -259,450 +222,437 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
   };
 
   return (
-    <Fade in={mounted} timeout={500}>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          backgroundColor: "transparent",
-          py: { xs: 4, md: 6 },
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Container
-          maxWidth="lg"
-          sx={{
-            px: { xs: 2, sm: 3 },
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {/* Header Section */}
-          <Box
-            sx={{ textAlign: "center", mb: { xs: 6, md: 8 }, width: "100%" }}
-          >
-            <Slide in={mounted} timeout={400} direction="down">
-              <Typography
-                variant="h3"
-                fontWeight={900}
-                sx={{
-                  mb: 2,
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  color: "transparent",
-                }}
-              >
-                My Projects
-              </Typography>
-            </Slide>
-
-            <Fade in={mounted} timeout={600}>
-              <Typography
-                variant="h6"
-                color="text.secondary"
-                sx={{ maxWidth: 600, mx: "auto", lineHeight: 1.6 }}
-              >
-                Explore my work in Discord bot development, client
-                modifications, and open-source contributions
-              </Typography>
-            </Fade>
-          </Box>
-
-          {/* Projects Grid */}
-          <Grid
-            container
-            spacing={3}
-            justifyContent="center"
+    <Container
+      maxWidth="lg"
+      component="main"
+      sx={{
+        py: { xs: 3, sm: 5, md: 8 },
+        px: { xs: 2, sm: 3 },
+        minHeight: "100vh",
+      }}
+    >
+      {/* Header */}
+      <header style={{ marginBottom: "clamp(2rem, 5vw, 4rem)" }}>
+        <Stack spacing={2} alignItems="center" textAlign="center">
+          <Stack direction="row" alignItems="center" spacing={1.5}>
+            <FolderIcon
+              sx={{
+                fontSize: { xs: 36, sm: 42 },
+                color: "primary.main",
+              }}
+            />
+            <Typography
+              component="h1"
+              variant="h3"
+              fontWeight={800}
+              sx={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+              }}
+            >
+              My Projects
+            </Typography>
+          </Stack>
+          <Typography
+            variant="h6"
+            color="text.secondary"
             sx={{
-              width: "100%",
-              maxWidth: 1200,
-              margin: "0 auto",
+              maxWidth: 700,
+              fontSize: { xs: "1rem", sm: "1.15rem", md: "1.25rem" },
+              lineHeight: 1.6,
             }}
           >
-            {projects.map((project, index) => (
-              <Grid
-                item
-                xs={12}
-                md={6}
-                key={project.id}
+            Discord bots, client modifications, and open-source tools built with
+            modern technologies
+          </Typography>
+        </Stack>
+      </header>
+
+      {/* Projects Grid */}
+      <section style={{ marginBottom: "clamp(2rem, 5vw, 4rem)" }}>
+        <Stack
+          spacing={3}
+          sx={{
+            maxWidth: 900,
+            mx: "auto",
+          }}
+        >
+          {projects.map((project, index) => (
+            <Card
+              key={project.id}
+              elevation={0}
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                border: `1px solid ${theme.palette.divider}`,
+                borderRadius: 2,
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
+                "@keyframes fadeInUp": {
+                  from: {
+                    opacity: 0,
+                    transform: "translateY(20px)",
+                  },
+                  to: {
+                    opacity: 1,
+                    transform: "translateY(0)",
+                  },
+                },
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                  boxShadow: theme.shadows[12],
+                  borderColor: project.accentColor,
+                },
+              }}
+            >
+              <CardContent
                 sx={{
+                  flexGrow: 1,
                   display: "flex",
-                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: 2,
+                  p: { xs: 2.5, sm: 3 },
                 }}
               >
-                <Slide in={visibleProjects[index]} timeout={500} direction="up">
-                  <Card
-                    sx={{
-                      ...frostStyle,
-                      width: "100%",
-                      maxWidth: 500,
-                      display: "flex",
-                      flexDirection: "column",
-                      borderRadius: 3,
-                      overflow: "hidden",
-                      transition: "all 0.3s ease",
-                      minHeight: 520,
-                      "&:hover": {
-                        transform: "translateY(-4px)",
-                        boxShadow: `0 12px 28px ${alpha(project.accentColor, 0.15)}`,
-                        border: `1px solid ${alpha(project.accentColor, 0.3)}`,
-                      },
-                    }}
+                {/* Header */}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="flex-start"
+                >
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    flex={1}
                   >
-                    {/* Project Header */}
-                    <Box
+                    <Avatar
                       sx={{
-                        background: `linear-gradient(135deg, ${alpha(project.accentColor, 0.1)}, ${alpha(project.accentColor, 0.05)})`,
-                        p: 3,
-                        borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                        bgcolor: `${project.accentColor}20`,
+                        color: project.accentColor,
+                        width: { xs: 52, sm: 60 },
+                        height: { xs: 52, sm: 60 },
+                        border: `2px solid ${project.accentColor}`,
                       }}
                     >
-                      <Box
+                      {React.cloneElement(
+                        project.icon as React.ReactElement,
+                        {
+                          sx: { fontSize: { xs: 28, sm: 32 } },
+                        } as any,
+                      )}
+                    </Avatar>
+
+                    <Stack spacing={0.5} flex={1} sx={{ minWidth: 0 }}>
+                      <Typography
+                        component="h2"
+                        variant="h5"
+                        fontWeight={800}
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          mb: 2,
+                          fontSize: { xs: "1.35rem", sm: "1.5rem" },
+                          lineHeight: 1.3,
                         }}
                       >
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                        >
-                          <Box
+                        {project.title}
+                      </Typography>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="center"
+                        flexWrap="wrap"
+                      >
+                        <Chip
+                          label={getStatusLabel(project.status)}
+                          size="small"
+                          sx={{
+                            bgcolor: `${project.statusColor}15`,
+                            color: project.statusColor,
+                            fontWeight: 700,
+                            border: `1px solid ${project.statusColor}`,
+                            fontSize: "0.7rem",
+                            borderRadius: 1.5,
+                            height: 24,
+                          }}
+                        />
+                        {loading ? (
+                          <Skeleton
+                            variant="rectangular"
+                            width={50}
+                            height={24}
+                            sx={{ borderRadius: 1.5 }}
+                          />
+                        ) : githubData[project.id]?.stargazers_count !==
+                          undefined ? (
+                          <Chip
+                            icon={<StarIcon sx={{ fontSize: 14 }} />}
+                            label={githubData[project.id].stargazers_count}
+                            size="small"
                             sx={{
-                              background: `linear-gradient(135deg, ${project.accentColor}, ${alpha(project.accentColor, 0.7)})`,
-                              borderRadius: "12px",
-                              width: 50,
-                              height: 50,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              color: "white",
+                              bgcolor:
+                                theme.palette.mode === "dark"
+                                  ? "rgba(255, 193, 7, 0.15)"
+                                  : "rgba(255, 193, 7, 0.1)",
+                              color: theme.palette.warning.main,
+                              fontWeight: 600,
+                              borderRadius: 1.5,
+                              height: 24,
+                            }}
+                          />
+                        ) : null}
+                        {loading ? (
+                          <Skeleton variant="text" width={100} height={16} />
+                        ) : githubData[project.id]?.updated_at ? (
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={0.5}
+                          >
+                            <UpdateIcon
+                              sx={{ fontSize: 14, color: "text.secondary" }}
+                            />
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              {formatTimeAgo(githubData[project.id].updated_at)}
+                            </Typography>
+                          </Stack>
+                        ) : null}
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Stack>
+
+                {/* Description */}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {project.description}
+                </Typography>
+
+                {/* Technologies & Features in 2 columns */}
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={3}
+                  sx={{ pt: 1 }}
+                >
+                  {/* Technologies */}
+                  <Stack spacing={1} flex={1}>
+                    <Stack direction="row" alignItems="center" spacing={0.75}>
+                      <CodeIcon
+                        sx={{ fontSize: 18, color: "text.secondary" }}
+                      />
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={700}
+                        color="text.secondary"
+                      >
+                        Tech Stack
+                      </Typography>
+                    </Stack>
+                    <Stack direction="row" flexWrap="wrap" gap={0.75}>
+                      {project.technologies.map((tech) => (
+                        <Chip
+                          key={tech}
+                          label={tech}
+                          size="small"
+                          sx={{
+                            bgcolor:
+                              theme.palette.mode === "dark"
+                                ? "rgba(255,255,255,0.08)"
+                                : "rgba(0,0,0,0.06)",
+                            fontWeight: 600,
+                            fontSize: "0.75rem",
+                            borderRadius: 1.5,
+                          }}
+                        />
+                      ))}
+                    </Stack>
+                  </Stack>
+
+                  {/* Features */}
+                  <Stack spacing={1} flex={1}>
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={700}
+                      color="text.secondary"
+                    >
+                      Key Features
+                    </Typography>
+                    <Stack spacing={0.5}>
+                      {project.features.slice(0, 3).map((feature, idx) => (
+                        <Stack
+                          key={idx}
+                          direction="row"
+                          spacing={1}
+                          alignItems="center"
+                        >
+                          <span
+                            style={{
+                              width: 6,
+                              height: 6,
+                              borderRadius: "50%",
+                              backgroundColor: project.accentColor,
+                              flexShrink: 0,
+                            }}
+                          />
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: "0.85rem",
+                              color: "text.secondary",
                             }}
                           >
-                            {React.cloneElement(project.icon, {
-                              fontSize: "medium",
-                            })}
-                          </Box>
-                          <Box>
-                            <Typography
-                              variant="h5"
-                              fontWeight={700}
-                              sx={{ lineHeight: 1.2 }}
-                            >
-                              {project.title}
-                            </Typography>
-                            <Chip
-                              label={getStatusLabel(project.status)}
-                              size="small"
-                              sx={{
-                                backgroundColor: `${project.statusColor}20`,
-                                color: project.statusColor,
-                                fontWeight: 600,
-                                fontSize: "0.7rem",
-                                height: 24,
-                                mt: 0.5,
-                              }}
-                            />
-                          </Box>
-                        </Box>
-
-                        {/* GitHub Stats */}
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                        >
-                          {loading ? (
-                            <Skeleton
-                              variant="rectangular"
-                              width={60}
-                              height={28}
-                              sx={{ borderRadius: 1 }}
-                            />
-                          ) : githubData[project.id]?.stargazers_count !==
-                            undefined ? (
-                            <Chip
-                              icon={<StarIcon sx={{ fontSize: 16 }} />}
-                              label={githubData[project.id].stargazers_count}
-                              size="small"
-                              variant="outlined"
-                              sx={{ fontSize: "0.75rem", height: 28 }}
-                            />
-                          ) : null}
-                        </Box>
-                      </Box>
-
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ lineHeight: 1.6 }}
-                      >
-                        {project.description}
-                      </Typography>
-                    </Box>
-
-                    <CardContent
-                      sx={{
-                        p: 3,
-                        flexGrow: 1,
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      {/* Technologies */}
-                      <Box sx={{ mb: 3 }}>
-                        <Typography
-                          variant="subtitle2"
-                          fontWeight={600}
-                          sx={{
-                            mb: 1.5,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                          }}
-                        >
-                          <CodeIcon fontSize="small" />
-                          Technologies
-                        </Typography>
-                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                          {project.technologies.map((tech) => (
-                            <Chip
-                              key={tech}
-                              label={tech}
-                              size="small"
-                              sx={{
-                                backgroundColor: alpha(
-                                  project.accentColor,
-                                  0.1,
-                                ),
-                                color: project.accentColor,
-                                fontWeight: 500,
-                                fontSize: "0.75rem",
-                                height: 28,
-                              }}
-                            />
-                          ))}
-                        </Box>
-                      </Box>
-
-                      <Divider sx={{ my: 2, opacity: 0.3 }} />
-
-                      {/* Features */}
-                      <Box sx={{ mb: 3, flexGrow: 1 }}>
-                        <Typography
-                          variant="subtitle2"
-                          fontWeight={600}
-                          sx={{
-                            mb: 1.5,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                          }}
-                        >
-                          <VisibilityIcon fontSize="small" />
-                          Key Features
-                        </Typography>
-                        <Grid container spacing={1}>
-                          {project.features.map((feature, idx) => (
-                            <Grid item xs={6} key={idx}>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 1,
-                                }}
-                              >
-                                <Box
-                                  sx={{
-                                    width: 6,
-                                    height: 6,
-                                    borderRadius: "50%",
-                                    backgroundColor: project.accentColor,
-                                    flexShrink: 0,
-                                  }}
-                                />
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    fontSize: "0.8rem",
-                                    opacity: 0.9,
-                                    lineHeight: 1.3,
-                                  }}
-                                >
-                                  {feature}
-                                </Typography>
-                              </Box>
-                            </Grid>
-                          ))}
-                        </Grid>
-                      </Box>
-
-                      {/* Action Buttons */}
-                      <Stack direction="row" spacing={1.5} sx={{ mt: "auto" }}>
-                        <Button
-                          variant="contained"
-                          startIcon={<LaunchIcon />}
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          disabled={project.status === "paused"}
-                          fullWidth
-                          sx={{
-                            background: `linear-gradient(135deg, ${project.accentColor}, ${alpha(project.accentColor, 0.8)})`,
-                            borderRadius: 2,
-                            py: 1,
-                            textTransform: "none",
-                            fontWeight: 600,
-                            fontSize: "0.9rem",
-                            "&:hover": {
-                              transform: "translateY(-2px)",
-                              boxShadow: `0 8px 20px ${alpha(project.accentColor, 0.3)}`,
-                            },
-                            transition: "all 0.3s ease",
-                          }}
-                        >
-                          {project.status === "paused"
-                            ? "View Code"
-                            : "Explore Project"}
-                        </Button>
-
-                        <IconButton
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          sx={{
-                            background: alpha(theme.palette.primary.main, 0.1),
-                            borderRadius: 2,
-                            width: 48,
-                            height: 48,
-                            "&:hover": {
-                              background: alpha(
-                                theme.palette.primary.main,
-                                0.2,
-                              ),
-                              transform: "scale(1.1)",
-                            },
-                            transition: "all 0.3s ease",
-                          }}
-                        >
-                          <GitHubIcon fontSize="small" />
-                        </IconButton>
-                      </Stack>
-
-                      {/* Last Updated */}
-                      {loading ? (
-                        <Skeleton
-                          variant="text"
-                          width={120}
-                          sx={{ mx: "auto", mt: 2 }}
-                        />
-                      ) : githubData[project.id]?.updated_at ? (
+                            {feature}
+                          </Typography>
+                        </Stack>
+                      ))}
+                      {project.features.length > 3 && (
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: 0.5,
-                            mt: 2,
-                            opacity: 0.7,
-                          }}
+                          sx={{ pl: 2.25, fontStyle: "italic" }}
                         >
-                          <UpdateIcon fontSize="inherit" />
-                          Updated{" "}
-                          {formatDate(githubData[project.id].updated_at)}
+                          +{project.features.length - 3} more features
                         </Typography>
-                      ) : null}
-                    </CardContent>
-                  </Card>
-                </Slide>
-              </Grid>
-            ))}
-          </Grid>
+                      )}
+                    </Stack>
+                  </Stack>
+                </Stack>
 
-          {/* CTA Section */}
-          <Fade in={mounted} timeout={800}>
-            <Box
+                {/* Actions */}
+                <Stack direction="row" spacing={1.5} sx={{ pt: 1 }}>
+                  <Button
+                    variant="contained"
+                    startIcon={<LaunchIcon />}
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      bgcolor: project.accentColor,
+                      borderRadius: 1.5,
+                      py: 1,
+                      px: 3,
+                      textTransform: "none",
+                      fontWeight: 600,
+                      "&:hover": {
+                        bgcolor: alpha(project.accentColor, 0.85),
+                      },
+                    }}
+                  >
+                    View Project
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<GitHubIcon />}
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      borderRadius: 1.5,
+                      textTransform: "none",
+                      fontWeight: 600,
+                      px: 3,
+                    }}
+                  >
+                    Source Code
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
+          ))}
+        </Stack>
+      </section>
+
+      {/* CTA Section */}
+      <Paper
+        elevation={0}
+        sx={{
+          p: { xs: 3, sm: 4, md: 5 },
+          borderRadius: 2,
+          border: `1px solid ${theme.palette.divider}`,
+          textAlign: "center",
+          background:
+            theme.palette.mode === "dark"
+              ? "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.02) 100%)"
+              : "linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(168, 85, 247, 0.01) 100%)",
+        }}
+      >
+        <Stack spacing={3} alignItems="center">
+          <Stack spacing={1.5}>
+            <Typography
+              variant="h4"
+              fontWeight={800}
+              sx={{ fontSize: { xs: "1.75rem", sm: "2rem", md: "2.125rem" } }}
+            >
+              Want to Collaborate?
+            </Typography>
+            <Typography
+              variant="h6"
+              color="text.secondary"
               sx={{
-                ...frostStyle,
-                textAlign: "center",
-                p: { xs: 4, md: 6 },
-                borderRadius: 3,
-                mt: 6,
-                width: "100%",
                 maxWidth: 600,
+                mx: "auto",
+                fontSize: { xs: "1rem", sm: "1.15rem" },
+                lineHeight: 1.6,
               }}
             >
-              <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>
-                Want to Collaborate?
-              </Typography>
-              <Typography
-                variant="h6"
-                color="text.secondary"
-                sx={{ mb: 4, lineHeight: 1.6 }}
-              >
-                Check out my code repositories and open-source contributions on
-                GitHub. I'm always open to new projects and collaborations!
-              </Typography>
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                justifyContent="center"
-              >
-                <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={<GitHubIcon />}
-                  href="https://github.com/kmmiio99o"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
-                    textTransform: "none",
-                    fontWeight: 600,
-                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-                    "&:hover": {
-                      transform: "translateY(-2px)",
-                      boxShadow: `0 8px 25px ${alpha(theme.palette.primary.main, 0.3)}`,
-                    },
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  View All Repositories
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  href="mailto:kmmiio99o@gmail.com"
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
-                    textTransform: "none",
-                    fontWeight: 600,
-                    borderWidth: 2,
-                    "&:hover": {
-                      borderWidth: 2,
-                      transform: "translateY(-2px)",
-                      background: alpha(theme.palette.primary.main, 0.05),
-                    },
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  Contact Me
-                </Button>
-              </Stack>
-            </Box>
-          </Fade>
-        </Container>
-      </Box>
-    </Fade>
+              Check out my repositories and open-source contributions. I'm
+              always open to new projects and collaborations!
+            </Typography>
+          </Stack>
+
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ width: { xs: "100%", sm: "auto" } }}
+          >
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<GitHubIcon />}
+              href="https://github.com/kmmiio99o"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                px: 4,
+                py: 1.5,
+                borderRadius: 1.5,
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: "1rem",
+              }}
+            >
+              View All Repositories
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              startIcon={<EmailIcon />}
+              href="mailto:kmmiio99o@gmail.com"
+              sx={{
+                px: 4,
+                py: 1.5,
+                borderRadius: 1.5,
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: "1rem",
+              }}
+            >
+              Contact Me
+            </Button>
+          </Stack>
+        </Stack>
+      </Paper>
+    </Container>
   );
 };
 

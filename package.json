@@ -11,23 +11,23 @@
     "type-check": "tsc"
   },
   "dependencies": {
-    "@cloudflare/kv-asset-handler": "^0.4.0",
+    "@cloudflare/kv-asset-handler": "^0.4.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.5",
-    "@mui/lab": "^7.0.1-beta.19",
-    "@mui/material": "^7.3.5",
+    "@mui/icons-material": "^7.3.6",
+    "@mui/lab": "^7.0.1-beta.20",
+    "@mui/material": "^7.3.6",
     "itty-router": "^5.0.22",
-    "react-router-dom": "^7.9.6"
+    "react-router-dom": "^7.11.0"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "@types/react": "^19.2.6",
+    "@types/bun": "^1.3.5",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
+    "@vitejs/plugin-react": "^5.1.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "wrangler": "^4.50.0"
+    "vite": "^7.3.0",
+    "wrangler": "^4.56.0"
   },
   "keywords": [
     "portfolio",

@@ -1,887 +1,838 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
-  Box,
-  Typography,
-  Button,
+  Container,
   Paper,
   Avatar,
+  Typography,
+  Chip,
+  Link as MuiLink,
+  Button,
   Stack,
-  Grid,
+  Skeleton,
+  useTheme,
   Card,
   CardContent,
-  IconButton,
-  Fade,
-  Slide,
-  Zoom,
-  Container,
-  alpha,
-  useTheme,
-  Chip,
-  LinearProgress,
+  CardActions,
+  Badge,
+  Box,
 } from "@mui/material";
-
-import { keyframes } from "@mui/system";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import CodeIcon from "@mui/icons-material/Code";
-import WebIcon from "@mui/icons-material/Web";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import EmailIcon from "@mui/icons-material/Email";
-import { Link } from "react-router-dom";
+import CodeIcon from "@mui/icons-material/Code";
+import StarIcon from "@mui/icons-material/Star";
+import UpdateIcon from "@mui/icons-material/Update";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import { GithubFetch, GitHubRepoData } from "../api/github";
 
 interface HomeProps {
-  onTabSwitch: () => void;
+  onTabSwitch?: () => void;
 }
 
-const fadeInUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
+type LanyardResponse = any;
 
-const float = keyframes`
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-15px);
-  }
-`;
-
-const glow = keyframes`
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(100, 100, 255, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(100, 100, 255, 0.4);
-  }
-`;
-
-const typewriter = keyframes`
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-`;
-
-const blinkCaret = keyframes`
-  from, to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: ${alpha("#fff", 0.8)};
-  }
-`;
-
-const buttonGlow = keyframes`
-  0%, 100% {
-    box-shadow: 0 4px 15px rgba(100, 100, 255, 0.3);
-  }
-  50% {
-    box-shadow: 0 4px 25px rgba(100, 100, 255, 0.6);
-  }
-`;
-
-const progressAnimation = keyframes`
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-`;
-
-const skills = [
-  {
-    name: "React",
-    color: "#61dafb",
-    level: 88,
-    description: "Modern UI development",
-  },
-  {
-    name: "TypeScript",
-    color: "#3178c6",
-    level: 85,
-    description: "Type-safe JavaScript",
-  },
-  {
-    name: "Node.js",
-    color: "#339933",
-    level: 82,
-    description: "Server-side runtime",
-  },
-  {
-    name: "Python",
-    color: "#3776ab",
-    level: 74,
-    description: "Backend & automation",
-  },
-  {
-    name: "Discord.js",
-    color: "#5865f2",
-    level: 86,
-    description: "Bot development",
-  },
-  {
-    name: "Material-UI",
-    color: "#0081cb",
-    level: 90,
-    description: "React component library",
-  },
-];
-
-const stats = [
-  {
-    label: "Years Coding",
-    value: "1+",
-    icon: <CodeIcon />,
-    description: "Passionate learning",
-  },
-  {
-    label: "Projects Built",
-    value: "5+",
-    icon: <WebIcon />,
-    description: "Various applications",
-  },
-  {
-    label: "Discord Bots",
-    value: "2",
-    icon: <SmartToyIcon />,
-    description: "Active deployments",
-  },
-];
-
-// Discord status types and colors
-type DiscordStatus = "online" | "idle" | "dnd" | "offline";
-const statusColors: Record<DiscordStatus, string> = {
-  online: "#43b581",
-  idle: "#faa61a",
-  dnd: "#f04747",
-  offline: "#747f8d",
+const STATUS_CONFIG: Record<
+  string,
+  { color: string; label: string; pulse: boolean }
+> = {
+  online: { color: "#57f287", label: "Online", pulse: true },
+  idle: { color: "#faa61a", label: "Away", pulse: false },
+  dnd: { color: "#ed4245", label: "Busy", pulse: false },
+  offline: { color: "#8b949e", label: "Offline", pulse: false },
 };
 
-const Home: React.FC<HomeProps> = ({ onTabSwitch }) => {
-  const [mounted, setMounted] = useState(false);
-  const [animatedStats, setAnimatedStats] = useState(stats.map(() => false));
-  const [showSubtitle, setShowSubtitle] = useState(false);
-  const [lanyard, setLanyard] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [skillsInView, setSkillsInView] = useState(false);
+const formatTimeAgo = (iso?: string) => {
+  if (!iso) return "Unknown";
+  const now = new Date();
+  const then = new Date(iso);
+  const diffMs = now.getTime() - then.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
+  return `${Math.floor(diffDays / 365)}y ago`;
+};
+
+const ProjectCard: React.FC<{ repo: GitHubRepoData; index: number }> = ({
+  repo,
+  index,
+}) => {
   const theme = useTheme();
 
-  // Frosted glass style
-  const frostStyle = {
-    background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.9)}, ${alpha(theme.palette.background.paper, 0.7)})`,
-    backdropFilter: "blur(10px)",
-    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-    boxShadow: `0 8px 32px ${alpha(theme.palette.common.black, 0.1)}`,
-  };
-
-  useEffect(() => {
-    onTabSwitch();
-    setMounted(true);
-
-    // Show subtitle after a delay for typewriter effect
-    const subtitleTimer = setTimeout(() => setShowSubtitle(true), 1200);
-
-    // Animate stats with delays
-    const timers = stats.map((_, index) =>
-      setTimeout(
-        () => {
-          setAnimatedStats((prev) => {
-            const newState = [...prev];
-            newState[index] = true;
-            return newState;
-          });
+  return (
+    <Card
+      elevation={0}
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: 2,
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
+        "@keyframes fadeInUp": {
+          from: {
+            opacity: 0,
+            transform: "translateY(20px)",
+          },
+          to: {
+            opacity: 1,
+            transform: "translateY(0)",
+          },
         },
-        1500 + index * 300,
-      ),
-    );
+        "&:hover": {
+          transform: "translateY(-8px)",
+          boxShadow: theme.shadows[12],
+          borderColor: theme.palette.primary.main,
+        },
+      }}
+    >
+      <CardContent
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          p: { xs: 2, sm: 2.5 },
+        }}
+      >
+        <Stack
+          direction="row"
+          alignItems="flex-start"
+          justifyContent="space-between"
+        >
+          <Avatar
+            variant="rounded"
+            sx={{
+              bgcolor:
+                theme.palette.mode === "dark"
+                  ? "primary.dark"
+                  : "primary.light",
+              width: { xs: 48, sm: 56 },
+              height: { xs: 48, sm: 56 },
+              borderRadius: 1.5,
+            }}
+          >
+            <CodeIcon sx={{ fontSize: { xs: 28, sm: 32 } }} />
+          </Avatar>
 
-    // Trigger skills animation
-    const skillsTimer = setTimeout(() => setSkillsInView(true), 1800);
+          <Stack direction="row" spacing={0.5} alignItems="center">
+            <StarIcon sx={{ fontSize: 16, color: "warning.main" }} />
+            <Typography variant="body2" fontWeight={600}>
+              {repo.stargazers_count}
+            </Typography>
+          </Stack>
+        </Stack>
 
-    return () => {
-      clearTimeout(subtitleTimer);
-      clearTimeout(skillsTimer);
-      timers.forEach((timer) => clearTimeout(timer));
-    };
-  }, [onTabSwitch]);
+        <section>
+          <Typography
+            component="h3"
+            variant="h6"
+            fontWeight={700}
+            sx={{
+              mb: 1,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              fontSize: { xs: "1.1rem", sm: "1.25rem" },
+            }}
+          >
+            {repo.name}
+          </Typography>
 
-  // Fetch Lanyard data
-  useEffect(() => {
-    setLoading(true);
-    fetch("https://api.lanyard.rest/v1/users/879393496627306587")
-      .then((res) => res.json())
-      .then((data) => {
-        setLanyard(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Lanyard API error:", error);
-        setLoading(false);
-      });
-  }, []);
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              minHeight: "2.5em",
+              fontSize: { xs: "0.875rem", sm: "0.875rem" },
+            }}
+          >
+            {repo.description || "No description available"}
+          </Typography>
+        </section>
 
-  const user = lanyard?.data?.discord_user;
-  const discordStatus: DiscordStatus =
-    (lanyard?.data?.discord_status as DiscordStatus) || "offline";
+        <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: "auto" }}>
+          {repo.language && (
+            <Chip
+              label={repo.language}
+              size="small"
+              sx={{
+                fontWeight: 600,
+                bgcolor:
+                  theme.palette.mode === "dark"
+                    ? "rgba(255,255,255,0.08)"
+                    : "rgba(0,0,0,0.06)",
+                borderRadius: 1.5,
+              }}
+            />
+          )}
+          <Chip
+            icon={<UpdateIcon sx={{ fontSize: 14 }} />}
+            label={formatTimeAgo(repo.updated_at)}
+            size="small"
+            variant="outlined"
+            sx={{ borderRadius: 1.5 }}
+          />
+        </Stack>
+      </CardContent>
 
-  // Helper to construct Discord avatar URL
-  const getDiscordAvatarUrl = (user?: {
-    id?: string;
-    avatar?: string;
-    discriminator?: string;
-  }) => {
-    if (!user) return "https://cdn.discordapp.com/embed/avatars/0.png";
-    if (user.avatar && user.id) {
-      return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`;
-    }
-    const disc = user.discriminator ? parseInt(user.discriminator) : 0;
-    return `https://cdn.discordapp.com/embed/avatars/${disc % 5}.png`;
-  };
+      <CardActions sx={{ p: 2, pt: 0 }}>
+        <Button
+          fullWidth
+          variant="outlined"
+          endIcon={<RocketLaunchIcon />}
+          href={repo.html_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            borderRadius: 1.5,
+            py: { xs: 1, sm: 0.75 },
+          }}
+        >
+          View Project
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
+
+const ActivityImage = ({ activity }: { activity: any }) => {
+  if (!activity?.assets?.large_image) return null;
+
+  let imageUrl = "";
+
+  if (activity.assets.large_image.startsWith("mp:")) {
+    // Discord media proxy image
+    imageUrl = `https://media.discordapp.net/${activity.assets.large_image.replace("mp:", "")}`;
+  } else if (activity.assets.large_image.startsWith("spotify:")) {
+    // Spotify cover art
+    const spotifyId = activity.assets.large_image.replace("spotify:", "");
+    imageUrl = `https://i.scdn.co/image/${spotifyId}`;
+  } else {
+    // External image URL
+    imageUrl = activity.assets.large_image;
+  }
 
   return (
     <Box
       sx={{
-        minHeight: "100vh",
-        backgroundColor: "transparent",
-        position: "relative",
+        width: 56,
+        height: 56,
+        borderRadius: 1.5,
         overflow: "hidden",
+        flexShrink: 0,
+        border: `1px solid ${useTheme().palette.divider}`,
+        "& img": {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        },
       }}
     >
-      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
-        {/* Hero Section */}
-        <Box sx={{ py: { xs: 6, md: 10 } }}>
-          <Fade in={mounted} timeout={800}>
-            <Box sx={{ textAlign: "center", mb: { xs: 6, md: 8 } }}>
-              {/* Avatar with Lanyard integration */}
-              <Box
-                sx={{
-                  animation: `${float} 6s ease-in-out infinite`,
-                  mb: 4,
-                  display: "flex",
-                  justifyContent: "center",
-                  position: "relative",
-                }}
-              >
-                <Box sx={{ position: "relative", display: "inline-block" }}>
-                  <Avatar
-                    src={getDiscordAvatarUrl(user)}
-                    alt={user?.username || "kmmiio99o"}
-                    sx={{
-                      width: { xs: 120, md: 160 },
-                      height: { xs: 120, md: 160 },
-                      border: "3px solid",
-                      borderColor:
-                        statusColors[discordStatus] || statusColors.offline,
-                      animation: `${glow} 4s ease-in-out infinite`,
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        transform: "scale(1.05)",
-                        borderColor: alpha(
-                          statusColors[discordStatus] || statusColors.offline,
-                          0.8,
-                        ),
-                      },
-                    }}
-                  />
-                  {/* Status indicator */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      right: 8,
-                      bottom: 8,
+      <img src={imageUrl} alt={activity.name} />
+    </Box>
+  );
+};
+
+const Home: React.FC<HomeProps> = () => {
+  const theme = useTheme();
+  const [lanyard, setLanyard] = useState<LanyardResponse | null>(null);
+  const [lanyardLoading, setLanyardLoading] = useState(true);
+  const [repos, setRepos] = useState<GitHubRepoData[] | null>(null);
+  const [reposLoading, setReposLoading] = useState(true);
+
+  // Fetch Lanyard data with 3-second refresh
+  const fetchLanyard = useCallback(async () => {
+    try {
+      const response = await fetch(
+        "https://api.lanyard.rest/v1/users/879393496627306587",
+        {
+          headers: { "User-Agent": "kmmiio99o-portfolio/1.0.0" },
+        },
+      );
+      const data = await response.json();
+      setLanyard(data);
+    } catch (err) {
+      console.error("Lanyard fetch error:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    let intervalId: NodeJS.Timeout;
+
+    const initialFetch = async () => {
+      setLanyardLoading(true);
+      await fetchLanyard();
+      if (mounted) {
+        setLanyardLoading(false);
+        // Start 3-second refresh interval
+        intervalId = setInterval(fetchLanyard, 3000);
+      }
+    };
+
+    initialFetch();
+
+    return () => {
+      mounted = false;
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [fetchLanyard]);
+
+  useEffect(() => {
+    let mounted = true;
+    setReposLoading(true);
+
+    (async () => {
+      try {
+        const data = await GithubFetch.getUserRepos("kmmiio99o");
+        if (!mounted) return;
+        setRepos(data.slice(0, 6));
+      } catch (e) {
+        console.error("GitHub fetch error:", e);
+        if (mounted) setRepos([]);
+      } finally {
+        if (mounted) setReposLoading(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const discordUser = lanyard?.data?.discord_user;
+  const discordStatus = lanyard?.data?.discord_status || "offline";
+  const statusConfig = STATUS_CONFIG[discordStatus];
+  const activities = lanyard?.data?.activities || [];
+  const primaryActivity = activities.find((a: any) => a.type !== 4);
+
+  // Skills with better mobile spacing
+  const skills = ["TypeScript", "React", "Node.js", "UI/UX", "Accessibility"];
+
+  return (
+    <Container
+      maxWidth="lg"
+      component="main"
+      sx={{
+        py: { xs: 3, sm: 5, md: 8 },
+        px: { xs: 2, sm: 3 },
+        minHeight: "100vh",
+      }}
+    >
+      {/* Hero Section */}
+      <section
+        style={{
+          marginBottom: "clamp(1.5rem, 4vw, 3rem)",
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 2.5, sm: 4, md: 5 },
+            borderRadius: 2,
+            background:
+              theme.palette.mode === "dark"
+                ? "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%)"
+                : "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.02) 100%)",
+            border: `1px solid ${theme.palette.divider}`,
+            position: "relative",
+            overflow: "hidden",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: { xs: "200px", sm: "300px" },
+              height: { xs: "200px", sm: "300px" },
+              background:
+                theme.palette.mode === "dark"
+                  ? "radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)"
+                  : "radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)",
+              borderRadius: "50%",
+              transform: "translate(30%, -30%)",
+            },
+          }}
+        >
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={{ xs: 2.5, sm: 3 }}
+            alignItems="center"
+          >
+            {lanyardLoading ? (
+              <Skeleton
+                variant="circular"
+                sx={{ width: { xs: 80, sm: 100 }, height: { xs: 80, sm: 100 } }}
+              />
+            ) : (
+              <Badge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                badgeContent={
+                  <span
+                    style={{
                       width: 20,
                       height: 20,
                       borderRadius: "50%",
-                      background:
-                        statusColors[discordStatus] || statusColors.offline,
-                      border: "3px solid",
-                      borderColor: theme.palette.background.paper,
-                      boxShadow: 2,
+                      backgroundColor: statusConfig.color,
+                      border: `3px solid ${theme.palette.background.paper}`,
+                      display: "block",
+                      boxShadow: statusConfig.pulse
+                        ? `0 0 0 0 ${statusConfig.color}`
+                        : "none",
+                      animation: statusConfig.pulse
+                        ? "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+                        : "none",
                     }}
                   />
-                </Box>
-              </Box>
-
-              <Slide in={mounted} timeout={600} direction="down">
-                <Typography
-                  variant="h6"
-                  color="text.secondary"
-                  sx={{
-                    mb: 2,
-                    fontWeight: 500,
-                    animation: `${fadeInUp} 0.8s ease-out 0.2s both`,
-                  }}
-                >
-                  👋 Hello, I'm
-                </Typography>
-              </Slide>
-
-              <Zoom in={mounted} timeout={800}>
-                <Typography
-                  variant="h1"
-                  sx={{
-                    fontWeight: 900,
-                    fontSize: { xs: "2.5rem", sm: "3.5rem", md: "4rem" },
-                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                    backgroundClip: "text",
-                    WebkitBackgroundClip: "text",
-                    color: "transparent",
-                    mb: 3,
-                  }}
-                >
-                  {user?.username || "kmmiio99o"}
-                </Typography>
-              </Zoom>
-
-              {/* Fixed Typewriter Effect with Proper Cursor Alignment */}
-              <Box
+                }
                 sx={{
-                  mb: 3,
-                  height: "60px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  "@keyframes pulse": {
+                    "0%, 100%": {
+                      boxShadow: `0 0 0 0 ${statusConfig.color}`,
+                    },
+                    "50%": {
+                      boxShadow: `0 0 0 8px transparent`,
+                    },
+                  },
                 }}
               >
-                {showSubtitle && (
-                  <Box
-                    sx={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      position: "relative",
-                    }}
-                  >
-                    <Typography
-                      variant="h5"
-                      color="text.primary"
-                      sx={{
-                        fontWeight: 600,
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        animation: `${typewriter} 1.5s steps(30, end)`,
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      Full-Stack Developer & Bot Creator
-                    </Typography>
-                    <Box
-                      sx={{
-                        width: "3px",
-                        height: "1.4em",
-                        backgroundColor: theme.palette.primary.main,
-                        marginLeft: "4px",
-                        animation: `${blinkCaret} 0.75s step-end infinite`,
-                        alignSelf: "center",
-                      }}
-                    />
-                  </Box>
-                )}
-              </Box>
+                <Avatar
+                  alt={discordUser?.username || "User avatar"}
+                  src={
+                    discordUser?.avatar
+                      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.${discordUser.avatar.startsWith("a_") ? "gif" : "png"}?size=256`
+                      : undefined
+                  }
+                  sx={{
+                    width: { xs: 80, sm: 100 },
+                    height: { xs: 80, sm: 100 },
+                    border: `3px solid ${theme.palette.background.paper}`,
+                    boxShadow: theme.shadows[8],
+                  }}
+                >
+                  {!discordUser?.avatar &&
+                    discordUser?.username?.[0]?.toUpperCase()}
+                </Avatar>
+              </Badge>
+            )}
 
-              <Fade in={mounted} timeout={1200}>
+            <Stack
+              spacing={{ xs: 1.5, sm: 2 }}
+              flex={1}
+              alignItems={{ xs: "center", sm: "flex-start" }}
+            >
+              <header>
+                <Typography
+                  component="h1"
+                  variant="h3"
+                  fontWeight={800}
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    mb: 0.5,
+                    fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                    textAlign: { xs: "center", sm: "left" },
+                  }}
+                >
+                  kmmiio99o
+                </Typography>
+
                 <Typography
                   variant="h6"
                   color="text.secondary"
+                  fontWeight={500}
                   sx={{
-                    maxWidth: 600,
-                    mx: "auto",
-                    mb: 4,
-                    lineHeight: 1.6,
-                    fontSize: { xs: "1rem", md: "1.1rem" },
+                    fontSize: { xs: "1rem", sm: "1.15rem", md: "1.25rem" },
+                    textAlign: { xs: "center", sm: "left" },
                   }}
                 >
-                  16-year-old developer from Poland passionate about creating
-                  modern web applications and Discord bots. Specializing in
-                  React, TypeScript, and Python.
+                  Full-Stack Developer & UI Enthusiast
                 </Typography>
-              </Fade>
-
-              {/* Discord Status Chip */}
-              {!loading && lanyard?.success && (
-                <Fade in={mounted} timeout={1300}>
-                  <Chip
-                    label={`${discordStatus.toUpperCase()} ON DISCORD`}
-                    size="small"
-                    sx={{
-                      mb: 3,
-                      background:
-                        statusColors[discordStatus] || statusColors.offline,
-                      color: "white",
-                      fontWeight: 600,
-                      animation: `${fadeInUp} 0.8s ease-out 1.1s both`,
-                    }}
-                  />
-                </Fade>
-              )}
+              </header>
 
               <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                justifyContent="center"
-                sx={{ mb: 4 }}
+                direction="row"
+                spacing={1}
+                flexWrap="wrap"
+                justifyContent={{ xs: "center", sm: "flex-start" }}
               >
-                <Slide in={mounted} timeout={1400} direction="right">
-                  <Button
-                    component={Link}
-                    to="/projects"
-                    variant="contained"
-                    size="large"
-                    endIcon={<ArrowForwardIcon />}
-                    sx={{
-                      px: 4,
-                      py: 1.5,
-                      borderRadius: 2,
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                      textTransform: "none",
-                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-                      animation: `${buttonGlow} 3s ease-in-out infinite`,
-                      position: "relative",
-                      overflow: "hidden",
-                      "&:hover": {
-                        transform: "translateY(-3px) scale(1.05)",
-                        boxShadow: `0 12px 30px ${alpha(theme.palette.primary.main, 0.4)}`,
-                        animation: "none",
-                        "&::before": {
-                          transform: "translateX(100%)",
-                        },
-                      },
-                      "&::before": {
-                        content: '""',
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        background: `linear-gradient(90deg, transparent, ${alpha("#fff", 0.2)}, transparent)`,
-                        transform: "translateX(-100%)",
-                        transition: "transform 0.6s ease",
-                      },
-                      transition: "all 0.4s ease",
-                    }}
-                  >
-                    View My Work
-                  </Button>
-                </Slide>
-
-                <Slide in={mounted} timeout={1600} direction="left">
-                  <Button
-                    component={Link}
-                    to="/about"
-                    variant="outlined"
-                    size="large"
-                    sx={{
-                      px: 4,
-                      py: 1.5,
-                      borderRadius: 2,
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                      textTransform: "none",
-                      borderWidth: 2,
-                      position: "relative",
-                      overflow: "hidden",
-                      "&:hover": {
-                        borderWidth: 2,
-                        transform: "translateY(-3px) scale(1.05)",
-                        background: alpha(theme.palette.primary.main, 0.1),
-                        boxShadow: `0 8px 25px ${alpha(theme.palette.primary.main, 0.2)}`,
-                        "&::before": {
-                          transform: "translateX(100%)",
-                        },
-                      },
-                      "&::before": {
-                        content: '""',
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        background: `linear-gradient(90deg, transparent, ${alpha(theme.palette.primary.main, 0.1)}, transparent)`,
-                        transform: "translateX(-100%)",
-                        transition: "transform 0.6s ease",
-                      },
-                      transition: "all 0.4s ease",
-                    }}
-                  >
-                    About Me
-                  </Button>
-                </Slide>
+                {lanyardLoading ? (
+                  <Skeleton
+                    variant="rectangular"
+                    width={120}
+                    height={32}
+                    sx={{ borderRadius: 2 }}
+                  />
+                ) : (
+                  <>
+                    <Chip
+                      label={`${statusConfig.label} on Discord`}
+                      sx={{
+                        bgcolor: `${statusConfig.color}15`,
+                        color: statusConfig.color,
+                        fontWeight: 600,
+                        borderRadius: 1.5,
+                        fontSize: { xs: "0.75rem", sm: "0.8125rem" },
+                      }}
+                    />
+                    <Chip
+                      label="Open to opportunities"
+                      variant="outlined"
+                      sx={{
+                        borderRadius: 1.5,
+                        fontSize: { xs: "0.75rem", sm: "0.8125rem" },
+                      }}
+                    />
+                  </>
+                )}
               </Stack>
 
-              {/* Quick contact buttons */}
-              <Fade in={mounted} timeout={1800}>
-                <Stack direction="row" spacing={1} justifyContent="center">
-                  <IconButton
-                    href="https://github.com/kmmiio99o"
-                    target="_blank"
-                    sx={{
-                      background: frostStyle.background,
-                      backdropFilter: frostStyle.backdropFilter,
-                      border: frostStyle.border,
-                      "&:hover": {
-                        background: alpha(theme.palette.primary.main, 0.1),
-                        transform: "scale(1.1)",
-                      },
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    <GitHubIcon />
-                  </IconButton>
-                  <IconButton
-                    href="mailto:kmmiio99o@gmail.com"
-                    sx={{
-                      background: frostStyle.background,
-                      backdropFilter: frostStyle.backdropFilter,
-                      border: frostStyle.border,
-                      "&:hover": {
-                        background: alpha(theme.palette.secondary.main, 0.1),
-                        transform: "scale(1.1)",
-                      },
-                      transition: "all 0.3s ease",
-                    }}
-                  >
-                    <EmailIcon />
-                  </IconButton>
-                </Stack>
-              </Fade>
-            </Box>
-          </Fade>
-
-          {/* Redesigned Skills Section */}
-          <Box sx={{ mb: { xs: 8, md: 10 } }}>
-            <Fade in={mounted} timeout={1000}>
-              <Typography
-                variant="h4"
-                fontWeight={700}
-                textAlign="center"
-                sx={{ mb: 1 }}
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<GitHubIcon />}
+                href="https://github.com/kmmiio99o"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  borderRadius: 1.5,
+                  textTransform: "none",
+                  fontWeight: 600,
+                  width: { xs: "100%", sm: "auto" },
+                  py: { xs: 1.2, sm: 1 },
+                }}
               >
-                Technical Skills
-              </Typography>
-            </Fade>
+                View GitHub Profile
+              </Button>
+            </Stack>
+          </Stack>
+        </Paper>
+      </section>
 
-            <Fade in={mounted} timeout={1200}>
-              <Typography
-                variant="h6"
-                color="text.secondary"
-                textAlign="center"
-                sx={{ mb: 4, maxWidth: 600, mx: "auto" }}
-              >
-                Technologies I work with and my proficiency levels
-              </Typography>
-            </Fade>
-
-            <Grid container spacing={2} justifyContent="center">
-              {skills.map((skill, index) => (
-                <Grid item xs={12} sm={6} key={skill.name}>
-                  <Slide
-                    in={mounted}
-                    timeout={1000 + index * 100}
-                    direction="up"
-                  >
-                    <Card
-                      sx={{
-                        p: 2.5,
-                        borderRadius: 2,
-                        background: frostStyle.background,
-                        backdropFilter: frostStyle.backdropFilter,
-                        border: `1px solid ${alpha(skill.color, 0.1)}`,
-                        height: "100%",
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          transform: "translateY(-4px)",
-                          boxShadow: `0 12px 28px ${alpha(skill.color, 0.15)}`,
-                          border: `1px solid ${alpha(skill.color, 0.3)}`,
-                        },
-                      }}
-                    >
-                      <CardContent sx={{ p: "0 !important" }}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "flex-start",
-                            mb: 1.5,
-                          }}
-                        >
-                          <Box>
-                            <Typography
-                              variant="h6"
-                              fontWeight={700}
-                              sx={{
-                                color: skill.color,
-                                mb: 0.5,
-                              }}
-                            >
-                              {skill.name}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ fontSize: "0.8rem" }}
-                            >
-                              {skill.description}
-                            </Typography>
-                          </Box>
-                          <Typography
-                            variant="h6"
-                            fontWeight={700}
-                            sx={{
-                              color: skill.color,
-                              minWidth: 45,
-                              textAlign: "right",
-                            }}
-                          >
-                            {skill.level}%
-                          </Typography>
-                        </Box>
-
-                        {/* Enhanced Progress Bar */}
-                        <Box sx={{ position: "relative", mb: 1 }}>
-                          <LinearProgress
-                            variant="determinate"
-                            value={skillsInView ? skill.level : 0}
-                            sx={{
-                              height: 8,
-                              borderRadius: 4,
-                              backgroundColor: alpha(
-                                theme.palette.common.white,
-                                0.1,
-                              ),
-                              "& .MuiLinearProgress-bar": {
-                                borderRadius: 4,
-                                background: `linear-gradient(90deg, ${skill.color}, ${alpha(skill.color, 0.8)})`,
-                                transformOrigin: "left",
-                                animation: skillsInView
-                                  ? `${progressAnimation} 1.5s ease-out`
-                                  : "none",
-                              },
-                            }}
-                          />
-                        </Box>
-
-                        {/* Skill Level Labels */}
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            sx={{ fontSize: "0.7rem" }}
-                          >
-                            Basic
-                          </Typography>
-                          <Box sx={{ display: "flex", gap: 0.5 }}>
-                            {[1, 2, 3, 4, 5].map((dot) => (
-                              <Box
-                                key={dot}
-                                sx={{
-                                  width: 6,
-                                  height: 6,
-                                  borderRadius: "50%",
-                                  backgroundColor:
-                                    dot <= Math.ceil(skill.level / 20)
-                                      ? skill.color
-                                      : alpha(
-                                          theme.palette.text.secondary,
-                                          0.2,
-                                        ),
-                                  transition: "all 0.3s ease",
-                                  transform:
-                                    dot <= Math.ceil(skill.level / 20)
-                                      ? "scale(1.2)"
-                                      : "scale(1)",
-                                }}
-                              />
-                            ))}
-                          </Box>
-                          <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            sx={{ fontSize: "0.7rem" }}
-                          >
-                            Advanced
-                          </Typography>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Slide>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-
-          {/* Stats Section */}
-          <Box sx={{ mb: { xs: 8, md: 10 } }}>
-            <Fade in={mounted} timeout={1000}>
-              <Typography
-                variant="h4"
-                fontWeight={700}
-                textAlign="center"
-                sx={{ mb: 4 }}
-              >
-                My Journey in Numbers
-              </Typography>
-            </Fade>
-
-            <Grid container spacing={3} justifyContent="center">
-              {stats.map((stat, index) => (
-                <Grid item xs={12} sm={6} md={4} key={stat.label}>
-                  <Zoom in={animatedStats[index]} timeout={800}>
-                    <Card
-                      sx={{
-                        textAlign: "center",
-                        p: 3,
-                        borderRadius: 2,
-                        height: "100%",
-                        background: frostStyle.background,
-                        backdropFilter: frostStyle.backdropFilter,
-                        border: frostStyle.border,
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          transform: "translateY(-8px)",
-                          boxShadow: `0 15px 35px ${alpha(theme.palette.primary.main, 0.1)}`,
-                        },
-                      }}
-                    >
-                      <CardContent>
-                        <Box
-                          sx={{
-                            color: theme.palette.primary.main,
-                            mb: 2,
-                            animation: `${float} 4s ease-in-out infinite`,
-                          }}
-                        >
-                          {React.cloneElement(stat.icon, {
-                            sx: { fontSize: "2.5rem" },
-                          })}
-                        </Box>
-                        <Typography
-                          variant="h2"
-                          fontWeight={900}
-                          color="primary"
-                          sx={{
-                            mb: 1,
-                            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-                            backgroundClip: "text",
-                            WebkitBackgroundClip: "text",
-                            color: "transparent",
-                          }}
-                        >
-                          {stat.value}
-                        </Typography>
-                        <Typography
-                          variant="h6"
-                          fontWeight={600}
-                          sx={{ mb: 1 }}
-                        >
-                          {stat.label}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {stat.description}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Zoom>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-
-          {/* CTA Section */}
-          <Fade in={mounted} timeout={1200}>
-            <Paper
+      {/* About & Activity */}
+      <section style={{ marginBottom: "clamp(1.5rem, 4vw, 3rem)" }}>
+        <Stack
+          direction={{ xs: "column", lg: "row" }}
+          spacing={{ xs: 2, lg: 3 }}
+        >
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 2.5, sm: 3 },
+              flex: 1,
+              borderRadius: 2,
+              border: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Typography
+              variant="h5"
+              fontWeight={700}
+              gutterBottom
+              sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+            >
+              About Me
+            </Typography>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              paragraph
               sx={{
-                p: { xs: 4, md: 6 },
-                borderRadius: 2,
-                textAlign: "center",
-                background: frostStyle.background,
-                backdropFilter: frostStyle.backdropFilter,
-                border: frostStyle.border,
+                fontSize: { xs: "0.9375rem", sm: "1rem" },
+                mb: 2,
               }}
             >
-              <Typography variant="h4" fontWeight={700} sx={{ mb: 2 }}>
-                Let's Build Something Amazing
-              </Typography>
+              I craft beautiful, performant web experiences with a focus on
+              accessibility and user delight. Every pixel matters, and every
+              interaction should feel natural.
+            </Typography>
+
+            {/* Improved skill chips with better mobile spacing */}
+            <Stack
+              direction="row"
+              spacing={1}
+              flexWrap="wrap"
+              useFlexGap
+              sx={{
+                gap: 1,
+                "& .MuiChip-root": {
+                  m: 0,
+                  flexShrink: 0,
+                },
+              }}
+            >
+              {skills.map((skill) => (
+                <Chip
+                  key={skill}
+                  label={skill}
+                  size="small"
+                  sx={{
+                    bgcolor:
+                      theme.palette.mode === "dark"
+                        ? "rgba(255,255,255,0.08)"
+                        : "rgba(0,0,0,0.06)",
+                    fontWeight: 600,
+                    borderRadius: 1.5,
+                    px: 0.5,
+                  }}
+                />
+              ))}
+            </Stack>
+          </Paper>
+
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 2.5, sm: 3 },
+              flex: 1,
+              borderRadius: 2,
+              border: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Typography
+              variant="h5"
+              fontWeight={700}
+              gutterBottom
+              sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+            >
+              Current Activity
+            </Typography>
+            {lanyardLoading ? (
+              <Stack spacing={1}>
+                <Skeleton width="80%" height={24} />
+                <Skeleton width="60%" height={20} />
+              </Stack>
+            ) : primaryActivity ? (
+              <Stack direction="row" spacing={2} alignItems="flex-start">
+                {/* Activity Image */}
+                <ActivityImage activity={primaryActivity} />
+
+                <Stack spacing={0.5} flex={1}>
+                  <Typography
+                    variant="body1"
+                    fontWeight={600}
+                    sx={{ fontSize: { xs: "0.9375rem", sm: "1rem" } }}
+                  >
+                    {primaryActivity.name}
+                  </Typography>
+                  {primaryActivity.details && (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontSize: { xs: "0.875rem", sm: "0.875rem" } }}
+                    >
+                      {primaryActivity.details}
+                    </Typography>
+                  )}
+                  {primaryActivity.state && (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ fontSize: { xs: "0.75rem", sm: "0.8125rem" } }}
+                    >
+                      {primaryActivity.state}
+                    </Typography>
+                  )}
+                  {primaryActivity.timestamps?.start && (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{
+                        fontSize: { xs: "0.7rem", sm: "0.75rem" },
+                        mt: 0.5,
+                      }}
+                    >
+                      Started{" "}
+                      {new Date(
+                        primaryActivity.timestamps.start,
+                      ).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </Typography>
+                  )}
+                </Stack>
+              </Stack>
+            ) : (
               <Typography
-                variant="h6"
+                variant="body2"
                 color="text.secondary"
-                sx={{ mb: 4, maxWidth: 500, mx: "auto" }}
+                sx={{ fontSize: { xs: "0.875rem", sm: "0.875rem" } }}
               >
-                I'm always open to discussing new projects, creative ideas, or
-                opportunities to be part of your visions.
+                Not currently active on Discord. Probably coding something
+                awesome!
               </Typography>
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                justifyContent="center"
-                alignItems="center"
+            )}
+          </Paper>
+        </Stack>
+      </section>
+
+      {/* Projects Section */}
+      <section>
+        <header style={{ marginBottom: "1.5rem" }}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            alignItems={{ xs: "flex-start", sm: "center" }}
+            justifyContent="space-between"
+            spacing={{ xs: 1.5, sm: 2 }}
+          >
+            <Stack>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <TrendingUpIcon
+                  color="primary"
+                  sx={{ fontSize: { xs: 28, sm: 32 } }}
+                />
+                <Typography
+                  variant="h4"
+                  fontWeight={800}
+                  sx={{
+                    fontSize: { xs: "1.75rem", sm: "2rem", md: "2.125rem" },
+                  }}
+                >
+                  Featured Projects
+                </Typography>
+              </Stack>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  fontSize: { xs: "0.875rem", sm: "0.875rem" },
+                  mt: 0.5,
+                }}
               >
-                <Button
+                {reposLoading
+                  ? "Loading projects..."
+                  : `${repos?.length || 0} recent repositories`}
+              </Typography>
+            </Stack>
+
+            <Button
+              variant="text"
+              endIcon={<RocketLaunchIcon />}
+              href="https://github.com/kmmiio99o?tab=repositories"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                textTransform: "none",
+                fontWeight: 600,
+                display: { xs: "none", sm: "flex" },
+              }}
+            >
+              View All
+            </Button>
+          </Stack>
+        </header>
+
+        <article
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fill, minmax(min(100%, 300px), 1fr))",
+            gap: "1rem",
+          }}
+        >
+          {reposLoading ? (
+            Array.from({ length: 6 }).map((_, idx) => (
+              <Card
+                key={idx}
+                elevation={0}
+                sx={{
+                  border: `1px solid ${theme.palette.divider}`,
+                  borderRadius: 2,
+                }}
+              >
+                <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
+                  <Stack spacing={2}>
+                    <Stack direction="row" justifyContent="space-between">
+                      <Skeleton variant="circular" width={56} height={56} />
+                      <Skeleton width={40} height={24} />
+                    </Stack>
+                    <Skeleton width="80%" height={28} />
+                    <Skeleton width="100%" height={20} />
+                    <Skeleton width="90%" height={20} />
+                    <Stack direction="row" spacing={1}>
+                      <Skeleton
+                        width={80}
+                        height={24}
+                        sx={{ borderRadius: 2 }}
+                      />
+                      <Skeleton
+                        width={70}
+                        height={24}
+                        sx={{ borderRadius: 2 }}
+                      />
+                    </Stack>
+                  </Stack>
+                </CardContent>
+              </Card>
+            ))
+          ) : repos && repos.length > 0 ? (
+            repos.map((repo, idx) => (
+              <ProjectCard key={repo.name} repo={repo} index={idx} />
+            ))
+          ) : (
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 3, sm: 4 },
+                gridColumn: "1 / -1",
+                textAlign: "center",
+                border: `1px solid ${theme.palette.divider}`,
+                borderRadius: 2,
+              }}
+            >
+              <Typography variant="body1" color="text.secondary">
+                Unable to load repositories. Visit my{" "}
+                <MuiLink
                   href="https://github.com/kmmiio99o"
                   target="_blank"
                   rel="noopener noreferrer"
-                  variant="contained"
-                  size="large"
-                  startIcon={<GitHubIcon />}
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
-                    fontWeight: 600,
-                    textTransform: "none",
-                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-                    "&:hover": {
-                      transform: "translateY(-2px)",
-                      boxShadow: `0 8px 25px ${alpha(theme.palette.primary.main, 0.3)}`,
-                    },
-                    transition: "all 0.3s ease",
-                  }}
                 >
-                  Explore My GitHub
-                </Button>
-                <Button
-                  href="mailto:kmmiio99o@gmail.com"
-                  variant="outlined"
-                  size="large"
-                  startIcon={<EmailIcon />}
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
-                    fontWeight: 600,
-                    textTransform: "none",
-                    borderWidth: 2,
-                    "&:hover": {
-                      borderWidth: 2,
-                      transform: "translateY(-2px)",
-                      background: alpha(theme.palette.primary.main, 0.05),
-                    },
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  Get In Touch
-                </Button>
-              </Stack>
+                  GitHub profile
+                </MuiLink>{" "}
+                directly.
+              </Typography>
             </Paper>
-          </Fade>
-        </Box>
-      </Container>
-    </Box>
+          )}
+        </article>
+
+        {/* Mobile View All Button */}
+        <Stack
+          alignItems="center"
+          sx={{
+            mt: 3,
+            display: { xs: "flex", sm: "none" },
+          }}
+        >
+          <Button
+            variant="outlined"
+            fullWidth
+            endIcon={<RocketLaunchIcon />}
+            href="https://github.com/kmmiio99o?tab=repositories"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              textTransform: "none",
+              fontWeight: 600,
+              py: 1.2,
+              borderRadius: 1.5,
+            }}
+          >
+            View All Projects
+          </Button>
+        </Stack>
+      </section>
+    </Container>
   );
 };
 

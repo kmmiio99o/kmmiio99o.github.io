@@ -1,405 +1,225 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
+  AppBar,
+  Toolbar,
   Box,
-  Button,
   IconButton,
-  useTheme,
   Typography,
+  useTheme,
   useMediaQuery,
+  Slide,
+  alpha,
+  Avatar,
 } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import HomeIcon from "@mui/icons-material/Home";
-import PersonIcon from "@mui/icons-material/Person";
-import WorkIcon from "@mui/icons-material/Work";
+import { Link, useLocation } from "react-router-dom";
+import MobileNavDrawer from "./MobileNavDrawer";
+import DesktopNav from "./DesktopNav";
 
 interface NavbarProps {
   themeMode: "light" | "dark";
   toggleTheme: () => void;
 }
 
-const navigationItems = [
-  { name: "Home", path: "/", icon: HomeIcon },
-  { name: "About", path: "/about", icon: PersonIcon },
-  { name: "Projects", path: "/projects", icon: WorkIcon },
-];
-
 const Navbar: React.FC<NavbarProps> = ({ themeMode, toggleTheme }) => {
-  const location = useLocation();
   const theme = useTheme();
+  const location = useLocation();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeIndicator, setActiveIndicator] = useState({ left: 0, width: 0 });
-  const [isInitialized, setIsInitialized] = useState(false);
-  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [navbarOpacity, setNavbarOpacity] = useState(0);
+  const [avatarSrc, setAvatarSrc] = useState<string | null>(
+    "https://github.com/kmmiio99o.png",
+  );
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const scrollY = window.scrollY;
+      const maxScroll = 80; // Distance to reach full opacity
+      const opacity = Math.min(scrollY / maxScroll, 1);
+
+      // Add some resistance for smoother animation
+      const smoothedOpacity = opacity < 0.5 ? opacity * 0.7 : opacity;
+      setNavbarOpacity(smoothedOpacity);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial calculation
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Update active indicator position
-  useEffect(() => {
-    const updateActiveIndicator = () => {
-      const activeIndex = navigationItems.findIndex(
-        (item) => item.path === location.pathname,
-      );
+  const toggleDrawer = (open: boolean) => () => {
+    setDrawerOpen(open);
+  };
 
-      if (activeIndex !== -1 && buttonRefs.current[activeIndex]) {
-        const activeButton = buttonRefs.current[activeIndex];
-        if (activeButton) {
-          const { offsetLeft, offsetWidth } = activeButton;
-          setActiveIndicator({
-            left: offsetLeft,
-            width: offsetWidth,
-          });
-        }
-      }
+  // Calculate values based on opacity
+  const backgroundColor = alpha(
+    theme.palette.mode === "dark" ? theme.palette.background.paper : "#ffffff",
+    navbarOpacity * 0.95,
+  );
 
-      if (!isInitialized) {
-        setTimeout(() => setIsInitialized(true), 100);
-      }
-    };
-
-    const timer1 = setTimeout(updateActiveIndicator, 10);
-    const timer2 = setTimeout(updateActiveIndicator, 100);
-    const timer3 = setTimeout(updateActiveIndicator, 300);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-    };
-  }, [location.pathname, isInitialized]);
+  const blurAmount = Math.min(navbarOpacity * 15, 12);
+  const borderOpacity = navbarOpacity * 0.15;
 
   return (
     <>
-      {/* Main Navigation Container */}
-      <Box
-        component="nav"
-        sx={{
-          display: "flex",
-          justifyContent: { xs: "flex-start", md: "center" },
-          position: "fixed",
-          bottom: { xs: 24, md: 24 },
-          left: 0,
-          right: 0,
-          px: { xs: 2, sm: 3, md: 4 },
-          zIndex: 1000,
-        }}
-      >
-        {/* Main Navbar Container */}
-        <Box
+      <Slide appear={true} direction="down" in timeout={400}>
+        <AppBar
+          position="fixed"
+          elevation={0}
+          color="transparent"
           sx={{
-            width: {
-              xs: "calc(100% - 100px)",
-              sm: "calc(100% - 90px)",
-              md: "auto",
-            },
-            maxWidth: { xs: 420, md: "none" },
-            borderRadius: { xs: 4, md: 8 },
-            background:
-              theme.palette.mode === "dark"
-                ? "rgba(30, 30, 30, 0.4)"
-                : "rgba(255, 255, 255, 0.4)",
-            backdropFilter: "blur(24px) saturate(200%)",
-            WebkitBackdropFilter: "blur(24px) saturate(200%)",
-            border: `1px solid ${
-              theme.palette.mode === "dark"
-                ? "rgba(255, 255, 255, 0.15)"
-                : "rgba(0, 0, 0, 0.15)"
-            }`,
-            boxShadow:
-              theme.palette.mode === "dark"
-                ? "0 20px 40px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-                : "0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
-            minHeight: { xs: "72px", md: "72px" },
-            display: "flex",
-            alignItems: "center",
-            px: { xs: 2, sm: 3, md: 4 },
-            ml: { xs: 2, md: 0 },
-            transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              borderRadius: "inherit",
-              background:
-                theme.palette.mode === "dark"
-                  ? "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%)"
-                  : "linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%)",
-              zIndex: 0,
-            },
+            backgroundColor,
+            backdropFilter: `blur(${blurAmount}px)`,
+            WebkitBackdropFilter: `blur(${blurAmount}px)`,
+            borderBottom: `1px solid ${alpha(theme.palette.divider, borderOpacity)}`,
+            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
-          {/* Navigation Content */}
-          <Box
+          <Toolbar
             sx={{
-              display: "flex",
+              px: { xs: 2, sm: 2.5, md: 3 },
+              py: 1,
+              minHeight: { xs: 60, md: 68 },
               justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-              position: "relative",
-              zIndex: 1,
-              gap: { xs: 1.5, md: 3 },
             }}
           >
-            {/* Navigation Items Container with Active Indicator */}
+            {/* Left side - Brand */}
             <Box
+              component={Link}
+              to="/"
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: { xs: 2, sm: 2.5, md: 3 },
-                flex: 1,
-                justifyContent: "center",
-                position: "relative",
-              }}
-            >
-              {/* Active Indicator */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: activeIndicator.left,
-                  width: activeIndicator.width,
-                  height: {
-                    xs: "56px",
-                    sm: "56px",
-                    md: "48px",
-                  },
-                  transform: "translateY(-50%)",
-                  borderRadius: { xs: 4, md: 6 },
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "rgba(255, 255, 255, 0.18)"
-                      : "rgba(0, 0, 0, 0.12)",
-                  backdropFilter: "blur(12px) saturate(180%)",
-                  boxShadow:
-                    theme.palette.mode === "dark"
-                      ? "0 6px 20px rgba(255, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15)"
-                      : "0 6px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
-                  transition: isInitialized
-                    ? "left 0.5s cubic-bezier(0.4, 0, 0.2, 1), width 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
-                    : "none",
-                  zIndex: 0,
-                  opacity: isInitialized ? 1 : 0,
-                }}
-              />
-
-              {navigationItems.map((item, index) => {
-                const isActive = location.pathname === item.path;
-                const IconComponent = item.icon;
-
-                return (
-                  <Button
-                    key={item.name}
-                    component={Link}
-                    to={item.path}
-                    disableRipple
-                    ref={(el: HTMLButtonElement | null) => {
-                      buttonRefs.current[index] = el;
-                    }}
-                    sx={{
-                      color: isActive ? "primary.main" : "text.secondary",
-                      fontWeight: isActive ? 700 : 500,
-                      fontSize: {
-                        xs: "0.75rem",
-                        sm: "0.8125rem",
-                        md: "0.875rem",
-                      },
-                      textTransform: "none",
-                      minWidth: {
-                        xs: "64px",
-                        sm: "68px",
-                        md: "100px",
-                      },
-                      width: {
-                        xs: "64px",
-                        sm: "68px",
-                        md: "100px",
-                      },
-                      height: {
-                        xs: "62px",
-                        sm: "62px",
-                        md: "56px",
-                      },
-                      px: { xs: 1, sm: 1.5, md: 2 },
-                      borderRadius: { xs: 4, md: 4 },
-                      display: "flex",
-                      flexDirection: { xs: "column", md: "row" },
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: { xs: 0.5, sm: 0.5, md: 1 },
-                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                      position: "relative",
-                      zIndex: 1,
-                      backgroundColor: "transparent !important",
-
-                      "&:hover": {
-                        color: "primary.main",
-                        backgroundColor: "transparent !important",
-                      },
-                    }}
-                  >
-                    <IconComponent
-                      sx={{
-                        fontSize: {
-                          xs: "1.3rem",
-                          sm: "1.4rem",
-                          md: "1.4rem",
-                        },
-                      }}
-                    />
-                    <Typography
-                      variant={isMobile ? "caption" : "body2"}
-                      sx={{
-                        fontSize: {
-                          xs: "0.65rem",
-                          sm: "0.72rem",
-                          md: "0.8rem",
-                        },
-                        lineHeight: 1,
-                        fontWeight: { xs: 600, md: 600 },
-                      }}
-                    >
-                      {item.name}
-                    </Typography>
-                  </Button>
-                );
-              })}
-            </Box>
-
-            {/* Theme Toggle - Separator (hidden on mobile, shown on desktop) */}
-            <Box
-              sx={{
-                height: { xs: "24px", sm: "28px", md: "32px" },
-                width: "1px",
-                background:
-                  theme.palette.mode === "dark"
-                    ? "rgba(255, 255, 255, 0.2)"
-                    : "rgba(0, 0, 0, 0.2)",
-                mx: { xs: 1, sm: 2 },
-                display: { xs: "none", md: "block" },
-              }}
-            />
-
-            {/* Theme Toggle - Hidden on mobile (we'll show it separately) */}
-            <IconButton
-              onClick={toggleTheme}
-              disableRipple
-              sx={{
-                color: "text.secondary",
-                width: { xs: "52px", sm: "52px", md: "52px" },
-                height: { xs: "52px", sm: "52px", md: "52px" },
-                minWidth: { xs: "52px", sm: "52px", md: "52px" },
-                borderRadius: { xs: 4, md: 4 },
-                background:
-                  theme.palette.mode === "dark"
-                    ? "rgba(255, 255, 255, 0.12)"
-                    : "rgba(0, 0, 0, 0.1)",
-                backdropFilter: "blur(12px)",
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                display: { xs: "none", md: "flex" },
-
+                gap: 1.5,
+                textDecoration: "none",
                 "&:hover": {
-                  color: "primary.main",
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "rgba(255, 255, 255, 0.18)"
-                      : "rgba(0, 0, 0, 0.15)",
+                  "& .brand-text": {
+                    transform: "translateX(2px)",
+                  },
                 },
               }}
             >
-              {themeMode === "dark" ? (
-                <Brightness7Icon
-                  sx={{
-                    fontSize: {
-                      xs: "1.3rem",
-                      sm: "1.3rem",
-                      md: "1.4rem",
-                    },
-                  }}
-                />
-              ) : (
-                <Brightness4Icon
-                  sx={{
-                    fontSize: {
-                      xs: "1.3rem",
-                      sm: "1.3rem",
-                      md: "1.4rem",
-                    },
-                  }}
-                />
-              )}
-            </IconButton>
-          </Box>
-        </Box>
-      </Box>
+              <Avatar
+                src={avatarSrc ?? undefined}
+                imgProps={{
+                  onError: () => setAvatarSrc(null),
+                }}
+                sx={{
+                  width: { xs: 36, md: 40 },
+                  height: { xs: 36, md: 40 },
+                  bgcolor: "primary.main",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  transition: "transform 0.2s ease",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                  },
+                }}
+              >
+                K
+              </Avatar>
+              <Typography
+                variant="h6"
+                className="brand-text"
+                sx={{
+                  fontWeight: 800,
+                  letterSpacing: "-0.02em",
+                  background:
+                    "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  fontSize: { xs: "1.25rem", md: "1.5rem" },
+                  transition: "transform 0.2s ease",
+                }}
+              >
+                kmmiio99o
+              </Typography>
+            </Box>
 
-      {/* Separate Theme Toggle for Mobile */}
-      {isMobile && (
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: 24,
-            right: 20,
-            zIndex: 1001,
-            display: { xs: "block", md: "none" },
-          }}
-        >
-          <IconButton
-            onClick={toggleTheme}
-            disableRipple
-            sx={{
-              color: "text.secondary",
-              width: "69px",
-              height: "69px",
-              borderRadius: 4,
-              background:
-                theme.palette.mode === "dark"
-                  ? "rgba(30, 30, 30, 0.4)"
-                  : "rgba(255, 255, 255, 0.4)",
-              backdropFilter: "blur(24px) saturate(200%)",
-              WebkitBackdropFilter: "blur(24px) saturate(200%)",
-              border: `1px solid ${
-                theme.palette.mode === "dark"
-                  ? "rgba(255, 255, 255, 0.15)"
-                  : "rgba(0, 0, 0, 0.15)"
-              }`,
-              boxShadow:
-                theme.palette.mode === "dark"
-                  ? "0 20px 40px rgba(0, 0, 0, 0.4), 0 8px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-                  : "0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
-              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-
-              "&:hover": {
-                color: "primary.main",
-                background:
-                  theme.palette.mode === "dark"
-                    ? "rgba(30, 30, 30, 0.5)"
-                    : "rgba(255, 255, 255, 0.5)",
-                backdropFilter: "blur(28px) saturate(220%)",
-                WebkitBackdropFilter: "blur(28px) saturate(220%)",
-              },
-            }}
-          >
-            {themeMode === "dark" ? (
-              <Brightness7Icon sx={{ fontSize: "1.7rem" }} />
-            ) : (
-              <Brightness4Icon sx={{ fontSize: "1.7rem" }} />
+            {/* Center - Desktop Navigation */}
+            {!isMobile && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                }}
+              >
+                <DesktopNav currentPath={location.pathname} />
+              </Box>
             )}
-          </IconButton>
-        </Box>
-      )}
+
+            {/* Right side - Theme toggle & Mobile menu */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {/* Theme Toggle (always visible) */}
+              <IconButton
+                onClick={toggleTheme}
+                aria-label={
+                  themeMode === "dark"
+                    ? "Switch to light mode"
+                    : "Switch to dark mode"
+                }
+                size="small"
+                sx={{
+                  width: { xs: 40, md: 44 },
+                  height: { xs: 40, md: 44 },
+                  borderRadius: 1.5,
+                  color: "text.secondary",
+                  backgroundColor: alpha(theme.palette.action.hover, 0.3),
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                    color: "primary.main",
+                  },
+                }}
+              >
+                {themeMode === "dark" ? (
+                  <Brightness7Icon sx={{ fontSize: { xs: 20, md: 22 } }} />
+                ) : (
+                  <Brightness4Icon sx={{ fontSize: { xs: 20, md: 22 } }} />
+                )}
+              </IconButton>
+
+              {/* Mobile Menu Button */}
+              {isMobile && (
+                <IconButton
+                  onClick={toggleDrawer(true)}
+                  aria-label="Open navigation menu"
+                  size="small"
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 1.5,
+                    color: "text.secondary",
+                    backgroundColor: alpha(theme.palette.action.hover, 0.3),
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                      color: "primary.main",
+                    },
+                  }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              )}
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Slide>
+
+      {/* Spacer to prevent content from hiding under AppBar */}
+      <Box sx={{ height: { xs: 60, md: 68 } }} />
+
+      {/* Mobile Drawer */}
+      <MobileNavDrawer
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        currentPath={location.pathname}
+      />
     </>
   );
 };
