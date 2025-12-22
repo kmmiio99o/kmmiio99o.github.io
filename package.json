@@ -4,7 +4,7 @@
   "description": "Personal portfolio website with Material You design deployed as Cloudflare Worker",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "bun run build && wrangler deploy",
