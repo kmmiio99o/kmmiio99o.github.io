@@ -16,6 +16,12 @@ import {
   Skeleton,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import Snowfall from "../components/Snowfall";
+
+import {
+  subscribeLanyard,
+  getDiscordAvatarUrl as resolveDiscordAvatarUrl,
+} from "../api/lanyard";
 
 import EmailIcon from "@mui/icons-material/Email";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -61,19 +67,28 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
   useEffect(() => {
     if (onTabSwitch) onTabSwitch();
 
-    fetch("https://api.lanyard.rest/v1/users/879393496627306587")
-      .then((res) => res.json())
-      .then((data) => {
+    // Subscribe to lanyard updates via the shared polling helper.
+    // The helper will call our callback whenever data changes (it handles deduping).
+    setLoading(true);
+    const unsubscribe = subscribeLanyard(
+      "879393496627306587",
+      (data) => {
         setLanyard(data);
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Lanyard API error:", error);
-        setLoading(false);
-      });
+      },
+      5000, // poll interval 5s
+    );
 
     const timer = setTimeout(() => setAnimateSkills(true), 500);
-    return () => clearTimeout(timer);
+    return () => {
+      // unsubscribe from shared polling and clear timers
+      try {
+        unsubscribe();
+      } catch {
+        // ignore
+      }
+      clearTimeout(timer);
+    };
   }, [onTabSwitch]);
 
   const user = lanyard?.data?.discord_user;
@@ -83,10 +98,9 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
   const activities = lanyard?.data?.activities || [];
   const primaryActivity = activities.find((a: any) => a.type !== 4);
 
+  // Use centralized avatar resolver from the lanyard helper (handles animated avatars)
   const getDiscordAvatarUrl = (user?: { id?: string; avatar?: string }) => {
-    if (!user?.avatar || !user?.id) return undefined;
-    const format = user.avatar.startsWith("a_") ? "gif" : "png";
-    return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${format}?size=256`;
+    return resolveDiscordAvatarUrl(user);
   };
 
   return (
@@ -98,19 +112,32 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
         minHeight: "100vh",
       }}
     >
+      <Snowfall
+        count={140}
+        speed={1.15}
+        wind={0.18}
+        color={theme.palette.mode === "dark" ? "#ffffff" : "#f0f4ff"}
+        opacity={0.32}
+        zIndex={-1}
+      />
       {/* Hero Card with Profile */}
       <Card
         elevation={0}
         sx={{
           mb: 4,
-          borderRadius: 4,
+          borderRadius: 2,
           background:
             theme.palette.mode === "dark"
-              ? "linear-gradient(135deg, rgba(30, 30, 46, 0.8) 0%, rgba(24, 24, 37, 0.9) 100%)"
-              : "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 255, 0.98) 100%)",
-          border: `1px solid ${theme.palette.divider}`,
+              ? "linear-gradient(135deg, rgba(30, 30, 50, 0.1) 0%, rgba(50, 50, 70, 0.05) 100%)"
+              : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+          border: `1px solid ${
+            theme.palette.mode === "dark"
+              ? "rgba(255, 255, 255, 0.08)"
+              : "rgba(0, 0, 0, 0.08)"
+          }`,
           overflow: "visible",
           position: "relative",
+          backdropFilter: "blur(8px)",
         }}
       >
         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
@@ -161,7 +188,7 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   sx={{
                     textAlign: { xs: "center", sm: "left" },
                     background:
-                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -204,21 +231,41 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   <Chip
                     label={statusConfig.label}
                     sx={{
-                      bgcolor: `${statusConfig.color}20`,
+                      bgcolor: `${statusConfig.color}15`,
                       color: statusConfig.color,
                       fontWeight: 700,
-                      border: `2px solid ${statusConfig.color}`,
+                      border: `1px solid ${statusConfig.color}20`,
+                      borderRadius: 1.5,
+                      backdropFilter: "blur(4px)",
                     }}
                   />
                   <Chip
                     icon={<LocationOnIcon />}
                     label="Poland"
                     variant="outlined"
+                    sx={{
+                      borderRadius: 1.5,
+                      backdropFilter: "blur(4px)",
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : "rgba(99, 102, 241, 0.25)"
+                      }`,
+                    }}
                   />
                   <Chip
                     icon={<LanguageIcon />}
                     label="16 years old"
                     variant="outlined"
+                    sx={{
+                      borderRadius: 1.5,
+                      backdropFilter: "blur(4px)",
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : "rgba(99, 102, 241, 0.25)"
+                      }`,
+                    }}
                   />
                 </Stack>
               )}
@@ -235,8 +282,16 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
+                    borderRadius: 1.5,
                     width: { xs: "100%", sm: "auto" },
+                    backdropFilter: "blur(8px)",
+                    "&:hover": {
+                      boxShadow: `0 8px 25px ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(99, 102, 241, 0.3)"
+                          : "rgba(99, 102, 241, 0.2)"
+                      }`,
+                    },
                   }}
                 >
                   Email Me
@@ -250,8 +305,21 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
+                    borderRadius: 1.5,
                     width: { xs: "100%", sm: "auto" },
+                    backdropFilter: "blur(8px)",
+                    border: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.15)"
+                        : "rgba(99, 102, 241, 0.25)"
+                    }`,
+                    "&:hover": {
+                      borderColor: theme.palette.primary.main,
+                      background:
+                        theme.palette.mode === "dark"
+                          ? "rgba(99, 102, 241, 0.1)"
+                          : "rgba(99, 102, 241, 0.06)",
+                    },
                   }}
                 >
                   GitHub
@@ -265,8 +333,21 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
+                    borderRadius: 1.5,
                     width: { xs: "100%", sm: "auto" },
+                    backdropFilter: "blur(8px)",
+                    border: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.15)"
+                        : "rgba(99, 102, 241, 0.25)"
+                    }`,
+                    "&:hover": {
+                      borderColor: theme.palette.primary.main,
+                      background:
+                        theme.palette.mode === "dark"
+                          ? "rgba(99, 102, 241, 0.1)"
+                          : "rgba(99, 102, 241, 0.06)",
+                    },
                   }}
                 >
                   Discord
@@ -282,11 +363,17 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                 elevation={0}
                 sx={{
                   p: 2,
-                  bgcolor:
+                  background:
                     theme.palette.mode === "dark"
-                      ? "rgba(255,255,255,0.05)"
-                      : "rgba(0,0,0,0.03)",
+                      ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                      : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+                  border: `1px solid ${
+                    theme.palette.mode === "dark"
+                      ? "rgba(255, 255, 255, 0.08)"
+                      : "rgba(0, 0, 0, 0.08)"
+                  }`,
                   borderRadius: 2,
+                  backdropFilter: "blur(8px)",
                 }}
               >
                 <Stack direction="row" spacing={2} alignItems="center">
@@ -306,16 +393,29 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       sx={{
                         width: 56,
                         height: 56,
-                        borderRadius: 2,
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(0, 0, 0, 0.08)"
+                        }`,
                       }}
                     />
                   ) : (
                     <Avatar
                       sx={{
-                        bgcolor: "primary.main",
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(99, 102, 241, 0.2)"
+                            : "rgba(99, 102, 241, 0.15)",
                         width: 56,
                         height: 56,
-                        borderRadius: 2,
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(0, 0, 0, 0.08)"
+                        }`,
                       }}
                     >
                       <CodeIcon sx={{ fontSize: 32 }} />
@@ -366,10 +466,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
         <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 3 }}>
           <Avatar
             sx={{
-              bgcolor: "secondary.main",
+              bgcolor:
+                theme.palette.mode === "dark"
+                  ? "rgba(168, 85, 247, 0.2)"
+                  : "rgba(168, 85, 247, 0.15)",
               width: 48,
               height: 48,
-              boxShadow: `0 4px 12px ${alpha(theme.palette.secondary.main, 0.3)}`,
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.15)"
+                  : "rgba(168, 85, 247, 0.25)"
+              }`,
+              backdropFilter: "blur(8px)",
             }}
           >
             <LanguageIcon sx={{ fontSize: 24 }} />
@@ -396,17 +504,22 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
               elevation={0}
               sx={{
                 flex: 1,
-                border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
-                borderRadius: 3,
+                border: `1px solid ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.08)"
+                    : "rgba(0, 0, 0, 0.08)"
+                }`,
+                borderRadius: 2,
                 background:
                   theme.palette.mode === "dark"
-                    ? "linear-gradient(145deg, rgba(99, 102, 241, 0.1) 0%, rgba(30, 30, 46, 0.3) 100%)"
-                    : "linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%)",
-                transition: "all 0.25s ease",
+                    ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                    : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                backdropFilter: "blur(8px)",
                 "&:hover": {
                   transform: "translateY(-4px)",
-                  borderColor: "primary.main",
-                  boxShadow: `0 8px 20px ${alpha(theme.palette.primary.main, 0.1)}`,
+                  boxShadow: theme.shadows[8],
+                  borderColor: theme.palette.primary.main,
                 },
               }}
             >
@@ -414,10 +527,20 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Avatar
                     sx={{
-                      bgcolor: alpha(theme.palette.primary.main, 0.1),
+                      bgcolor:
+                        theme.palette.mode === "dark"
+                          ? "rgba(99, 102, 241, 0.2)"
+                          : "rgba(99, 102, 241, 0.15)",
                       color: "primary.main",
                       width: 56,
                       height: 56,
+                      borderRadius: 1.5,
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : "rgba(99, 102, 241, 0.25)"
+                      }`,
+                      backdropFilter: "blur(8px)",
                     }}
                   >
                     <WorkIcon sx={{ fontSize: 28 }} />
@@ -451,17 +574,22 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
               elevation={0}
               sx={{
                 flex: 1,
-                border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
-                borderRadius: 3,
+                border: `1px solid ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.08)"
+                    : "rgba(0, 0, 0, 0.08)"
+                }`,
+                borderRadius: 2,
                 background:
                   theme.palette.mode === "dark"
-                    ? "linear-gradient(145deg, rgba(168, 85, 247, 0.1) 0%, rgba(30, 30, 46, 0.3) 100%)"
-                    : "linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%)",
-                transition: "all 0.25s ease",
+                    ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                    : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                backdropFilter: "blur(8px)",
                 "&:hover": {
                   transform: "translateY(-4px)",
-                  borderColor: "secondary.main",
-                  boxShadow: `0 8px 20px ${alpha(theme.palette.secondary.main, 0.1)}`,
+                  boxShadow: theme.shadows[8],
+                  borderColor: theme.palette.secondary.main,
                 },
               }}
             >
@@ -469,10 +597,20 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Avatar
                     sx={{
-                      bgcolor: alpha(theme.palette.secondary.main, 0.1),
+                      bgcolor:
+                        theme.palette.mode === "dark"
+                          ? "rgba(168, 85, 247, 0.2)"
+                          : "rgba(168, 85, 247, 0.15)",
                       color: "secondary.main",
                       width: 56,
                       height: 56,
+                      borderRadius: 1.5,
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : "rgba(168, 85, 247, 0.25)"
+                      }`,
+                      backdropFilter: "blur(8px)",
                     }}
                   >
                     <SchoolIcon sx={{ fontSize: 28 }} />
@@ -506,17 +644,22 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
           <Card
             elevation={0}
             sx={{
-              border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
-              borderRadius: 3,
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(0, 0, 0, 0.08)"
+              }`,
+              borderRadius: 2,
               background:
                 theme.palette.mode === "dark"
-                  ? "linear-gradient(145deg, rgba(16, 185, 129, 0.1) 0%, rgba(30, 30, 46, 0.3) 100%)"
-                  : "linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%)",
-              transition: "all 0.25s ease",
+                  ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                  : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              backdropFilter: "blur(8px)",
               "&:hover": {
                 transform: "translateY(-2px)",
-                borderColor: "success.main",
-                boxShadow: `0 4px 12px ${alpha(theme.palette.success.main, 0.1)}`,
+                boxShadow: theme.shadows[6],
+                borderColor: theme.palette.success.main,
               },
             }}
           >
@@ -525,10 +668,20 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                 <Stack direction="row" alignItems="center" spacing={1.5}>
                   <Avatar
                     sx={{
-                      bgcolor: alpha(theme.palette.success.main, 0.1),
+                      bgcolor:
+                        theme.palette.mode === "dark"
+                          ? "rgba(16, 185, 129, 0.2)"
+                          : "rgba(16, 185, 129, 0.15)",
                       color: "success.main",
                       width: 48,
                       height: 48,
+                      borderRadius: 1.5,
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : "rgba(16, 185, 129, 0.25)"
+                      }`,
+                      backdropFilter: "blur(8px)",
                     }}
                   >
                     <LanguageIcon sx={{ fontSize: 24 }} />
@@ -538,7 +691,7 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   </Typography>
                 </Stack>
 
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} flexWrap="wrap" gap={1}>
                   <Chip
                     label={
                       <Stack direction="row" alignItems="center" spacing={0.5}>
@@ -553,9 +706,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                     sx={{
                       fontWeight: 600,
                       height: 40,
-                      bgcolor: alpha(theme.palette.success.main, 0.1),
+                      bgcolor:
+                        theme.palette.mode === "dark"
+                          ? "rgba(16, 185, 129, 0.2)"
+                          : "rgba(16, 185, 129, 0.15)",
                       color: "success.main",
-                      border: `1px solid ${alpha(theme.palette.success.main, 0.2)}`,
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : "rgba(16, 185, 129, 0.25)"
+                      }`,
+                      borderRadius: 1.5,
+                      backdropFilter: "blur(4px)",
                     }}
                   />
                   <Chip
@@ -572,9 +734,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                     sx={{
                       fontWeight: 600,
                       height: 40,
-                      bgcolor: alpha(theme.palette.info.main, 0.1),
+                      bgcolor:
+                        theme.palette.mode === "dark"
+                          ? "rgba(59, 130, 246, 0.2)"
+                          : "rgba(59, 130, 246, 0.15)",
                       color: "info.main",
-                      border: `1px solid ${alpha(theme.palette.info.main, 0.2)}`,
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : "rgba(59, 130, 246, 0.25)"
+                      }`,
+                      borderRadius: 1.5,
+                      backdropFilter: "blur(4px)",
                     }}
                   />
                 </Stack>
@@ -598,10 +769,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
         <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 3 }}>
           <Avatar
             sx={{
-              bgcolor: "primary.main",
+              bgcolor:
+                theme.palette.mode === "dark"
+                  ? "rgba(99, 102, 241, 0.2)"
+                  : "rgba(99, 102, 241, 0.15)",
               width: 48,
               height: 48,
-              boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.3)}`,
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.15)"
+                  : "rgba(99, 102, 241, 0.25)"
+              }`,
+              backdropFilter: "blur(8px)",
             }}
           >
             <TrendingUpIcon sx={{ fontSize: 24 }} />
@@ -623,13 +802,17 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
         <Card
           elevation={0}
           sx={{
-            border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
-            borderRadius: 3,
+            border: `1px solid ${
+              theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.08)"
+                : "rgba(0, 0, 0, 0.08)"
+            }`,
+            borderRadius: 2,
             background:
               theme.palette.mode === "dark"
-                ? "linear-gradient(145deg, rgba(30, 30, 46, 0.6) 0%, rgba(24, 24, 37, 0.8) 100%)"
-                : "linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 250, 255, 0.98) 100%)",
-            overflow: "hidden",
+                ? "linear-gradient(135deg, rgba(30, 30, 50, 0.1) 0%, rgba(50, 50, 70, 0.05) 100%)"
+                : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+            backdropFilter: "blur(8px)",
           }}
         >
           <CardContent sx={{ p: { xs: 2.5, md: 3 } }}>
@@ -661,6 +844,8 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                           fontWeight: 700,
                           fontSize: 14,
                           border: `1px solid ${alpha(skill.color, 0.2)}`,
+                          borderRadius: 1.5,
+                          backdropFilter: "blur(4px)",
                         }}
                       >
                         {skill.name.charAt(0)}
@@ -689,7 +874,6 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       fontWeight={800}
                       sx={{
                         color: skill.color,
-                        textShadow: `0 2px 8px ${alpha(skill.color, 0.3)}`,
                       }}
                     >
                       {skill.level}%
@@ -702,18 +886,17 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       value={animateSkills ? skill.level : 0}
                       sx={{
                         height: 12,
-                        borderRadius: 3,
+                        borderRadius: 1.5,
                         bgcolor:
                           theme.palette.mode === "dark"
                             ? alpha(theme.palette.common.white, 0.08)
                             : alpha(theme.palette.common.black, 0.06),
                         "& .MuiLinearProgress-bar": {
-                          borderRadius: 3,
+                          borderRadius: 1.5,
                           background: `linear-gradient(90deg,
                             ${alpha(skill.color, 0.8)} 0%,
                             ${skill.color} 50%,
                             ${alpha(skill.color, 0.8)} 100%)`,
-                          boxShadow: `0 0 8px ${alpha(skill.color, 0.4)}`,
                           transition: `transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.15}s`,
                         },
                       }}
@@ -757,17 +940,22 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
           <Card
             elevation={0}
             sx={{
-              border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
-              borderRadius: 3,
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(0, 0, 0, 0.08)"
+              }`,
+              borderRadius: 2,
               background:
                 theme.palette.mode === "dark"
-                  ? "linear-gradient(145deg, rgba(199, 43, 100, 0.1) 0%, rgba(30, 30, 46, 0.3) 100%)"
-                  : "linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%)",
-              transition: "all 0.25s ease",
+                  ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                  : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              backdropFilter: "blur(8px)",
               "&:hover": {
                 transform: "translateY(-4px)",
-                borderColor: "error.main",
-                boxShadow: `0 8px 20px ${alpha(theme.palette.error.main, 0.1)}`,
+                boxShadow: theme.shadows[8],
+                borderColor: theme.palette.error.main,
               },
             }}
           >
@@ -779,11 +967,20 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
               >
                 <Avatar
                   sx={{
-                    bgcolor: alpha(theme.palette.error.main, 0.1),
+                    bgcolor:
+                      theme.palette.mode === "dark"
+                        ? "rgba(239, 68, 68, 0.2)"
+                        : "rgba(239, 68, 68, 0.15)",
                     color: "error.main",
                     width: 60,
                     height: 60,
-                    border: `2px solid ${alpha(theme.palette.error.main, 0.2)}`,
+                    border: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.15)"
+                        : "rgba(239, 68, 68, 0.25)"
+                    }`,
+                    borderRadius: 1.5,
+                    backdropFilter: "blur(8px)",
                   }}
                 >
                   <MovieIcon sx={{ fontSize: 28 }} />
@@ -803,8 +1000,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       size="small"
                       sx={{
                         fontWeight: 600,
-                        bgcolor: alpha(theme.palette.error.main, 0.1),
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(239, 68, 68, 0.2)"
+                            : "rgba(239, 68, 68, 0.15)",
                         color: "error.main",
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(239, 68, 68, 0.25)"
+                        }`,
+                        backdropFilter: "blur(4px)",
                       }}
                     />
                   </Stack>
@@ -819,13 +1026,21 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
+                    borderRadius: 1.5,
                     minWidth: 120,
-                    borderColor: "error.main",
+                    backdropFilter: "blur(8px)",
+                    border: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.15)"
+                        : "rgba(239, 68, 68, 0.25)"
+                    }`,
                     color: "error.main",
                     "&:hover": {
                       borderColor: "error.dark",
-                      bgcolor: alpha(theme.palette.error.main, 0.04),
+                      background:
+                        theme.palette.mode === "dark"
+                          ? "rgba(239, 68, 68, 0.1)"
+                          : "rgba(239, 68, 68, 0.06)",
                     },
                     width: { xs: "100%", sm: "auto" },
                     mt: { xs: 2, sm: 0 },
@@ -841,17 +1056,22 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
           <Card
             elevation={0}
             sx={{
-              border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
-              borderRadius: 3,
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(0, 0, 0, 0.08)"
+              }`,
+              borderRadius: 2,
               background:
                 theme.palette.mode === "dark"
-                  ? "linear-gradient(145deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 30, 46, 0.3) 100%)"
-                  : "linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%)",
-              transition: "all 0.25s ease",
+                  ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                  : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              backdropFilter: "blur(8px)",
               "&:hover": {
                 transform: "translateY(-4px)",
-                borderColor: "primary.main",
-                boxShadow: `0 8px 20px ${alpha(theme.palette.primary.main, 0.1)}`,
+                boxShadow: theme.shadows[8],
+                borderColor: theme.palette.primary.main,
               },
             }}
           >
@@ -863,11 +1083,20 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
               >
                 <Avatar
                   sx={{
-                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    bgcolor:
+                      theme.palette.mode === "dark"
+                        ? "rgba(99, 102, 241, 0.2)"
+                        : "rgba(99, 102, 241, 0.15)",
                     color: "primary.main",
                     width: 60,
                     height: 60,
-                    border: `2px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                    border: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.15)"
+                        : "rgba(99, 102, 241, 0.25)"
+                    }`,
+                    borderRadius: 1.5,
+                    backdropFilter: "blur(8px)",
                   }}
                 >
                   <CodeIcon sx={{ fontSize: 28 }} />
@@ -887,8 +1116,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       size="small"
                       sx={{
                         fontWeight: 600,
-                        bgcolor: alpha(theme.palette.primary.main, 0.1),
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(99, 102, 241, 0.2)"
+                            : "rgba(99, 102, 241, 0.15)",
                         color: "primary.main",
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(99, 102, 241, 0.25)"
+                        }`,
+                        backdropFilter: "blur(4px)",
                       }}
                     />
                     <Chip
@@ -896,8 +1135,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       size="small"
                       sx={{
                         fontWeight: 600,
-                        bgcolor: alpha(theme.palette.primary.main, 0.1),
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(99, 102, 241, 0.2)"
+                            : "rgba(99, 102, 241, 0.15)",
                         color: "primary.main",
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(99, 102, 241, 0.25)"
+                        }`,
+                        backdropFilter: "blur(4px)",
                       }}
                     />
                     <Chip
@@ -905,8 +1154,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       size="small"
                       sx={{
                         fontWeight: 600,
-                        bgcolor: alpha(theme.palette.primary.main, 0.1),
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(99, 102, 241, 0.2)"
+                            : "rgba(99, 102, 241, 0.15)",
                         color: "primary.main",
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(99, 102, 241, 0.25)"
+                        }`,
+                        backdropFilter: "blur(4px)",
                       }}
                     />
                   </Stack>
@@ -920,13 +1179,21 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
+                    borderRadius: 1.5,
                     minWidth: 120,
-                    borderColor: "primary.main",
+                    backdropFilter: "blur(8px)",
+                    border: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.15)"
+                        : "rgba(99, 102, 241, 0.25)"
+                    }`,
                     color: "primary.main",
                     "&:hover": {
                       borderColor: "primary.dark",
-                      bgcolor: alpha(theme.palette.primary.main, 0.04),
+                      background:
+                        theme.palette.mode === "dark"
+                          ? "rgba(99, 102, 241, 0.1)"
+                          : "rgba(99, 102, 241, 0.06)",
                     },
                     width: { xs: "100%", sm: "auto" },
                     mt: { xs: 2, sm: 0 },
@@ -942,17 +1209,22 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
           <Card
             elevation={0}
             sx={{
-              border: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
-              borderRadius: 3,
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(0, 0, 0, 0.08)"
+              }`,
+              borderRadius: 2,
               background:
                 theme.palette.mode === "dark"
-                  ? "linear-gradient(145deg, rgba(16, 185, 129, 0.1) 0%, rgba(30, 30, 46, 0.3) 100%)"
-                  : "linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%)",
-              transition: "all 0.25s ease",
+                  ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                  : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              backdropFilter: "blur(8px)",
               "&:hover": {
                 transform: "translateY(-4px)",
-                borderColor: "success.main",
-                boxShadow: `0 8px 20px ${alpha(theme.palette.success.main, 0.1)}`,
+                boxShadow: theme.shadows[8],
+                borderColor: theme.palette.success.main,
               },
             }}
           >
@@ -964,11 +1236,20 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
               >
                 <Avatar
                   sx={{
-                    bgcolor: alpha(theme.palette.success.main, 0.1),
+                    bgcolor:
+                      theme.palette.mode === "dark"
+                        ? "rgba(16, 185, 129, 0.2)"
+                        : "rgba(16, 185, 129, 0.15)",
                     color: "success.main",
                     width: 60,
                     height: 60,
-                    border: `2px solid ${alpha(theme.palette.success.main, 0.2)}`,
+                    border: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.15)"
+                        : "rgba(16, 185, 129, 0.25)"
+                    }`,
+                    borderRadius: 1.5,
+                    backdropFilter: "blur(8px)",
                   }}
                 >
                   <SportsEsportsIcon sx={{ fontSize: 28 }} />
@@ -994,8 +1275,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       size="small"
                       sx={{
                         fontWeight: 600,
-                        bgcolor: alpha(theme.palette.success.main, 0.1),
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(16, 185, 129, 0.2)"
+                            : "rgba(16, 185, 129, 0.15)",
                         color: "success.main",
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(16, 185, 129, 0.25)"
+                        }`,
+                        backdropFilter: "blur(4px)",
                       }}
                     />
                     <Chip
@@ -1003,8 +1294,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       size="small"
                       sx={{
                         fontWeight: 600,
-                        bgcolor: alpha(theme.palette.success.main, 0.1),
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(16, 185, 129, 0.2)"
+                            : "rgba(16, 185, 129, 0.15)",
                         color: "success.main",
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(16, 185, 129, 0.25)"
+                        }`,
+                        backdropFilter: "blur(4px)",
                       }}
                     />
                     <Chip
@@ -1012,8 +1313,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       size="small"
                       sx={{
                         fontWeight: 600,
-                        bgcolor: alpha(theme.palette.success.main, 0.1),
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(16, 185, 129, 0.2)"
+                            : "rgba(16, 185, 129, 0.15)",
                         color: "success.main",
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(16, 185, 129, 0.25)"
+                        }`,
+                        backdropFilter: "blur(4px)",
                       }}
                     />
                     <Chip
@@ -1021,8 +1332,18 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                       size="small"
                       sx={{
                         fontWeight: 600,
-                        bgcolor: alpha(theme.palette.success.main, 0.1),
+                        bgcolor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(16, 185, 129, 0.2)"
+                            : "rgba(16, 185, 129, 0.15)",
                         color: "success.main",
+                        borderRadius: 1.5,
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(16, 185, 129, 0.25)"
+                        }`,
+                        backdropFilter: "blur(4px)",
                       }}
                     />
                   </Stack>
@@ -1039,12 +1360,17 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
         sx={{
           mt: 4,
           p: 3,
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: 3,
+          border: `1px solid ${
+            theme.palette.mode === "dark"
+              ? "rgba(255, 255, 255, 0.08)"
+              : "rgba(0, 0, 0, 0.08)"
+          }`,
+          borderRadius: 2,
           background:
             theme.palette.mode === "dark"
-              ? "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.02) 100%)"
-              : "linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(168, 85, 247, 0.01) 100%)",
+              ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+              : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+          backdropFilter: "blur(8px)",
         }}
       >
         <Stack spacing={2}>

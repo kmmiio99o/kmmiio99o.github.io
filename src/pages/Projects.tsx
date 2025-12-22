@@ -12,6 +12,8 @@ import {
   Skeleton,
   Avatar,
   Paper,
+  Box,
+  Tooltip,
 } from "@mui/material";
 
 import SmartToyIcon from "@mui/icons-material/SmartToy";
@@ -24,6 +26,8 @@ import StarIcon from "@mui/icons-material/Star";
 import UpdateIcon from "@mui/icons-material/Update";
 import EmailIcon from "@mui/icons-material/Email";
 import FolderIcon from "@mui/icons-material/Folder";
+import DescriptionIcon from "@mui/icons-material/Description";
+import Snowfall from "../components/Snowfall";
 
 interface ProjectsProps {
   onTabSwitch: () => void;
@@ -33,6 +37,8 @@ interface GitHubRepoData {
   stargazers_count: number;
   updated_at: string;
   html_url: string;
+  description: string;
+  forks_count?: number;
 }
 
 type Project = {
@@ -172,6 +178,8 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                 stargazers_count: repoData.stargazers_count,
                 updated_at: repoData.updated_at,
                 html_url: repoData.html_url,
+                description: repoData.description || project.description,
+                forks_count: repoData.forks_count,
               };
             }
           } catch (error) {
@@ -226,18 +234,26 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
       maxWidth="lg"
       component="main"
       sx={{
-        py: { xs: 3, sm: 5, md: 8 },
+        py: { xs: 3, sm: 4, md: 6 },
         px: { xs: 2, sm: 3 },
         minHeight: "100vh",
       }}
     >
+      <Snowfall
+        count={140}
+        speed={1.15}
+        wind={0.18}
+        color={theme.palette.mode === "dark" ? "#ffffff" : "#000000"}
+        opacity={0.32}
+        zIndex={-1}
+      />
       {/* Header */}
-      <header style={{ marginBottom: "clamp(2rem, 5vw, 4rem)" }}>
+      <Box sx={{ mb: { xs: 3, sm: 4, md: 5 } }}>
         <Stack spacing={2} alignItems="center" textAlign="center">
           <Stack direction="row" alignItems="center" spacing={1.5}>
             <FolderIcon
               sx={{
-                fontSize: { xs: 36, sm: 42 },
+                fontSize: { xs: 32, sm: 36 },
                 color: "primary.main",
               }}
             />
@@ -246,11 +262,11 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
               variant="h3"
               fontWeight={800}
               sx={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                fontSize: { xs: "1.75rem", sm: "2.25rem", md: "2.5rem" },
               }}
             >
               My Projects
@@ -261,7 +277,8 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
             color="text.secondary"
             sx={{
               maxWidth: 700,
-              fontSize: { xs: "1rem", sm: "1.15rem", md: "1.25rem" },
+              mx: "auto",
+              fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.15rem" },
               lineHeight: 1.6,
             }}
           >
@@ -269,195 +286,244 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
             modern technologies
           </Typography>
         </Stack>
-      </header>
+      </Box>
 
       {/* Projects Grid */}
-      <section style={{ marginBottom: "clamp(2rem, 5vw, 4rem)" }}>
-        <Stack
-          spacing={3}
-          sx={{
-            maxWidth: 900,
-            mx: "auto",
-          }}
-        >
-          {projects.map((project, index) => (
-            <Card
-              key={project.id}
-              elevation={0}
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: 2,
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
-                "@keyframes fadeInUp": {
-                  from: {
-                    opacity: 0,
-                    transform: "translateY(20px)",
-                  },
-                  to: {
-                    opacity: 1,
-                    transform: "translateY(0)",
-                  },
+      <Stack spacing={3} sx={{ mb: 5 }}>
+        {projects.map((project, index) => (
+          <Card
+            key={project.id}
+            elevation={0}
+            sx={{
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(0, 0, 0, 0.08)"
+              }`,
+              borderRadius: 2,
+              background:
+                theme.palette.mode === "dark"
+                  ? "linear-gradient(135deg, rgba(30, 30, 50, 0.1) 0%, rgba(50, 50, 70, 0.05) 100%)"
+                  : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
+              "@keyframes fadeInUp": {
+                from: {
+                  opacity: 0,
+                  transform: "translateY(20px)",
                 },
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: theme.shadows[12],
-                  borderColor: project.accentColor,
+                to: {
+                  opacity: 1,
+                  transform: "translateY(0)",
                 },
-              }}
-            >
-              <CardContent
-                sx={{
-                  flexGrow: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                  p: { xs: 2.5, sm: 3 },
-                }}
-              >
-                {/* Header */}
+              },
+              "&:hover": {
+                transform: "translateY(-8px)",
+                boxShadow: theme.shadows[12],
+                borderColor: project.accentColor,
+                background:
+                  theme.palette.mode === "dark"
+                    ? "linear-gradient(135deg, rgba(40, 40, 60, 0.15) 0%, rgba(60, 60, 80, 0.08) 100%)"
+                    : "linear-gradient(135deg, rgba(245, 250, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%)",
+              },
+              position: "relative",
+              overflow: "visible",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
+              <Stack spacing={2.5}>
+                {/* Header Section */}
                 <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="flex-start"
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2.5}
+                  alignItems={{ xs: "flex-start", sm: "center" }}
                 >
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    alignItems="center"
-                    flex={1}
+                  <Avatar
+                    variant="rounded"
+                    sx={{
+                      bgcolor: alpha(project.accentColor, 0.1),
+                      color: project.accentColor,
+                      width: { xs: 56, sm: 64 },
+                      height: { xs: 56, sm: 64 },
+                      borderRadius: 1.5,
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : alpha(project.accentColor, 0.2)
+                      }`,
+                      backdropFilter: "blur(8px)",
+                    }}
                   >
-                    <Avatar
-                      sx={{
-                        bgcolor: `${project.accentColor}20`,
-                        color: project.accentColor,
-                        width: { xs: 52, sm: 60 },
-                        height: { xs: 52, sm: 60 },
-                        border: `2px solid ${project.accentColor}`,
-                      }}
-                    >
-                      {React.cloneElement(
-                        project.icon as React.ReactElement,
-                        {
-                          sx: { fontSize: { xs: 28, sm: 32 } },
-                        } as any,
-                      )}
-                    </Avatar>
+                    {React.cloneElement(
+                      project.icon as React.ReactElement,
+                      {
+                        sx: { fontSize: { xs: 28, sm: 32 } },
+                      } as any,
+                    )}
+                  </Avatar>
 
-                    <Stack spacing={0.5} flex={1} sx={{ minWidth: 0 }}>
-                      <Typography
-                        component="h2"
-                        variant="h5"
-                        fontWeight={800}
-                        sx={{
-                          fontSize: { xs: "1.35rem", sm: "1.5rem" },
-                          lineHeight: 1.3,
-                        }}
-                      >
-                        {project.title}
-                      </Typography>
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        alignItems="center"
-                        flexWrap="wrap"
-                      >
-                        <Chip
-                          label={getStatusLabel(project.status)}
-                          size="small"
+                  <Stack spacing={1.5} flex={1}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      flexWrap="wrap"
+                      gap={1}
+                    >
+                      <Stack spacing={0.5}>
+                        <Typography
+                          component="h2"
+                          variant="h5"
+                          fontWeight={800}
                           sx={{
-                            bgcolor: `${project.statusColor}15`,
-                            color: project.statusColor,
-                            fontWeight: 700,
-                            border: `1px solid ${project.statusColor}`,
-                            fontSize: "0.7rem",
-                            borderRadius: 1.5,
-                            height: 24,
+                            fontSize: { xs: "1.25rem", sm: "1.5rem" },
+                            color: project.accentColor,
                           }}
-                        />
-                        {loading ? (
-                          <Skeleton
-                            variant="rectangular"
-                            width={50}
-                            height={24}
-                            sx={{ borderRadius: 1.5 }}
-                          />
-                        ) : githubData[project.id]?.stargazers_count !==
-                          undefined ? (
+                        >
+                          {project.title}
+                        </Typography>
+                        <Stack
+                          direction="row"
+                          spacing={1.5}
+                          alignItems="center"
+                        >
                           <Chip
-                            icon={<StarIcon sx={{ fontSize: 14 }} />}
-                            label={githubData[project.id].stargazers_count}
+                            label={getStatusLabel(project.status)}
                             size="small"
                             sx={{
-                              bgcolor:
-                                theme.palette.mode === "dark"
-                                  ? "rgba(255, 193, 7, 0.15)"
-                                  : "rgba(255, 193, 7, 0.1)",
-                              color: theme.palette.warning.main,
-                              fontWeight: 600,
+                              bgcolor: `${project.statusColor}15`,
+                              color: project.statusColor,
+                              fontWeight: 700,
+                              border: `1px solid ${project.statusColor}20`,
+                              fontSize: "0.7rem",
                               borderRadius: 1.5,
                               height: 24,
+                              backdropFilter: "blur(4px)",
                             }}
                           />
-                        ) : null}
-                        {loading ? (
-                          <Skeleton variant="text" width={100} height={16} />
-                        ) : githubData[project.id]?.updated_at ? (
-                          <Stack
-                            direction="row"
-                            alignItems="center"
-                            spacing={0.5}
-                          >
-                            <UpdateIcon
-                              sx={{ fontSize: 14, color: "text.secondary" }}
-                            />
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              {formatTimeAgo(githubData[project.id].updated_at)}
-                            </Typography>
-                          </Stack>
-                        ) : null}
+                          {loading ? (
+                            <Skeleton variant="text" width={60} />
+                          ) : githubData[project.id] ? (
+                            <>
+                              <Tooltip title="Stars">
+                                <Chip
+                                  icon={<StarIcon sx={{ fontSize: 14 }} />}
+                                  label={
+                                    githubData[project.id].stargazers_count
+                                  }
+                                  size="small"
+                                  sx={{
+                                    bgcolor:
+                                      theme.palette.mode === "dark"
+                                        ? "rgba(255,255,255,0.12)"
+                                        : "rgba(0,0,0,0.08)",
+                                    color: "warning.main",
+                                    fontWeight: 600,
+                                    borderRadius: 1.5,
+                                    height: 24,
+                                    backdropFilter: "blur(4px)",
+                                    border: `1px solid ${
+                                      theme.palette.mode === "dark"
+                                        ? "rgba(255, 255, 255, 0.1)"
+                                        : "rgba(0, 0, 0, 0.08)"
+                                    }`,
+                                  }}
+                                />
+                              </Tooltip>
+                              {githubData[project.id].forks_count && (
+                                <Tooltip title="Forks">
+                                  <Chip
+                                    icon={
+                                      <DescriptionIcon sx={{ fontSize: 14 }} />
+                                    }
+                                    label={githubData[project.id].forks_count}
+                                    size="small"
+                                    sx={{
+                                      bgcolor:
+                                        theme.palette.mode === "dark"
+                                          ? "rgba(255,255,255,0.12)"
+                                          : "rgba(0,0,0,0.08)",
+                                      color: "info.main",
+                                      fontWeight: 600,
+                                      borderRadius: 1.5,
+                                      height: 24,
+                                      backdropFilter: "blur(4px)",
+                                      border: `1px solid ${
+                                        theme.palette.mode === "dark"
+                                          ? "rgba(255, 255, 255, 0.1)"
+                                          : "rgba(0, 0, 0, 0.08)"
+                                      }`,
+                                    }}
+                                  />
+                                </Tooltip>
+                              )}
+                              <Tooltip title="Last updated">
+                                <Stack
+                                  direction="row"
+                                  alignItems="center"
+                                  spacing={0.5}
+                                  sx={{ color: "text.secondary" }}
+                                >
+                                  <UpdateIcon sx={{ fontSize: 14 }} />
+                                  <Typography
+                                    variant="caption"
+                                    fontWeight={600}
+                                  >
+                                    {formatTimeAgo(
+                                      githubData[project.id].updated_at,
+                                    )}
+                                  </Typography>
+                                </Stack>
+                              </Tooltip>
+                            </>
+                          ) : null}
+                        </Stack>
                       </Stack>
                     </Stack>
+
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        fontSize: "0.95rem",
+                        lineHeight: 1.6,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        minHeight: "2.5em",
+                      }}
+                    >
+                      {loading
+                        ? project.description
+                        : githubData[project.id]?.description ||
+                          project.description}
+                    </Typography>
                   </Stack>
                 </Stack>
 
-                {/* Description */}
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {project.description}
-                </Typography>
-
-                {/* Technologies & Features in 2 columns */}
+                {/* Technologies & Features */}
                 <Stack
-                  direction={{ xs: "column", sm: "row" }}
+                  direction={{ xs: "column", md: "row" }}
                   spacing={3}
-                  sx={{ pt: 1 }}
+                  sx={{ pt: 2 }}
                 >
                   {/* Technologies */}
-                  <Stack spacing={1} flex={1}>
-                    <Stack direction="row" alignItems="center" spacing={0.75}>
-                      <CodeIcon
-                        sx={{ fontSize: 18, color: "text.secondary" }}
-                      />
-                      <Typography
-                        variant="subtitle2"
-                        fontWeight={700}
-                        color="text.secondary"
-                      >
-                        Tech Stack
-                      </Typography>
-                    </Stack>
+                  <Box flex={1}>
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={700}
+                      sx={{
+                        mb: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <CodeIcon sx={{ fontSize: 16 }} />
+                      Tech Stack
+                    </Typography>
                     <Stack direction="row" flexWrap="wrap" gap={0.75}>
                       {project.technologies.map((tech) => (
                         <Chip
@@ -465,91 +531,96 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                           label={tech}
                           size="small"
                           sx={{
+                            fontWeight: 600,
                             bgcolor:
                               theme.palette.mode === "dark"
-                                ? "rgba(255,255,255,0.08)"
-                                : "rgba(0,0,0,0.06)",
-                            fontWeight: 600,
-                            fontSize: "0.75rem",
+                                ? "rgba(255,255,255,0.12)"
+                                : "rgba(0,0,0,0.08)",
                             borderRadius: 1.5,
+                            fontSize: "0.75rem",
+                            height: 28,
+                            backdropFilter: "blur(4px)",
+                            border: `1px solid ${
+                              theme.palette.mode === "dark"
+                                ? "rgba(255, 255, 255, 0.1)"
+                                : "rgba(0, 0, 0, 0.08)"
+                            }`,
                           }}
                         />
                       ))}
                     </Stack>
-                  </Stack>
+                  </Box>
 
                   {/* Features */}
-                  <Stack spacing={1} flex={1}>
+                  <Box flex={1}>
                     <Typography
                       variant="subtitle2"
                       fontWeight={700}
-                      color="text.secondary"
+                      sx={{
+                        mb: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
                     >
+                      <DescriptionIcon sx={{ fontSize: 16 }} />
                       Key Features
                     </Typography>
-                    <Stack spacing={0.5}>
-                      {project.features.slice(0, 3).map((feature, idx) => (
+                    <Stack spacing={0.75}>
+                      {project.features.slice(0, 4).map((feature, idx) => (
                         <Stack
                           key={idx}
                           direction="row"
-                          spacing={1}
                           alignItems="center"
+                          spacing={1}
                         >
-                          <span
-                            style={{
-                              width: 6,
-                              height: 6,
+                          <Box
+                            sx={{
+                              width: 16,
+                              height: 16,
                               borderRadius: "50%",
-                              backgroundColor: project.accentColor,
+                              bgcolor: alpha(project.accentColor, 0.1),
                               flexShrink: 0,
+                              border: `1px solid ${alpha(project.accentColor, 0.2)}`,
                             }}
                           />
                           <Typography
                             variant="body2"
                             sx={{
-                              fontSize: "0.85rem",
                               color: "text.secondary",
+                              fontSize: "0.85rem",
                             }}
                           >
                             {feature}
                           </Typography>
                         </Stack>
                       ))}
-                      {project.features.length > 3 && (
+                      {project.features.length > 4 && (
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          sx={{ pl: 2.25, fontStyle: "italic" }}
+                          sx={{ pl: 2.5, fontStyle: "italic" }}
                         >
-                          +{project.features.length - 3} more features
+                          +{project.features.length - 4} more features
                         </Typography>
                       )}
                     </Stack>
-                  </Stack>
+                  </Box>
                 </Stack>
 
                 {/* Actions */}
-                <Stack direction="row" spacing={1.5} sx={{ pt: 1 }}>
-                  <Button
-                    variant="contained"
-                    startIcon={<LaunchIcon />}
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    sx={{
-                      bgcolor: project.accentColor,
-                      borderRadius: 1.5,
-                      py: 1,
-                      px: 3,
-                      textTransform: "none",
-                      fontWeight: 600,
-                      "&:hover": {
-                        bgcolor: alpha(project.accentColor, 0.85),
-                      },
-                    }}
-                  >
-                    View Project
-                  </Button>
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={1.5}
+                  sx={{
+                    pt: 2,
+                    borderTop: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.08)"
+                        : "rgba(0, 0, 0, 0.08)"
+                    }`,
+                  }}
+                >
                   <Button
                     variant="outlined"
                     startIcon={<GitHubIcon />}
@@ -558,50 +629,109 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                     rel="noopener noreferrer"
                     sx={{
                       borderRadius: 1.5,
+                      py: { xs: 1, sm: 0.75 },
                       textTransform: "none",
                       fontWeight: 600,
-                      px: 3,
+                      flex: { xs: 1, sm: "none" },
+                      minWidth: { sm: 160 },
+                      backdropFilter: "blur(8px)",
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : alpha(project.accentColor, 0.25)
+                      }`,
+                      color:
+                        theme.palette.mode === "dark"
+                          ? "#fff"
+                          : project.accentColor,
+                      "&:hover": {
+                        borderColor: project.accentColor,
+                        background:
+                          theme.palette.mode === "dark"
+                            ? alpha(project.accentColor, 0.1)
+                            : alpha(project.accentColor, 0.06),
+                      },
                     }}
                   >
-                    Source Code
+                    View Repository
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    endIcon={<LaunchIcon />}
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      borderRadius: 1.5,
+                      py: { xs: 1, sm: 0.75 },
+                      textTransform: "none",
+                      fontWeight: 600,
+                      flex: { xs: 1, sm: "none" },
+                      minWidth: { sm: 140 },
+                      backdropFilter: "blur(8px)",
+                      border: `1px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.15)"
+                          : "rgba(99, 102, 241, 0.25)"
+                      }`,
+                      color:
+                        theme.palette.mode === "dark"
+                          ? "#fff"
+                          : project.accentColor,
+                      "&:hover": {
+                        borderColor: project.accentColor,
+                        background:
+                          theme.palette.mode === "dark"
+                            ? alpha(project.accentColor, 0.1)
+                            : alpha(project.accentColor, 0.06),
+                      },
+                    }}
+                  >
+                    Explore
                   </Button>
                 </Stack>
-              </CardContent>
-            </Card>
-          ))}
-        </Stack>
-      </section>
+              </Stack>
+            </CardContent>
+          </Card>
+        ))}
+      </Stack>
 
       {/* CTA Section */}
       <Paper
         elevation={0}
         sx={{
-          p: { xs: 3, sm: 4, md: 5 },
+          p: { xs: 2.5, sm: 3, md: 3.5 },
           borderRadius: 2,
-          border: `1px solid ${theme.palette.divider}`,
+          border: `1px solid ${
+            theme.palette.mode === "dark"
+              ? "rgba(255, 255, 255, 0.08)"
+              : "rgba(0, 0, 0, 0.08)"
+          }`,
           textAlign: "center",
           background:
             theme.palette.mode === "dark"
-              ? "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.02) 100%)"
-              : "linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(168, 85, 247, 0.01) 100%)",
+              ? "linear-gradient(135deg, rgba(30, 30, 50, 0.1) 0%, rgba(50, 50, 70, 0.05) 100%)"
+              : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+          backdropFilter: "blur(8px)",
         }}
       >
-        <Stack spacing={3} alignItems="center">
-          <Stack spacing={1.5}>
+        <Stack spacing={2.5} alignItems="center">
+          <Stack spacing={1}>
             <Typography
-              variant="h4"
+              variant="h5"
               fontWeight={800}
-              sx={{ fontSize: { xs: "1.75rem", sm: "2rem", md: "2.125rem" } }}
+              sx={{ fontSize: { xs: "1.35rem", sm: "1.5rem", md: "1.65rem" } }}
             >
               Want to Collaborate?
             </Typography>
             <Typography
-              variant="h6"
+              variant="body1"
               color="text.secondary"
               sx={{
                 maxWidth: 600,
                 mx: "auto",
-                fontSize: { xs: "1rem", sm: "1.15rem" },
+                fontSize: { xs: "0.9rem", sm: "0.95rem" },
                 lineHeight: 1.6,
               }}
             >
@@ -612,39 +742,63 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            spacing={2}
+            spacing={1.5}
             sx={{ width: { xs: "100%", sm: "auto" } }}
           >
             <Button
-              variant="contained"
-              size="large"
+              variant="outlined"
               startIcon={<GitHubIcon />}
               href="https://github.com/kmmiio99o"
               target="_blank"
               rel="noopener noreferrer"
               sx={{
-                px: 4,
-                py: 1.5,
+                px: 3,
+                py: { xs: 1, sm: 0.75 },
                 borderRadius: 1.5,
                 textTransform: "none",
                 fontWeight: 600,
-                fontSize: "1rem",
+                fontSize: "0.95rem",
+                backdropFilter: "blur(8px)",
+                border: `1px solid ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.15)"
+                    : "rgba(99, 102, 241, 0.25)"
+                }`,
+                "&:hover": {
+                  borderColor: theme.palette.primary.main,
+                  background:
+                    theme.palette.mode === "dark"
+                      ? "rgba(99, 102, 241, 0.1)"
+                      : "rgba(99, 102, 241, 0.06)",
+                },
               }}
             >
               View All Repositories
             </Button>
             <Button
               variant="outlined"
-              size="large"
               startIcon={<EmailIcon />}
               href="mailto:kmmiio99o@gmail.com"
               sx={{
-                px: 4,
-                py: 1.5,
+                px: 3,
+                py: { xs: 1, sm: 0.75 },
                 borderRadius: 1.5,
                 textTransform: "none",
                 fontWeight: 600,
-                fontSize: "1rem",
+                fontSize: "0.95rem",
+                backdropFilter: "blur(8px)",
+                border: `1px solid ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.15)"
+                    : "rgba(99, 102, 241, 0.25)"
+                }`,
+                "&:hover": {
+                  borderColor: theme.palette.primary.main,
+                  background:
+                    theme.palette.mode === "dark"
+                      ? "rgba(99, 102, 241, 0.1)"
+                      : "rgba(99, 102, 241, 0.06)",
+                },
               }}
             >
               Contact Me

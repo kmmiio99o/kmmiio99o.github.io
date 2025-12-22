@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Paper,
@@ -17,12 +17,14 @@ import {
   Box,
 } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import Snowfall from "../components/Snowfall";
 import CodeIcon from "@mui/icons-material/Code";
 import StarIcon from "@mui/icons-material/Star";
 import UpdateIcon from "@mui/icons-material/Update";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { GithubFetch, GitHubRepoData } from "../api/github";
+import { subscribeLanyard, getDiscordAvatarUrl } from "../api/lanyard";
 
 interface HomeProps {
   onTabSwitch?: () => void;
@@ -68,7 +70,15 @@ const ProjectCard: React.FC<{ repo: GitHubRepoData; index: number }> = ({
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        border: `1px solid ${theme.palette.divider}`,
+        background:
+          theme.palette.mode === "dark"
+            ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+            : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.08)"
+            : "rgba(0, 0, 0, 0.08)"
+        }`,
         borderRadius: 2,
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
@@ -82,10 +92,15 @@ const ProjectCard: React.FC<{ repo: GitHubRepoData; index: number }> = ({
             transform: "translateY(0)",
           },
         },
+        backdropFilter: "blur(8px)",
         "&:hover": {
           transform: "translateY(-8px)",
-          boxShadow: theme.shadows[12],
+          boxShadow: theme.shadows[8],
           borderColor: theme.palette.primary.main,
+          background:
+            theme.palette.mode === "dark"
+              ? "linear-gradient(135deg, rgba(50, 50, 70, 0.15) 0%, rgba(70, 70, 90, 0.1) 100%)"
+              : "linear-gradient(135deg, rgba(240, 245, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%)",
         },
       }}
     >
@@ -108,11 +123,17 @@ const ProjectCard: React.FC<{ repo: GitHubRepoData; index: number }> = ({
             sx={{
               bgcolor:
                 theme.palette.mode === "dark"
-                  ? "primary.dark"
-                  : "primary.light",
+                  ? "rgba(99, 102, 241, 0.2)"
+                  : "rgba(99, 102, 241, 0.15)",
               width: { xs: 48, sm: 56 },
               height: { xs: 48, sm: 56 },
               borderRadius: 1.5,
+              backdropFilter: "blur(8px)",
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.15)"
+                  : "rgba(99, 102, 241, 0.25)"
+              }`,
             }}
           >
             <CodeIcon sx={{ fontSize: { xs: 28, sm: 32 } }} />
@@ -167,9 +188,15 @@ const ProjectCard: React.FC<{ repo: GitHubRepoData; index: number }> = ({
                 fontWeight: 600,
                 bgcolor:
                   theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.08)"
-                    : "rgba(0,0,0,0.06)",
+                    ? "rgba(255, 255, 255, 0.12)"
+                    : "rgba(0, 0, 0, 0.08)",
                 borderRadius: 1.5,
+                backdropFilter: "blur(8px)",
+                border: `1px solid ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.15)"
+                    : "rgba(0, 0, 0, 0.12)"
+                }`,
               }}
             />
           )}
@@ -178,7 +205,15 @@ const ProjectCard: React.FC<{ repo: GitHubRepoData; index: number }> = ({
             label={formatTimeAgo(repo.updated_at)}
             size="small"
             variant="outlined"
-            sx={{ borderRadius: 1.5 }}
+            sx={{
+              borderRadius: 1.5,
+              backdropFilter: "blur(8px)",
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.15)"
+                  : "rgba(0, 0, 0, 0.12)"
+              }`,
+            }}
           />
         </Stack>
       </CardContent>
@@ -194,6 +229,19 @@ const ProjectCard: React.FC<{ repo: GitHubRepoData; index: number }> = ({
           sx={{
             borderRadius: 1.5,
             py: { xs: 1, sm: 0.75 },
+            backdropFilter: "blur(8px)",
+            border: `1px solid ${
+              theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.15)"
+                : "rgba(99, 102, 241, 0.25)"
+            }`,
+            "&:hover": {
+              borderColor: theme.palette.primary.main,
+              background:
+                theme.palette.mode === "dark"
+                  ? "rgba(99, 102, 241, 0.15)"
+                  : "rgba(99, 102, 241, 0.08)",
+            },
           }}
         >
           View Project
@@ -204,6 +252,8 @@ const ProjectCard: React.FC<{ repo: GitHubRepoData; index: number }> = ({
 };
 
 const ActivityImage = ({ activity }: { activity: any }) => {
+  const theme = useTheme();
+
   if (!activity?.assets?.large_image) return null;
 
   let imageUrl = "";
@@ -228,7 +278,16 @@ const ActivityImage = ({ activity }: { activity: any }) => {
         borderRadius: 1.5,
         overflow: "hidden",
         flexShrink: 0,
-        border: `1px solid ${useTheme().palette.divider}`,
+        border: `1px solid ${
+          theme.palette.mode === "dark"
+            ? "rgba(255, 255, 255, 0.15)"
+            : "rgba(0, 0, 0, 0.08)"
+        }`,
+        backdropFilter: "blur(8px)",
+        background:
+          theme.palette.mode === "dark"
+            ? "rgba(40, 40, 60, 0.1)"
+            : "rgba(255, 255, 255, 0.4)",
         "& img": {
           width: "100%",
           height: "100%",
@@ -248,43 +307,27 @@ const Home: React.FC<HomeProps> = () => {
   const [repos, setRepos] = useState<GitHubRepoData[] | null>(null);
   const [reposLoading, setReposLoading] = useState(true);
 
-  // Fetch Lanyard data with 3-second refresh
-  const fetchLanyard = useCallback(async () => {
-    try {
-      const response = await fetch(
-        "https://api.lanyard.rest/v1/users/879393496627306587",
-        {
-          headers: { "User-Agent": "kmmiio99o-portfolio/1.0.0" },
-        },
-      );
-      const data = await response.json();
-      setLanyard(data);
-    } catch (err) {
-      console.error("Lanyard fetch error:", err);
-    }
-  }, []);
-
+  // Use centralized lanyard subscriber (shared polling) to update presence.
+  // This replaces the manual fetch + setInterval approach with the shared helper.
   useEffect(() => {
-    let mounted = true;
-    let intervalId: NodeJS.Timeout;
-
-    const initialFetch = async () => {
-      setLanyardLoading(true);
-      await fetchLanyard();
-      if (mounted) {
+    setLanyardLoading(true);
+    const unsubscribe = subscribeLanyard(
+      "879393496627306587",
+      (data) => {
+        setLanyard(data);
         setLanyardLoading(false);
-        // Start 3-second refresh interval
-        intervalId = setInterval(fetchLanyard, 3000);
-      }
-    };
-
-    initialFetch();
+      },
+      5000, // poll interval in ms
+    );
 
     return () => {
-      mounted = false;
-      if (intervalId) clearInterval(intervalId);
+      try {
+        unsubscribe();
+      } catch {
+        // ignore
+      }
     };
-  }, [fetchLanyard]);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -327,6 +370,14 @@ const Home: React.FC<HomeProps> = () => {
         minHeight: "100vh",
       }}
     >
+      <Snowfall
+        count={140}
+        speed={1.15}
+        wind={0.18}
+        color={theme.palette.mode === "dark" ? "#ffffff" : "#f0f4ff"}
+        opacity={0.32}
+        zIndex={-1}
+      />
       {/* Hero Section */}
       <section
         style={{
@@ -340,11 +391,16 @@ const Home: React.FC<HomeProps> = () => {
             borderRadius: 2,
             background:
               theme.palette.mode === "dark"
-                ? "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%)"
-                : "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.02) 100%)",
-            border: `1px solid ${theme.palette.divider}`,
+                ? "linear-gradient(135deg, rgba(30, 30, 50, 0.1) 0%, rgba(50, 50, 70, 0.05) 100%)"
+                : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+            border: `1px solid ${
+              theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.08)"
+                : "rgba(0, 0, 0, 0.08)"
+            }`,
             position: "relative",
             overflow: "hidden",
+            backdropFilter: "blur(8px)",
             "&::before": {
               content: '""',
               position: "absolute",
@@ -354,8 +410,8 @@ const Home: React.FC<HomeProps> = () => {
               height: { xs: "200px", sm: "300px" },
               background:
                 theme.palette.mode === "dark"
-                  ? "radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)"
-                  : "radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)",
+                  ? `radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%)`
+                  : `radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)`,
               borderRadius: "50%",
               transform: "translate(30%, -30%)",
             },
@@ -382,7 +438,11 @@ const Home: React.FC<HomeProps> = () => {
                       height: 20,
                       borderRadius: "50%",
                       backgroundColor: statusConfig.color,
-                      border: `3px solid ${theme.palette.background.paper}`,
+                      border: `3px solid ${
+                        theme.palette.mode === "dark"
+                          ? "rgba(30, 30, 50, 0.8)"
+                          : "#ffffff"
+                      }`,
                       display: "block",
                       boxShadow: statusConfig.pulse
                         ? `0 0 0 0 ${statusConfig.color}`
@@ -407,15 +467,22 @@ const Home: React.FC<HomeProps> = () => {
                 <Avatar
                   alt={discordUser?.username || "User avatar"}
                   src={
-                    discordUser?.avatar
-                      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.${discordUser.avatar.startsWith("a_") ? "gif" : "png"}?size=256`
-                      : undefined
+                    discordUser ? getDiscordAvatarUrl(discordUser) : undefined
                   }
                   sx={{
                     width: { xs: 80, sm: 100 },
                     height: { xs: 80, sm: 100 },
-                    border: `3px solid ${theme.palette.background.paper}`,
-                    boxShadow: theme.shadows[8],
+                    border: `3px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(30, 30, 50, 0.8)"
+                        : "#ffffff"
+                    }`,
+                    boxShadow: `0 8px 32px ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(0, 0, 0, 0.3)"
+                        : "rgba(0, 0, 0, 0.1)"
+                    }`,
+                    backdropFilter: "blur(8px)",
                   }}
                 >
                   {!discordUser?.avatar &&
@@ -457,7 +524,7 @@ const Home: React.FC<HomeProps> = () => {
                     textAlign: { xs: "center", sm: "left" },
                   }}
                 >
-                  Full-Stack Developer & UI Enthusiast
+                  Developer & UI Enthusiast
                 </Typography>
               </header>
 
@@ -465,7 +532,15 @@ const Home: React.FC<HomeProps> = () => {
                 direction="row"
                 spacing={1}
                 flexWrap="wrap"
+                useFlexGap
                 justifyContent={{ xs: "center", sm: "flex-start" }}
+                sx={{
+                  gap: 1,
+                  "& .MuiChip-root": {
+                    m: 0,
+                    flexShrink: 0,
+                  },
+                }}
               >
                 {lanyardLoading ? (
                   <Skeleton
@@ -481,9 +556,11 @@ const Home: React.FC<HomeProps> = () => {
                       sx={{
                         bgcolor: `${statusConfig.color}15`,
                         color: statusConfig.color,
-                        fontWeight: 600,
+                        fontWeight: 700,
                         borderRadius: 1.5,
                         fontSize: { xs: "0.75rem", sm: "0.8125rem" },
+                        backdropFilter: "blur(8px)",
+                        border: `1px solid ${statusConfig.color}20`,
                       }}
                     />
                     <Chip
@@ -492,6 +569,12 @@ const Home: React.FC<HomeProps> = () => {
                       sx={{
                         borderRadius: 1.5,
                         fontSize: { xs: "0.75rem", sm: "0.8125rem" },
+                        backdropFilter: "blur(8px)",
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(99, 102, 241, 0.25)"
+                        }`,
                       }}
                     />
                   </>
@@ -511,6 +594,19 @@ const Home: React.FC<HomeProps> = () => {
                   fontWeight: 600,
                   width: { xs: "100%", sm: "auto" },
                   py: { xs: 1.2, sm: 1 },
+                  backdropFilter: "blur(8px)",
+                  boxShadow: `0 4px 16px ${
+                    theme.palette.mode === "dark"
+                      ? "rgba(99, 102, 241, 0.3)"
+                      : "rgba(99, 102, 241, 0.2)"
+                  }`,
+                  "&:hover": {
+                    boxShadow: `0 8px 25px ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(99, 102, 241, 0.4)"
+                        : "rgba(99, 102, 241, 0.3)"
+                    }`,
+                  },
                 }}
               >
                 View GitHub Profile
@@ -532,7 +628,22 @@ const Home: React.FC<HomeProps> = () => {
               p: { xs: 2.5, sm: 3 },
               flex: 1,
               borderRadius: 2,
-              border: `1px solid ${theme.palette.divider}`,
+              background:
+                theme.palette.mode === "dark"
+                  ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                  : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(0, 0, 0, 0.08)"
+              }`,
+              backdropFilter: "blur(8px)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                transform: "translateY(-4px)",
+                boxShadow: theme.shadows[8],
+                borderColor: theme.palette.primary.main,
+              },
             }}
           >
             <Typography
@@ -557,7 +668,7 @@ const Home: React.FC<HomeProps> = () => {
               interaction should feel natural.
             </Typography>
 
-            {/* Improved skill chips with better mobile spacing */}
+            {/* Skill chips */}
             <Stack
               direction="row"
               spacing={1}
@@ -579,11 +690,17 @@ const Home: React.FC<HomeProps> = () => {
                   sx={{
                     bgcolor:
                       theme.palette.mode === "dark"
-                        ? "rgba(255,255,255,0.08)"
-                        : "rgba(0,0,0,0.06)",
+                        ? "rgba(255, 255, 255, 0.12)"
+                        : "rgba(0, 0, 0, 0.08)",
                     fontWeight: 600,
                     borderRadius: 1.5,
                     px: 0.5,
+                    backdropFilter: "blur(8px)",
+                    border: `1px solid ${
+                      theme.palette.mode === "dark"
+                        ? "rgba(255, 255, 255, 0.15)"
+                        : "rgba(0, 0, 0, 0.12)"
+                    }`,
                   }}
                 />
               ))}
@@ -596,7 +713,22 @@ const Home: React.FC<HomeProps> = () => {
               p: { xs: 2.5, sm: 3 },
               flex: 1,
               borderRadius: 2,
-              border: `1px solid ${theme.palette.divider}`,
+              background:
+                theme.palette.mode === "dark"
+                  ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                  : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.08)"
+                  : "rgba(0, 0, 0, 0.08)"
+              }`,
+              backdropFilter: "blur(8px)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                transform: "translateY(-4px)",
+                boxShadow: theme.shadows[8],
+                borderColor: theme.palette.secondary.main,
+              },
             }}
           >
             <Typography
@@ -726,6 +858,13 @@ const Home: React.FC<HomeProps> = () => {
                 textTransform: "none",
                 fontWeight: 600,
                 display: { xs: "none", sm: "flex" },
+                backdropFilter: "blur(8px)",
+                "&:hover": {
+                  background:
+                    theme.palette.mode === "dark"
+                      ? "rgba(255, 255, 255, 0.08)"
+                      : "rgba(0, 0, 0, 0.04)",
+                },
               }}
             >
               View All
@@ -747,8 +886,17 @@ const Home: React.FC<HomeProps> = () => {
                 key={idx}
                 elevation={0}
                 sx={{
-                  border: `1px solid ${theme.palette.divider}`,
+                  background:
+                    theme.palette.mode === "dark"
+                      ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                      : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+                  border: `1px solid ${
+                    theme.palette.mode === "dark"
+                      ? "rgba(255, 255, 255, 0.08)"
+                      : "rgba(0, 0, 0, 0.08)"
+                  }`,
                   borderRadius: 2,
+                  backdropFilter: "blur(8px)",
                 }}
               >
                 <CardContent sx={{ p: { xs: 2, sm: 2.5 } }}>
@@ -787,8 +935,17 @@ const Home: React.FC<HomeProps> = () => {
                 p: { xs: 3, sm: 4 },
                 gridColumn: "1 / -1",
                 textAlign: "center",
-                border: `1px solid ${theme.palette.divider}`,
+                background:
+                  theme.palette.mode === "dark"
+                    ? "linear-gradient(135deg, rgba(40, 40, 60, 0.1) 0%, rgba(60, 60, 80, 0.05) 100%)"
+                    : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
+                border: `1px solid ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.08)"
+                    : "rgba(0, 0, 0, 0.08)"
+                }`,
                 borderRadius: 2,
+                backdropFilter: "blur(8px)",
               }}
             >
               <Typography variant="body1" color="text.secondary">
@@ -797,6 +954,13 @@ const Home: React.FC<HomeProps> = () => {
                   href="https://github.com/kmmiio99o"
                   target="_blank"
                   rel="noopener noreferrer"
+                  sx={{
+                    color: "primary.main",
+                    textDecoration: "none",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
                 >
                   GitHub profile
                 </MuiLink>{" "}
@@ -826,6 +990,19 @@ const Home: React.FC<HomeProps> = () => {
               fontWeight: 600,
               py: 1.2,
               borderRadius: 1.5,
+              backdropFilter: "blur(8px)",
+              border: `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.15)"
+                  : "rgba(99, 102, 241, 0.25)"
+              }`,
+              "&:hover": {
+                borderColor: theme.palette.primary.main,
+                background:
+                  theme.palette.mode === "dark"
+                    ? "rgba(99, 102, 241, 0.15)"
+                    : "rgba(99, 102, 241, 0.08)",
+              },
             }}
           >
             View All Projects
