@@ -7,19 +7,8 @@
 
         <!-- Redirect to Workers.dev domain -->
         <script type="text/javascript">
-            // Check if we're on GitHub Pages domain or local development
-            const hostname = window.location.hostname;
-            const isGithubPages =
-                hostname === "kmmiio99o.github.io" ||
-                hostname === "localhost" ||
-                hostname === "127.0.0.1";
-
-            // Also check for any subdomain variations
-            const isGithubSubdomain = hostname.endsWith(".github.io");
-
-            if (isGithubPages || isGithubSubdomain) {
-                // Wait a brief moment for the page to load (helps with some edge cases)
-                setTimeout(() => {
+            // Check if we're on the GitHub Pages domain
+                if (window.location.hostname === "kmmiio99o.github.io") {
                     // Redirect to Workers.dev domain, preserving the path
                     const newUrl =
                         "https://personal.kmmiio99o.workers.dev" +
@@ -27,25 +16,9 @@
                         window.location.search +
                         window.location.hash;
                     window.location.replace(newUrl);
-                }, 100);
-            }
         </script>
-
-        <!-- Meta refresh tag as a backup for browsers with JavaScript disabled -->
-        <meta
-            http-equiv="refresh"
-            content="0;url=https://personal.kmmiio99o.workers.dev"
-        />
     </head>
     <body>
-        <noscript>
-            <p>
-                Redirecting to
-                <a href="https://personal.kmmiio99o.workers.dev"
-                    >https://personal.kmmiio99o.workers.dev</a
-                >
-            </p>
-        </noscript>
         <div id="root"></div>
         <script type="module" src="/src/index.tsx"></script>
     </body>
