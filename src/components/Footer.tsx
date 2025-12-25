@@ -7,10 +7,13 @@ import {
   Stack,
   Tooltip,
   alpha,
+  Button,
 } from "@mui/material";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import CodeIcon from "@mui/icons-material/Code";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import UpdateIcon from "@mui/icons-material/Update";
 
 // Custom Discord Icon
 const DiscordIcon = () => (
@@ -27,6 +30,8 @@ const DiscordIcon = () => (
 
 const Footer: React.FC = () => {
   const theme = useTheme();
+  const location = useLocation();
+  const isPrivacy = location.pathname === "/privacy";
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
@@ -227,6 +232,49 @@ const Footer: React.FC = () => {
                 React • TypeScript
               </Typography>
             </Stack>
+
+            {/* Privacy link - desktop only */}
+            <Button
+              component={RouterLink}
+              to="/privacy"
+              startIcon={<UpdateIcon />}
+              variant="outlined"
+              size="small"
+              aria-current={isPrivacy ? "page" : undefined}
+              sx={{
+                display: { xs: "none", sm: "inline-flex" },
+                textTransform: "none",
+                borderRadius: 1.5,
+                px: 1.5,
+                py: 0.6,
+                fontWeight: isPrivacy ? 700 : 600,
+                fontSize: "0.95rem",
+                color: isPrivacy
+                  ? "primary.main"
+                  : theme.palette.mode === "dark"
+                    ? alpha("#cdd6f4", 0.9)
+                    : alpha("#475569", 0.9),
+                backgroundColor: isPrivacy
+                  ? alpha(theme.palette.primary.main, 0.12)
+                  : "transparent",
+                borderColor: isPrivacy
+                  ? alpha(theme.palette.primary.main, 0.18)
+                  : alpha(theme.palette.divider, 0.25),
+                mr: 0.5,
+                "&:hover": {
+                  backgroundColor: isPrivacy
+                    ? alpha(theme.palette.primary.main, 0.18)
+                    : alpha(theme.palette.action.hover, 0.05),
+                  borderColor: theme.palette.primary.main,
+                  color: "primary.main",
+                },
+                WebkitTapHighlightColor: "transparent",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              Privacy
+            </Button>
 
             {/* Source link */}
             <Tooltip title="View Source Code" arrow>

@@ -18,6 +18,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import WorkIcon from "@mui/icons-material/Work";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import UpdateIcon from "@mui/icons-material/Update";
 import { Link } from "react-router-dom";
 
 interface MobileNavDrawerProps {
@@ -38,6 +39,7 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
     { name: "Home", path: "/", icon: HomeIcon },
     { name: "About", path: "/about", icon: PersonIcon },
     { name: "Projects", path: "/projects", icon: WorkIcon },
+    { name: "Privacy", path: "/privacy", icon: UpdateIcon },
   ];
 
   useEffect(() => {

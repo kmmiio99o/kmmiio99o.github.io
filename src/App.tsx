@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Snowfall from "./components/Snowfall";
 
 const App: React.FC = () => {
@@ -79,6 +80,7 @@ const App: React.FC = () => {
               path="/projects"
               element={<Projects onTabSwitch={handleTabSwitch} />}
             />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
           </Routes>
         </Box>
         <Footer />

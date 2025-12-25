@@ -38,7 +38,6 @@ interface GitHubRepoData {
   updated_at: string;
   html_url: string;
   description: string;
-  forks_count?: number;
 }
 
 type Project = {
@@ -179,7 +178,6 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                 updated_at: repoData.updated_at,
                 html_url: repoData.html_url,
                 description: repoData.description || project.description,
-                forks_count: repoData.forks_count,
               };
             }
           } catch (error) {
@@ -431,33 +429,6 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                                   }}
                                 />
                               </Tooltip>
-                              {githubData[project.id].forks_count && (
-                                <Tooltip title="Forks">
-                                  <Chip
-                                    icon={
-                                      <DescriptionIcon sx={{ fontSize: 14 }} />
-                                    }
-                                    label={githubData[project.id].forks_count}
-                                    size="small"
-                                    sx={{
-                                      bgcolor:
-                                        theme.palette.mode === "dark"
-                                          ? "rgba(255,255,255,0.12)"
-                                          : "rgba(0,0,0,0.08)",
-                                      color: "info.main",
-                                      fontWeight: 600,
-                                      borderRadius: 1.5,
-                                      height: 24,
-                                      backdropFilter: "blur(4px)",
-                                      border: `1px solid ${
-                                        theme.palette.mode === "dark"
-                                          ? "rgba(255, 255, 255, 0.1)"
-                                          : "rgba(0, 0, 0, 0.08)"
-                                      }`,
-                                    }}
-                                  />
-                                </Tooltip>
-                              )}
                               <Tooltip title="Last updated">
                                 <Stack
                                   direction="row"

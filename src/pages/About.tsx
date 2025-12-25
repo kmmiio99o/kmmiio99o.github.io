@@ -14,6 +14,7 @@ import {
   LinearProgress,
   alpha,
   Skeleton,
+  Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import Snowfall from "../components/Snowfall";
@@ -202,7 +203,7 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   fontWeight={500}
                   sx={{ textAlign: { xs: "center", sm: "left" } }}
                 >
-                  Full-Stack Developer & Student
+                  Developer & Student
                 </Typography>
               </header>
 
@@ -222,51 +223,70 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
                   />
                 </Stack>
               ) : (
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  flexWrap="wrap"
-                  justifyContent={{ xs: "center", sm: "flex-start" }}
-                >
-                  <Chip
-                    label={statusConfig.label}
+                <Stack direction="row" spacing={1}>
+                  <Box
                     sx={{
-                      bgcolor: `${statusConfig.color}15`,
-                      color: statusConfig.color,
-                      fontWeight: 700,
-                      border: `1px solid ${statusConfig.color}20`,
-                      borderRadius: 1.5,
-                      backdropFilter: "blur(4px)",
+                      display: { xs: "grid", sm: "flex" },
+                      gridTemplateColumns: { xs: "repeat(2, 1fr)" },
+                      gap: 1,
+                      justifyContent: { xs: "center", sm: "flex-start" },
+                      alignItems: "center",
+                      width: "100%",
                     }}
-                  />
-                  <Chip
-                    icon={<LocationOnIcon />}
-                    label="Poland"
-                    variant="outlined"
-                    sx={{
-                      borderRadius: 1.5,
-                      backdropFilter: "blur(4px)",
-                      border: `1px solid ${
-                        theme.palette.mode === "dark"
-                          ? "rgba(255, 255, 255, 0.15)"
-                          : "rgba(99, 102, 241, 0.25)"
-                      }`,
-                    }}
-                  />
-                  <Chip
-                    icon={<LanguageIcon />}
-                    label="16 years old"
-                    variant="outlined"
-                    sx={{
-                      borderRadius: 1.5,
-                      backdropFilter: "blur(4px)",
-                      border: `1px solid ${
-                        theme.palette.mode === "dark"
-                          ? "rgba(255, 255, 255, 0.15)"
-                          : "rgba(99, 102, 241, 0.25)"
-                      }`,
-                    }}
-                  />
+                  >
+                    <Chip
+                      label={statusConfig.label}
+                      sx={{
+                        bgcolor: `${statusConfig.color}15`,
+                        color: statusConfig.color,
+                        fontWeight: 700,
+                        border: `1px solid ${statusConfig.color}20`,
+                        borderRadius: 1.5,
+                        backdropFilter: "blur(4px)",
+                        width: { xs: "100%", sm: "auto" },
+                        justifyContent: "center",
+                        px: 1.25,
+                        py: 0.5,
+                      }}
+                    />
+                    <Chip
+                      icon={<LocationOnIcon />}
+                      label="Poland"
+                      variant="outlined"
+                      sx={{
+                        borderRadius: 1.5,
+                        backdropFilter: "blur(4px)",
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(99, 102, 241, 0.25)"
+                        }`,
+                        width: { xs: "100%", sm: "auto" },
+                        justifyContent: "center",
+                        px: 1.25,
+                        py: 0.5,
+                      }}
+                    />
+                    <Chip
+                      icon={<LanguageIcon />}
+                      label="15 years old"
+                      variant="outlined"
+                      sx={{
+                        borderRadius: 1.5,
+                        backdropFilter: "blur(4px)",
+                        border: `1px solid ${
+                          theme.palette.mode === "dark"
+                            ? "rgba(255, 255, 255, 0.15)"
+                            : "rgba(99, 102, 241, 0.25)"
+                        }`,
+
+                        gridColumn: { xs: "1 / -1", sm: "auto" },
+                        justifySelf: { xs: "center", sm: "start" },
+                        width: { xs: "60%", sm: "auto" },
+                        py: { xs: 1, sm: 0.5 },
+                      }}
+                    />
+                  </Box>
                 </Stack>
               )}
 
