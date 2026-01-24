@@ -17,7 +17,6 @@ import {
   Box,
 } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import Snowfall from "../components/Snowfall";
 import CodeIcon from "@mui/icons-material/Code";
 import StarIcon from "@mui/icons-material/Star";
 import UpdateIcon from "@mui/icons-material/Update";
@@ -370,14 +369,6 @@ const Home: React.FC<HomeProps> = () => {
         minHeight: "100vh",
       }}
     >
-      <Snowfall
-        count={140}
-        speed={1.15}
-        wind={0.18}
-        color={theme.palette.mode === "dark" ? "#ffffff" : "#f0f4ff"}
-        opacity={0.32}
-        zIndex={-1}
-      />
       {/* Hero Section */}
       <section
         style={{

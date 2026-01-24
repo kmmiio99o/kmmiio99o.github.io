@@ -17,7 +17,6 @@ import {
   Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import Snowfall from "../components/Snowfall";
 
 import {
   subscribeLanyard,
@@ -113,14 +112,6 @@ const About: React.FC<AboutProps> = ({ onTabSwitch }) => {
         minHeight: "100vh",
       }}
     >
-      <Snowfall
-        count={140}
-        speed={1.15}
-        wind={0.18}
-        color={theme.palette.mode === "dark" ? "#ffffff" : "#f0f4ff"}
-        opacity={0.32}
-        zIndex={-1}
-      />
       {/* Hero Card with Profile */}
       <Card
         elevation={0}

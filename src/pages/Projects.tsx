@@ -27,7 +27,6 @@ import UpdateIcon from "@mui/icons-material/Update";
 import EmailIcon from "@mui/icons-material/Email";
 import FolderIcon from "@mui/icons-material/Folder";
 import DescriptionIcon from "@mui/icons-material/Description";
-import Snowfall from "../components/Snowfall";
 
 interface ProjectsProps {
   onTabSwitch: () => void;
@@ -237,14 +236,6 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
         minHeight: "100vh",
       }}
     >
-      <Snowfall
-        count={140}
-        speed={1.15}
-        wind={0.18}
-        color={theme.palette.mode === "dark" ? "#ffffff" : "#000000"}
-        opacity={0.32}
-        zIndex={-1}
-      />
       {/* Header */}
       <Box sx={{ mb: { xs: 3, sm: 4, md: 5 } }}>
         <Stack spacing={2} alignItems="center" textAlign="center">

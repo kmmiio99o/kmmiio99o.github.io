@@ -9,7 +9,6 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Snowfall from "./components/Snowfall";
 
 const App: React.FC = () => {
   const { mode: themeMode, toggleMode } = useThemeMode();
@@ -58,7 +57,6 @@ const App: React.FC = () => {
         }}
       />
       <CssBaseline />
-      <Snowfall count={140} opacity={0.32} />
       <Router>
         <Navbar themeMode={themeMode} toggleTheme={handleThemeToggle} />
         <Box

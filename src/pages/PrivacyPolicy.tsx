@@ -12,7 +12,6 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import Snowfall from "../components/Snowfall";
 import SecurityIcon from "@mui/icons-material/Security";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -35,15 +34,6 @@ const PrivacyPolicy: React.FC = () => {
         minHeight: "100vh",
       }}
     >
-      <Snowfall
-        count={120}
-        speed={1}
-        wind={0.15}
-        color={theme.palette.mode === "dark" ? "#ffffff" : "#f0f4ff"}
-        opacity={0.25}
-        zIndex={-1}
-      />
-
       {/* Hero Header */}
       <section style={{ marginBottom: "clamp(1.5rem, 4vw, 3rem)" }}>
         <Paper
