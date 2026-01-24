@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Typography,
   Card,
@@ -13,19 +13,18 @@ import {
   Avatar,
   Paper,
   Box,
-  Tooltip,
+  Divider,
 } from "@mui/material";
 
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import ExtensionIcon from "@mui/icons-material/Extension";
 import BuildIcon from "@mui/icons-material/Build";
-import LaunchIcon from "@mui/icons-material/Launch";
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import CodeIcon from "@mui/icons-material/Code";
 import StarIcon from "@mui/icons-material/Star";
 import UpdateIcon from "@mui/icons-material/Update";
 import EmailIcon from "@mui/icons-material/Email";
-import FolderIcon from "@mui/icons-material/Folder";
 import DescriptionIcon from "@mui/icons-material/Description";
 
 interface ProjectsProps {
@@ -68,8 +67,8 @@ const projects: Project[] = [
       "Redis",
     ],
     status: "paused",
-    statusColor: "#ff6b6b",
-    accentColor: "#ff6b6b",
+    statusColor: "#ef4444",
+    accentColor: "#ef4444",
     icon: <SmartToyIcon />,
     githubUrl: "https://github.com/kmmiio99o/Kaoruko-Bot-Next",
     repoName: "kmmiio99o/Kaoruko-Bot-Next",
@@ -89,8 +88,8 @@ const projects: Project[] = [
       "High-performance plugin collection for Discord clients. Enhanced user experience with custom UI components and advanced functionality.",
     technologies: ["TypeScript", "React", "Discord API"],
     status: "active",
-    statusColor: "#51cf66",
-    accentColor: "#51cf66",
+    statusColor: "#22c55e",
+    accentColor: "#22c55e",
     icon: <ExtensionIcon />,
     githubUrl: "https://github.com/kmmiio99o/vd-plugins",
     repoName: "kmmiio99o/vd-plugins",
@@ -109,8 +108,8 @@ const projects: Project[] = [
       "An unofficial fork of Kettu, made just for fun. Mobile-focused client modifications with themes, fonts and plugins support. Star the repo :3",
     technologies: ["JavaScript", "TypeScript", "Bun", "React"],
     status: "active",
-    statusColor: "#51cf66",
-    accentColor: "#51cf66",
+    statusColor: "#22c55e",
+    accentColor: "#22c55e",
     icon: <ExtensionIcon />,
     githubUrl: "https://github.com/kmmiio99o/ShiggyCord",
     repoName: "kmmiio99o/ShiggyCord",
@@ -130,8 +129,8 @@ const projects: Project[] = [
       "Lightweight Discord bot focused on simplicity and reliability. Perfect for communities seeking essential moderation tools with zero complexity.",
     technologies: ["Python", "Discord.py"],
     status: "active",
-    statusColor: "#51cf66",
-    accentColor: "#51cf66",
+    statusColor: "#22c55e",
+    accentColor: "#22c55e",
     icon: <BuildIcon />,
     githubUrl: "https://github.com/kmmiio99o/ormi-bot",
     repoName: "kmmiio99o/ormi-bot",
@@ -151,7 +150,13 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
     {},
   );
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const theme = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   useEffect(() => {
     onTabSwitch();
@@ -198,7 +203,8 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
     fetchGitHubData();
   }, []);
 
-  const formatTimeAgo = (iso?: string) => {
+  // Memoized time formatting function
+  const formatTimeAgo = useCallback((iso?: string) => {
     if (!iso) return "Unknown";
     const now = new Date();
     const then = new Date(iso);
@@ -211,9 +217,10 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
     if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
     if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
     return `${Math.floor(diffDays / 365)}y ago`;
-  };
+  }, []);
 
-  const getStatusLabel = (status: string) => {
+  // Memoized status label function
+  const getStatusLabel = useCallback((status: string) => {
     switch (status) {
       case "active":
         return "Active Development";
@@ -224,100 +231,33 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
       default:
         return status;
     }
-  };
+  }, []);
 
-  return (
-    <Container
-      maxWidth="lg"
-      component="main"
-      sx={{
-        py: { xs: 3, sm: 4, md: 6 },
-        px: { xs: 2, sm: 3 },
-        minHeight: "100vh",
-      }}
-    >
-      {/* Header */}
-      <Box sx={{ mb: { xs: 3, sm: 4, md: 5 } }}>
-        <Stack spacing={2} alignItems="center" textAlign="center">
-          <Stack direction="row" alignItems="center" spacing={1.5}>
-            <FolderIcon
-              sx={{
-                fontSize: { xs: 32, sm: 36 },
-                color: "primary.main",
-              }}
-            />
-            <Typography
-              component="h1"
-              variant="h3"
-              fontWeight={800}
-              sx={{
-                background: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                fontSize: { xs: "1.75rem", sm: "2.25rem", md: "2.5rem" },
-              }}
-            >
-              My Projects
-            </Typography>
-          </Stack>
-          <Typography
-            variant="h6"
-            color="text.secondary"
-            sx={{
-              maxWidth: 700,
-              mx: "auto",
-              fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.15rem" },
-              lineHeight: 1.6,
-            }}
-          >
-            Discord bots, client modifications, and open-source tools built with
-            modern technologies
-          </Typography>
-        </Stack>
-      </Box>
+  // Memoized project cards
+  const projectCards = useMemo(
+    () =>
+      projects.map((project) => {
+        const repoData = githubData[project.id];
+        const showStars = !loading && repoData;
 
-      {/* Projects Grid */}
-      <Stack spacing={3} sx={{ mb: 5 }}>
-        {projects.map((project, index) => (
+        return (
           <Card
             key={project.id}
             elevation={0}
             sx={{
-              border: `1px solid ${
-                theme.palette.mode === "dark"
-                  ? "rgba(255, 255, 255, 0.08)"
-                  : "rgba(0, 0, 0, 0.08)"
-              }`,
-              borderRadius: 2,
-              background:
-                theme.palette.mode === "dark"
-                  ? "linear-gradient(135deg, rgba(30, 30, 50, 0.1) 0%, rgba(50, 50, 70, 0.05) 100%)"
-                  : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
-              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-              animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
-              "@keyframes fadeInUp": {
-                from: {
-                  opacity: 0,
-                  transform: "translateY(20px)",
-                },
-                to: {
-                  opacity: 1,
-                  transform: "translateY(0)",
-                },
-              },
-              "&:hover": {
-                transform: "translateY(-8px)",
-                boxShadow: theme.shadows[12],
-                borderColor: project.accentColor,
-                background:
-                  theme.palette.mode === "dark"
-                    ? "linear-gradient(135deg, rgba(40, 40, 60, 0.15) 0%, rgba(60, 60, 80, 0.08) 100%)"
-                    : "linear-gradient(135deg, rgba(245, 250, 255, 0.7) 0%, rgba(255, 255, 255, 0.5) 100%)",
-              },
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: 3,
+              backgroundColor: theme.palette.background.paper,
+              transition: theme.transitions.create([
+                "border-color",
+                "box-shadow",
+              ]),
               position: "relative",
-              overflow: "visible",
-              backdropFilter: "blur(8px)",
+              overflow: "hidden",
+              "&:hover": {
+                borderColor: project.accentColor,
+                boxShadow: theme.shadows[4],
+              },
             }}
           >
             <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
@@ -331,17 +271,12 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                   <Avatar
                     variant="rounded"
                     sx={{
-                      bgcolor: alpha(project.accentColor, 0.1),
+                      backgroundColor: alpha(project.accentColor, 0.1),
                       color: project.accentColor,
                       width: { xs: 56, sm: 64 },
                       height: { xs: 56, sm: 64 },
-                      borderRadius: 1.5,
-                      border: `1px solid ${
-                        theme.palette.mode === "dark"
-                          ? "rgba(255, 255, 255, 0.15)"
-                          : alpha(project.accentColor, 0.2)
-                      }`,
-                      backdropFilter: "blur(8px)",
+                      borderRadius: 2,
+                      border: `1px solid ${alpha(project.accentColor, 0.2)}`,
                     }}
                   >
                     {React.cloneElement(
@@ -367,7 +302,7 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                           fontWeight={800}
                           sx={{
                             fontSize: { xs: "1.25rem", sm: "1.5rem" },
-                            color: project.accentColor,
+                            color: theme.palette.text.primary,
                           }}
                         >
                           {project.title}
@@ -381,63 +316,42 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                             label={getStatusLabel(project.status)}
                             size="small"
                             sx={{
-                              bgcolor: `${project.statusColor}15`,
+                              backgroundColor: alpha(project.statusColor, 0.1),
                               color: project.statusColor,
                               fontWeight: 700,
-                              border: `1px solid ${project.statusColor}20`,
                               fontSize: "0.7rem",
-                              borderRadius: 1.5,
+                              borderRadius: 2,
                               height: 24,
-                              backdropFilter: "blur(4px)",
                             }}
                           />
                           {loading ? (
                             <Skeleton variant="text" width={60} />
-                          ) : githubData[project.id] ? (
+                          ) : showStars ? (
                             <>
-                              <Tooltip title="Stars">
-                                <Chip
-                                  icon={<StarIcon sx={{ fontSize: 14 }} />}
-                                  label={
-                                    githubData[project.id].stargazers_count
-                                  }
-                                  size="small"
-                                  sx={{
-                                    bgcolor:
-                                      theme.palette.mode === "dark"
-                                        ? "rgba(255,255,255,0.12)"
-                                        : "rgba(0,0,0,0.08)",
-                                    color: "warning.main",
-                                    fontWeight: 600,
-                                    borderRadius: 1.5,
-                                    height: 24,
-                                    backdropFilter: "blur(4px)",
-                                    border: `1px solid ${
-                                      theme.palette.mode === "dark"
-                                        ? "rgba(255, 255, 255, 0.1)"
-                                        : "rgba(0, 0, 0, 0.08)"
-                                    }`,
-                                  }}
-                                />
-                              </Tooltip>
-                              <Tooltip title="Last updated">
-                                <Stack
-                                  direction="row"
-                                  alignItems="center"
-                                  spacing={0.5}
-                                  sx={{ color: "text.secondary" }}
-                                >
-                                  <UpdateIcon sx={{ fontSize: 14 }} />
-                                  <Typography
-                                    variant="caption"
-                                    fontWeight={600}
-                                  >
-                                    {formatTimeAgo(
-                                      githubData[project.id].updated_at,
-                                    )}
-                                  </Typography>
-                                </Stack>
-                              </Tooltip>
+                              <Chip
+                                icon={<StarIcon sx={{ fontSize: 14 }} />}
+                                label={repoData.stargazers_count}
+                                size="small"
+                                sx={{
+                                  backgroundColor: alpha("#eab308", 0.1),
+                                  color: "#eab308",
+                                  fontWeight: 600,
+                                  borderRadius: 2,
+                                  height: 24,
+                                  border: `1px solid ${alpha("#eab308", 0.2)}`,
+                                }}
+                              />
+                              <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={0.5}
+                                sx={{ color: "text.secondary" }}
+                              >
+                                <UpdateIcon sx={{ fontSize: 14 }} />
+                                <Typography variant="caption" fontWeight={600}>
+                                  {formatTimeAgo(repoData.updated_at)}
+                                </Typography>
+                              </Stack>
                             </>
                           ) : null}
                         </Stack>
@@ -459,8 +373,7 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                     >
                       {loading
                         ? project.description
-                        : githubData[project.id]?.description ||
-                          project.description}
+                        : repoData?.description || project.description}
                     </Typography>
                   </Stack>
                 </Stack>
@@ -494,19 +407,11 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                           size="small"
                           sx={{
                             fontWeight: 600,
-                            bgcolor:
-                              theme.palette.mode === "dark"
-                                ? "rgba(255,255,255,0.12)"
-                                : "rgba(0,0,0,0.08)",
-                            borderRadius: 1.5,
+                            backgroundColor: theme.palette.action.hover,
+                            borderRadius: 2,
                             fontSize: "0.75rem",
                             height: 28,
-                            backdropFilter: "blur(4px)",
-                            border: `1px solid ${
-                              theme.palette.mode === "dark"
-                                ? "rgba(255, 255, 255, 0.1)"
-                                : "rgba(0, 0, 0, 0.08)"
-                            }`,
+                            border: `1px solid ${theme.palette.divider}`,
                           }}
                         />
                       ))}
@@ -541,7 +446,7 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                               width: 16,
                               height: 16,
                               borderRadius: "50%",
-                              bgcolor: alpha(project.accentColor, 0.1),
+                              backgroundColor: alpha(project.accentColor, 0.1),
                               flexShrink: 0,
                               border: `1px solid ${alpha(project.accentColor, 0.2)}`,
                             }}
@@ -576,11 +481,7 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                   spacing={1.5}
                   sx={{
                     pt: 2,
-                    borderTop: `1px solid ${
-                      theme.palette.mode === "dark"
-                        ? "rgba(255, 255, 255, 0.08)"
-                        : "rgba(0, 0, 0, 0.08)"
-                    }`,
+                    borderTop: `1px solid ${theme.palette.divider}`,
                   }}
                 >
                   <Button
@@ -590,28 +491,16 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
-                      borderRadius: 1.5,
+                      borderRadius: 2,
                       py: { xs: 1, sm: 0.75 },
                       textTransform: "none",
                       fontWeight: 600,
                       flex: { xs: 1, sm: "none" },
                       minWidth: { sm: 160 },
-                      backdropFilter: "blur(8px)",
-                      border: `1px solid ${
-                        theme.palette.mode === "dark"
-                          ? "rgba(255, 255, 255, 0.15)"
-                          : alpha(project.accentColor, 0.25)
-                      }`,
-                      color:
-                        theme.palette.mode === "dark"
-                          ? "#fff"
-                          : project.accentColor,
+                      borderColor: theme.palette.divider,
                       "&:hover": {
                         borderColor: project.accentColor,
-                        background:
-                          theme.palette.mode === "dark"
-                            ? alpha(project.accentColor, 0.1)
-                            : alpha(project.accentColor, 0.06),
+                        backgroundColor: alpha(project.accentColor, 0.05),
                       },
                     }}
                   >
@@ -620,33 +509,21 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
 
                   <Button
                     variant="outlined"
-                    endIcon={<LaunchIcon />}
+                    endIcon={<ArrowOutwardIcon />}
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
-                      borderRadius: 1.5,
+                      borderRadius: 2,
                       py: { xs: 1, sm: 0.75 },
                       textTransform: "none",
                       fontWeight: 600,
                       flex: { xs: 1, sm: "none" },
                       minWidth: { sm: 140 },
-                      backdropFilter: "blur(8px)",
-                      border: `1px solid ${
-                        theme.palette.mode === "dark"
-                          ? "rgba(255, 255, 255, 0.15)"
-                          : "rgba(99, 102, 241, 0.25)"
-                      }`,
-                      color:
-                        theme.palette.mode === "dark"
-                          ? "#fff"
-                          : project.accentColor,
+                      borderColor: theme.palette.divider,
                       "&:hover": {
                         borderColor: project.accentColor,
-                        background:
-                          theme.palette.mode === "dark"
-                            ? alpha(project.accentColor, 0.1)
-                            : alpha(project.accentColor, 0.06),
+                        backgroundColor: alpha(project.accentColor, 0.05),
                       },
                     }}
                   >
@@ -656,34 +533,84 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
               </Stack>
             </CardContent>
           </Card>
-        ))}
+        );
+      }),
+    [githubData, loading, theme, getStatusLabel, formatTimeAgo],
+  );
+
+  return (
+    <Container
+      maxWidth="lg"
+      component="main"
+      sx={{
+        py: { xs: 4, md: 8 },
+        px: { xs: 2, sm: 3, md: 4 },
+        minHeight: "100vh",
+      }}
+    >
+      {/* Header */}
+      <Box sx={{ mb: { xs: 4, sm: 5, md: 6 } }}>
+        <Stack spacing={2} alignItems="flex-start">
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Box
+              sx={{
+                width: 12,
+                height: 32,
+                borderRadius: 2,
+                backgroundColor: theme.palette.primary.main,
+              }}
+            />
+            <Typography
+              component="h1"
+              variant="h2"
+              fontWeight={900}
+              sx={{
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                color: theme.palette.text.primary,
+              }}
+            >
+              My Projects
+            </Typography>
+          </Stack>
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            fontWeight={500}
+            sx={{
+              maxWidth: 700,
+              fontSize: { xs: "1rem", sm: "1.15rem", md: "1.25rem" },
+            }}
+          >
+            Discord bots, client modifications, and open-source tools built with
+            modern technologies
+          </Typography>
+        </Stack>
+      </Box>
+
+      <Divider sx={{ mb: 4 }} />
+
+      {/* Projects Grid */}
+      <Stack spacing={3} sx={{ mb: 6 }}>
+        {projectCards}
       </Stack>
 
       {/* CTA Section */}
       <Paper
         elevation={0}
         sx={{
-          p: { xs: 2.5, sm: 3, md: 3.5 },
-          borderRadius: 2,
-          border: `1px solid ${
-            theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.08)"
-              : "rgba(0, 0, 0, 0.08)"
-          }`,
+          p: { xs: 3, sm: 4 },
+          borderRadius: 3,
+          border: `1px solid ${theme.palette.divider}`,
           textAlign: "center",
-          background:
-            theme.palette.mode === "dark"
-              ? "linear-gradient(135deg, rgba(30, 30, 50, 0.1) 0%, rgba(50, 50, 70, 0.05) 100%)"
-              : "linear-gradient(135deg, rgba(240, 245, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 100%)",
-          backdropFilter: "blur(8px)",
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Stack spacing={2.5} alignItems="center">
           <Stack spacing={1}>
             <Typography
-              variant="h5"
+              variant="h4"
               fontWeight={800}
-              sx={{ fontSize: { xs: "1.35rem", sm: "1.5rem", md: "1.65rem" } }}
+              sx={{ fontSize: { xs: "1.5rem", sm: "1.75rem", md: "2rem" } }}
             >
               Want to Collaborate?
             </Typography>
@@ -693,7 +620,6 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
               sx={{
                 maxWidth: 600,
                 mx: "auto",
-                fontSize: { xs: "0.9rem", sm: "0.95rem" },
                 lineHeight: 1.6,
               }}
             >
@@ -704,34 +630,26 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            spacing={1.5}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
+            spacing={2}
+            sx={{ width: { xs: "100%", sm: "auto" }, mt: 2 }}
           >
             <Button
-              variant="outlined"
+              variant="contained"
               startIcon={<GitHubIcon />}
               href="https://github.com/kmmiio99o"
               target="_blank"
               rel="noopener noreferrer"
               sx={{
-                px: 3,
-                py: { xs: 1, sm: 0.75 },
-                borderRadius: 1.5,
+                px: 4,
+                py: 1.5,
+                borderRadius: 2,
                 textTransform: "none",
-                fontWeight: 600,
-                fontSize: "0.95rem",
-                backdropFilter: "blur(8px)",
-                border: `1px solid ${
-                  theme.palette.mode === "dark"
-                    ? "rgba(255, 255, 255, 0.15)"
-                    : "rgba(99, 102, 241, 0.25)"
-                }`,
+                fontWeight: 700,
+                backgroundColor: theme.palette.primary.main,
+                boxShadow: theme.shadows[2],
                 "&:hover": {
-                  borderColor: theme.palette.primary.main,
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "rgba(99, 102, 241, 0.1)"
-                      : "rgba(99, 102, 241, 0.06)",
+                  backgroundColor: theme.palette.primary.dark,
+                  boxShadow: theme.shadows[4],
                 },
               }}
             >
@@ -742,24 +660,15 @@ const Projects: React.FC<ProjectsProps> = ({ onTabSwitch }) => {
               startIcon={<EmailIcon />}
               href="mailto:kmmiio99o@gmail.com"
               sx={{
-                px: 3,
-                py: { xs: 1, sm: 0.75 },
-                borderRadius: 1.5,
+                px: 4,
+                py: 1.5,
+                borderRadius: 2,
                 textTransform: "none",
                 fontWeight: 600,
-                fontSize: "0.95rem",
-                backdropFilter: "blur(8px)",
-                border: `1px solid ${
-                  theme.palette.mode === "dark"
-                    ? "rgba(255, 255, 255, 0.15)"
-                    : "rgba(99, 102, 241, 0.25)"
-                }`,
+                borderColor: theme.palette.divider,
                 "&:hover": {
                   borderColor: theme.palette.primary.main,
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "rgba(99, 102, 241, 0.1)"
-                      : "rgba(99, 102, 241, 0.06)",
+                  backgroundColor: theme.palette.action.hover,
                 },
               }}
             >

@@ -8,7 +8,6 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const App: React.FC = () => {
   const { mode: themeMode, toggleMode } = useThemeMode();
@@ -78,7 +77,6 @@ const App: React.FC = () => {
               path="/projects"
               element={<Projects onTabSwitch={handleTabSwitch} />}
             />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
           </Routes>
         </Box>
         <Footer />

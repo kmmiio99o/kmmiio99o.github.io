@@ -1,6 +1,6 @@
 {
   "name": "kmmiio99o",
-  "version": "1.0.0",
+  "version": "3.1.0",
   "description": "Personal portfolio website with Material You design deployed as Cloudflare Worker",
   "private": true,
   "scripts": {
@@ -25,6 +25,7 @@
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
+    "baseline-browser-mapping": "^2.9.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "wrangler": "^4.60.0"

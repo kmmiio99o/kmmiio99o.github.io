@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Box,
   Typography,
@@ -7,13 +7,10 @@ import {
   Stack,
   Tooltip,
   alpha,
-  Button,
 } from "@mui/material";
-import { Link as RouterLink, useLocation } from "react-router-dom";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import CodeIcon from "@mui/icons-material/Code";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import UpdateIcon from "@mui/icons-material/Update";
 
 // Custom Discord Icon
 const DiscordIcon = () => (
@@ -30,24 +27,26 @@ const DiscordIcon = () => (
 
 const Footer: React.FC = () => {
   const theme = useTheme();
-  const location = useLocation();
-  const isPrivacy = location.pathname === "/privacy";
   const currentYear = new Date().getFullYear();
 
-  const socialLinks = [
-    {
-      icon: <GitHubIcon sx={{ fontSize: 20 }} />,
-      url: "https://github.com/kmmiio99o",
-      label: "GitHub",
-      color: "#6e5494",
-    },
-    {
-      icon: <DiscordIcon />,
-      url: "https://discord.com/users/879393496627306587",
-      label: "Discord",
-      color: "#5865F2",
-    },
-  ];
+  // Memoized social links configuration
+  const socialLinks = useMemo(
+    () => [
+      {
+        icon: <GitHubIcon sx={{ fontSize: 20 }} />,
+        url: "https://github.com/kmmiio99o",
+        label: "GitHub",
+        color: theme.palette.primary.main,
+      },
+      {
+        icon: <DiscordIcon />,
+        url: "https://discord.com/users/879393496627306587",
+        label: "Discord",
+        color: theme.palette.secondary.main,
+      },
+    ],
+    [theme.palette.primary.main, theme.palette.secondary.main],
+  );
 
   return (
     <Box
@@ -68,15 +67,8 @@ const Footer: React.FC = () => {
     >
       <Box
         sx={{
-          background:
-            theme.palette.mode === "dark"
-              ? "linear-gradient(135deg, rgba(50, 50, 70, 0.3) 0%, rgba(70, 70, 90, 0.2) 100%)"
-              : "linear-gradient(135deg, rgba(245, 250, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%)",
-          border: `1px solid ${
-            theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.12)"
-              : "rgba(0, 0, 0, 0.1)"
-          }`,
+          backgroundColor: alpha(theme.palette.background.paper, 0.9),
+          border: `1px solid ${alpha(theme.palette.divider, 0.8)}`,
           borderRadius: 2,
           backdropFilter: "blur(8px)",
           px: { xs: 2.5, sm: 3 },
@@ -85,10 +77,7 @@ const Footer: React.FC = () => {
           overflow: "hidden",
           "@media (hover: hover) and (pointer: fine)": {
             "&:hover": {
-              borderColor:
-                theme.palette.mode === "dark"
-                  ? "rgba(255, 255, 255, 0.15)"
-                  : "rgba(99, 102, 241, 0.25)",
+              borderColor: alpha(theme.palette.primary.main, 0.4),
             },
           },
         }}
@@ -103,10 +92,7 @@ const Footer: React.FC = () => {
           <Typography
             variant="caption"
             sx={{
-              color:
-                theme.palette.mode === "dark"
-                  ? alpha("#cdd6f4", 0.9)
-                  : alpha("#475569", 0.9),
+              color: theme.palette.text.secondary,
               fontWeight: 500,
               fontSize: "0.8rem",
               whiteSpace: "nowrap",
@@ -121,10 +107,7 @@ const Footer: React.FC = () => {
           <Typography
             variant="caption"
             sx={{
-              color:
-                theme.palette.mode === "dark"
-                  ? alpha("#cdd6f4", 0.9)
-                  : alpha("#475569", 0.9),
+              color: theme.palette.text.secondary,
               fontWeight: 500,
               fontSize: "0.8rem",
               whiteSpace: "nowrap",
@@ -145,31 +128,18 @@ const Footer: React.FC = () => {
                   rel="noopener noreferrer"
                   size="small"
                   sx={{
-                    color:
-                      theme.palette.mode === "dark"
-                        ? alpha("#cdd6f4", 0.9)
-                        : alpha("#475569", 0.9),
+                    color: theme.palette.text.primary,
                     width: 36,
                     height: 36,
-                    background:
-                      theme.palette.mode === "dark"
-                        ? "rgba(255, 255, 255, 0.15)"
-                        : "rgba(0, 0, 0, 0.1)",
+                    backgroundColor: alpha(theme.palette.action.hover, 0.3),
                     backdropFilter: "blur(8px)",
-                    border: `1px solid ${
-                      theme.palette.mode === "dark"
-                        ? "rgba(255, 255, 255, 0.18)"
-                        : "rgba(0, 0, 0, 0.15)"
-                    }`,
+                    border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
                     borderRadius: 1.5,
                     // Disable hover effect on mobile, keep only for desktop
                     "@media (hover: hover) and (pointer: fine)": {
                       "&:hover": {
                         color: social.color,
-                        background:
-                          theme.palette.mode === "dark"
-                            ? alpha(social.color, 0.15)
-                            : alpha(social.color, 0.1),
+                        backgroundColor: alpha(social.color, 0.15),
                         borderColor: alpha(social.color, 0.4),
                         transform: "translateY(-1px)",
                       },
@@ -196,35 +166,22 @@ const Footer: React.FC = () => {
                 display: { xs: "none", sm: "flex" },
                 px: 1.5,
                 py: 0.75,
-                background:
-                  theme.palette.mode === "dark"
-                    ? "rgba(255, 255, 255, 0.15)"
-                    : "rgba(0, 0, 0, 0.1)",
+                backgroundColor: alpha(theme.palette.action.hover, 0.3),
                 backdropFilter: "blur(8px)",
                 borderRadius: 1.5,
-                border: `1px solid ${
-                  theme.palette.mode === "dark"
-                    ? "rgba(255, 255, 255, 0.18)"
-                    : "rgba(0, 0, 0, 0.15)"
-                }`,
+                border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
               }}
             >
               <CodeIcon
                 sx={{
                   fontSize: 14,
-                  color:
-                    theme.palette.mode === "dark"
-                      ? alpha("#89b4fa", 0.9)
-                      : alpha("#3b82f6", 0.9),
+                  color: theme.palette.primary.light,
                 }}
               />
               <Typography
                 variant="caption"
                 sx={{
-                  color:
-                    theme.palette.mode === "dark"
-                      ? alpha("#cdd6f4", 0.9)
-                      : alpha("#475569", 0.9),
+                  color: theme.palette.text.secondary,
                   fontSize: "0.75rem",
                   fontWeight: 600,
                 }}
@@ -232,49 +189,6 @@ const Footer: React.FC = () => {
                 React • TypeScript
               </Typography>
             </Stack>
-
-            {/* Privacy link - desktop only */}
-            <Button
-              component={RouterLink}
-              to="/privacy"
-              startIcon={<UpdateIcon />}
-              variant="outlined"
-              size="small"
-              aria-current={isPrivacy ? "page" : undefined}
-              sx={{
-                display: { xs: "none", sm: "inline-flex" },
-                textTransform: "none",
-                borderRadius: 1.5,
-                px: 1.5,
-                py: 0.6,
-                fontWeight: isPrivacy ? 700 : 600,
-                fontSize: "0.95rem",
-                color: isPrivacy
-                  ? "primary.main"
-                  : theme.palette.mode === "dark"
-                    ? alpha("#cdd6f4", 0.9)
-                    : alpha("#475569", 0.9),
-                backgroundColor: isPrivacy
-                  ? alpha(theme.palette.primary.main, 0.12)
-                  : "transparent",
-                borderColor: isPrivacy
-                  ? alpha(theme.palette.primary.main, 0.18)
-                  : alpha(theme.palette.divider, 0.25),
-                mr: 0.5,
-                "&:hover": {
-                  backgroundColor: isPrivacy
-                    ? alpha(theme.palette.primary.main, 0.18)
-                    : alpha(theme.palette.action.hover, 0.05),
-                  borderColor: theme.palette.primary.main,
-                  color: "primary.main",
-                },
-                WebkitTapHighlightColor: "transparent",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              Privacy
-            </Button>
 
             {/* Source link */}
             <Tooltip title="View Source Code" arrow>
@@ -284,32 +198,19 @@ const Footer: React.FC = () => {
                 rel="noopener noreferrer"
                 size="small"
                 sx={{
-                  color:
-                    theme.palette.mode === "dark"
-                      ? alpha("#cdd6f4", 0.9)
-                      : alpha("#475569", 0.9),
+                  color: theme.palette.text.primary,
                   width: 36,
                   height: 36,
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "rgba(255, 255, 255, 0.15)"
-                      : "rgba(0, 0, 0, 0.1)",
+                  backgroundColor: alpha(theme.palette.action.hover, 0.3),
                   backdropFilter: "blur(8px)",
-                  border: `1px solid ${
-                    theme.palette.mode === "dark"
-                      ? "rgba(255, 255, 255, 0.18)"
-                      : "rgba(0, 0, 0, 0.15)"
-                  }`,
+                  border: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
                   borderRadius: 1.5,
                   // Disable hover effect on mobile, keep only for desktop
                   "@media (hover: hover) and (pointer: fine)": {
                     "&:hover": {
-                      color: "#ef4444",
-                      background:
-                        theme.palette.mode === "dark"
-                          ? alpha("#ef4444", 0.15)
-                          : alpha("#ef4444", 0.1),
-                      borderColor: alpha("#ef4444", 0.4),
+                      color: theme.palette.error.main,
+                      backgroundColor: alpha(theme.palette.error.main, 0.15),
+                      borderColor: alpha(theme.palette.error.main, 0.4),
                       transform: "translateY(-1px)",
                     },
                   },

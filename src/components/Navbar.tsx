@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   AppBar,
   Toolbar,
@@ -36,16 +36,14 @@ const Navbar: React.FC<NavbarProps> = ({ themeMode, toggleTheme }) => {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const maxScroll = 80; // Distance to reach full opacity
+      const maxScroll = 80;
       const opacity = Math.min(scrollY / maxScroll, 1);
-
-      // Add some resistance for smoother animation
       const smoothedOpacity = opacity < 0.5 ? opacity * 0.7 : opacity;
       setNavbarOpacity(smoothedOpacity);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial calculation
+    handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -54,14 +52,29 @@ const Navbar: React.FC<NavbarProps> = ({ themeMode, toggleTheme }) => {
     setDrawerOpen(open);
   };
 
-  // Calculate values based on opacity
-  const backgroundColor = alpha(
-    theme.palette.mode === "dark" ? theme.palette.background.paper : "#ffffff",
-    navbarOpacity * 0.95,
+  // Memoized background color based on opacity
+  const backgroundColor = useMemo(
+    () => alpha(theme.palette.background.paper, navbarOpacity * 0.95),
+    [theme.palette.background.paper, navbarOpacity],
   );
 
-  const blurAmount = Math.min(navbarOpacity * 15, 12);
-  const borderOpacity = navbarOpacity * 0.15;
+  // Memoized blur amount
+  const blurAmount = useMemo(
+    () => Math.min(navbarOpacity * 15, 12),
+    [navbarOpacity],
+  );
+
+  // Memoized border color
+  const borderColor = useMemo(
+    () => alpha(theme.palette.divider, navbarOpacity * 0.15),
+    [theme.palette.divider, navbarOpacity],
+  );
+
+  // Memoized action hover color
+  const actionHoverColor = useMemo(
+    () => alpha(theme.palette.action.hover, 0.3),
+    [theme.palette.action.hover],
+  );
 
   return (
     <>
@@ -74,7 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({ themeMode, toggleTheme }) => {
             backgroundColor,
             backdropFilter: `blur(${blurAmount}px)`,
             WebkitBackdropFilter: `blur(${blurAmount}px)`,
-            borderBottom: `1px solid ${alpha(theme.palette.divider, borderOpacity)}`,
+            borderBottom: `1px solid ${borderColor}`,
             transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
@@ -127,11 +140,7 @@ const Navbar: React.FC<NavbarProps> = ({ themeMode, toggleTheme }) => {
                 sx={{
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
-                  background:
-                    "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
+                  color: theme.palette.primary.main,
                   fontSize: { xs: "1.25rem", md: "1.5rem" },
                   transition: "transform 0.2s ease",
                 }}
@@ -168,12 +177,12 @@ const Navbar: React.FC<NavbarProps> = ({ themeMode, toggleTheme }) => {
                   width: { xs: 40, md: 44 },
                   height: { xs: 40, md: 44 },
                   borderRadius: 1.5,
-                  color: "text.secondary",
-                  backgroundColor: alpha(theme.palette.action.hover, 0.3),
+                  color: theme.palette.text.secondary,
+                  backgroundColor: actionHoverColor,
                   transition: "all 0.2s ease",
                   "&:hover": {
                     backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                    color: "primary.main",
+                    color: theme.palette.primary.main,
                   },
                 }}
               >
@@ -194,12 +203,12 @@ const Navbar: React.FC<NavbarProps> = ({ themeMode, toggleTheme }) => {
                     width: 40,
                     height: 40,
                     borderRadius: 1.5,
-                    color: "text.secondary",
-                    backgroundColor: alpha(theme.palette.action.hover, 0.3),
+                    color: theme.palette.text.secondary,
+                    backgroundColor: actionHoverColor,
                     transition: "all 0.2s ease",
                     "&:hover": {
                       backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                      color: "primary.main",
+                      color: theme.palette.primary.main,
                     },
                   }}
                 >

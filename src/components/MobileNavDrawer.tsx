@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Drawer,
   Box,
@@ -12,13 +12,13 @@ import {
   alpha,
   Typography,
   Button,
+  Avatar,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import WorkIcon from "@mui/icons-material/Work";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import UpdateIcon from "@mui/icons-material/Update";
 import { Link } from "react-router-dom";
 
 interface MobileNavDrawerProps {
@@ -33,24 +33,60 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
   currentPath,
 }) => {
   const theme = useTheme();
-  const [drawerLoaded, setDrawerLoaded] = useState(false);
 
-  const navItems = [
-    { name: "Home", path: "/", icon: HomeIcon },
-    { name: "About", path: "/about", icon: PersonIcon },
-    { name: "Projects", path: "/projects", icon: WorkIcon },
-    { name: "Privacy", path: "/privacy", icon: UpdateIcon },
-  ];
+  // Memoized navigation items
+  const navItems = useMemo(
+    () => [
+      { name: "Home", path: "/", icon: HomeIcon },
+      { name: "About", path: "/about", icon: PersonIcon },
+      { name: "Projects", path: "/projects", icon: WorkIcon },
+    ],
+    [],
+  );
 
-  useEffect(() => {
-    if (open) {
-      setDrawerLoaded(true);
-    } else {
-      // Reset when closing
-      const timer = setTimeout(() => setDrawerLoaded(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
+  // Memoized styles
+  const drawerStyles = useMemo(
+    () => ({
+      paper: {
+        width: "min(85vw, 300px)",
+        backgroundColor: theme.palette.background.paper,
+        borderLeft: `1px solid ${theme.palette.divider}`,
+        boxShadow: theme.shadows[3],
+        display: "flex",
+        flexDirection: "column" as const,
+      },
+      backdrop: {
+        backgroundColor: alpha(theme.palette.common.black, 0.3),
+        backdropFilter: "blur(4px)",
+        WebkitBackdropFilter: "blur(4px)",
+      },
+    }),
+    [theme],
+  );
+
+  // Memoized colors
+  const colors = useMemo(
+    () => ({
+      textSecondary: theme.palette.text.secondary,
+      textPrimary: theme.palette.text.primary,
+      primaryMain: theme.palette.primary.main,
+      divider: theme.palette.divider,
+      actionHover: theme.palette.action.hover,
+    }),
+    [theme],
+  );
+
+  // Memoized alpha values
+  const alphaValues = useMemo(
+    () => ({
+      primary10: alpha(colors.primaryMain, 0.1),
+      primary15: alpha(colors.primaryMain, 0.15),
+      actionHover30: alpha(colors.actionHover, 0.3),
+      divider10: alpha(colors.divider, 0.1),
+      divider30: alpha(colors.divider, 0.3),
+    }),
+    [colors, alpha],
+  );
 
   const handleClose = () => {
     onClose();
@@ -66,31 +102,14 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
         keepMounted: true,
         sx: {
           "& .MuiBackdrop-root": {
-            backgroundColor: alpha(theme.palette.common.black, 0),
+            backgroundColor: "transparent",
             backdropFilter: "blur(0px)",
             transition: "all 0.25s ease",
-            ...(open && {
-              backgroundColor: alpha(theme.palette.common.black, 0.3),
-              backdropFilter: "blur(4px)",
-            }),
+            ...(open && drawerStyles.backdrop),
           },
         },
       }}
-      PaperProps={{
-        sx: {
-          width: "min(85vw, 300px)",
-          background: theme.palette.background.paper,
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          borderLeft: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? "-4px 0 24px rgba(0, 0, 0, 0.3)"
-              : "-4px 0 24px rgba(0, 0, 0, 0.1)",
-          display: "flex",
-          flexDirection: "column",
-        },
-      }}
+      PaperProps={{ sx: drawerStyles.paper }}
     >
       {/* Header */}
       <Box
@@ -99,26 +118,41 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          borderBottom: `1px solid ${alphaValues.divider10}`,
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 600,
-            color: "text.primary",
-          }}
-        >
-          Navigation
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Avatar
+            sx={{
+              width: 36,
+              height: 36,
+              bgcolor: colors.primaryMain,
+              fontWeight: 700,
+              fontSize: "1rem",
+            }}
+          >
+            K
+          </Avatar>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              color: colors.textPrimary,
+            }}
+          >
+            kmmiio99o
+          </Typography>
+        </Box>
         <IconButton
           onClick={handleClose}
           size="small"
           sx={{
-            color: "text.secondary",
+            color: colors.textSecondary,
+            backgroundColor: alphaValues.actionHover30,
+            borderRadius: 1.5,
             "&:hover": {
-              color: "text.primary",
-              backgroundColor: alpha(theme.palette.action.hover, 0.5),
+              color: colors.textPrimary,
+              backgroundColor: alphaValues.primary10,
             },
           }}
         >
@@ -129,52 +163,43 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
       {/* Navigation Items */}
       <Box sx={{ p: 1.5, flex: 1 }}>
         <List disablePadding>
-          {navItems.map((item, index) => {
+          {navItems.map((item) => {
             const Icon = item.icon;
             const active = currentPath === item.path;
-            const delay = index * 50;
 
             return (
-              <ListItem
-                key={item.name}
-                disablePadding
-                sx={{
-                  mb: 0.5,
-                  opacity: drawerLoaded ? 1 : 0,
-                  transform: drawerLoaded
-                    ? "translateX(0)"
-                    : "translateX(20px)",
-                  transition: `opacity 0.2s ease ${delay}ms, transform 0.2s ease ${delay}ms`,
-                }}
-              >
+              <ListItem key={item.name} disablePadding sx={{ mb: 0.5 }}>
                 <ListItemButton
                   component={Link}
                   to={item.path}
                   onClick={handleClose}
                   selected={active}
                   sx={{
-                    borderRadius: 1.5,
+                    borderRadius: 2,
                     py: 1.25,
                     px: 2,
+                    border: `1px solid ${active ? colors.primaryMain : alphaValues.divider30}`,
+                    backgroundColor: active
+                      ? alphaValues.primary10
+                      : "transparent",
                     "&.Mui-selected": {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                      color: "primary.main",
+                      backgroundColor: alphaValues.primary10,
+                      color: colors.primaryMain,
                       "&:hover": {
-                        backgroundColor: alpha(
-                          theme.palette.primary.main,
-                          0.15,
-                        ),
+                        backgroundColor: alphaValues.primary15,
                       },
                     },
                     "&:hover": {
-                      backgroundColor: alpha(theme.palette.action.hover, 0.3),
+                      backgroundColor: active
+                        ? alphaValues.primary15
+                        : alphaValues.actionHover30,
                     },
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 40,
-                      color: active ? "primary.main" : "text.secondary",
+                      color: active ? colors.primaryMain : colors.textSecondary,
                     }}
                   >
                     <Icon />
@@ -182,7 +207,7 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
                   <ListItemText
                     primary={item.name}
                     primaryTypographyProps={{
-                      fontWeight: active ? 600 : 500,
+                      fontWeight: active ? 700 : 500,
                       fontSize: "0.95rem",
                     }}
                   />
@@ -193,11 +218,11 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
         </List>
       </Box>
 
-      {/* Simple GitHub Link */}
+      {/* GitHub Link */}
       <Box
         sx={{
           p: 2,
-          borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          borderTop: `1px solid ${alphaValues.divider10}`,
         }}
       >
         <Button
@@ -207,21 +232,20 @@ const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({
           target="_blank"
           rel="noopener noreferrer"
           variant="outlined"
-          size="small"
+          size="medium"
           sx={{
             textTransform: "none",
-            borderRadius: 1.5,
-            fontWeight: 500,
-            borderColor: alpha(theme.palette.divider, 0.3),
-            color: "text.secondary",
+            borderRadius: 2,
+            fontWeight: 600,
+            border: `1px solid ${alphaValues.divider30}`,
+            color: colors.textPrimary,
             "&:hover": {
-              borderColor: theme.palette.primary.main,
-              color: "primary.main",
-              backgroundColor: alpha(theme.palette.primary.main, 0.05),
+              borderColor: colors.primaryMain,
+              backgroundColor: alphaValues.primary10,
             },
           }}
         >
-          GitHub
+          Visit GitHub
         </Button>
       </Box>
     </Drawer>
