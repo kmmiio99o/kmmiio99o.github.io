@@ -1,40 +1,23 @@
 {
-  "name": "kmmiio99o",
+  "name": "kmmiio99o's-Website",
   "version": "4.0.0",
-  "description": "Personal portfolio - macOS desktop environment with terminal aesthetic",
-  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview",
-    "type-check": "tsc"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@fontsource-variable/google-sans": "^5.2.1",
-    "@maomaolabs/core": "^1.1.0",
-    "@mui/icons-material": "^9.2.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "@mui/material": "^9.2.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "@mui/icons-material": "^9.2.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.14",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.3",
     "typescript": "^7.0.2",
-    "vite": "^8.1.4"
-  },
-  "keywords": [
-    "portfolio",
-    "desktop",
-    "macos",
-    "terminal",
-    "material-3",
-    "personal-website"
-  ],
-  "author": "kmmiio99o",
-  "license": "MIT"
+    "vite": "^8.2.0",
+    "@vitejs/plugin-react": "^6.0.5"
+  }
 }
