@@ -9,6 +9,7 @@ import BioModal from './modals/BioModal'
 import SocialModal from './modals/SocialModal'
 import ProjectsModal from './modals/ProjectsModal'
 import CRTStyle from './components/CRTStyle'
+import TimePill from './components/TimePill'
 
 const DISCORD_ID = '879393496627306587'
 
@@ -48,6 +49,8 @@ export default function App() {
       <BioModal open={open === 'bio'} onClose={() => setOpen(null)} />
       <SocialModal open={open === 'socials'} onClose={() => setOpen(null)} />
       <ProjectsModal open={open === 'projects'} onClose={() => setOpen(null)} />
+
+      <TimePill />
     </Box>
   )
 }
