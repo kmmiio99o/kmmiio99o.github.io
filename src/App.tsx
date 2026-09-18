@@ -11,12 +11,25 @@ import ProjectsModal from './modals/ProjectsModal'
 import CRTStyle from './components/CRTStyle'
 import TimePill from './components/TimePill'
 import BootSequence from './components/BootSequence'
+import CRTOffOverlay from './components/CRTOffOverlay'
+import PowerButton from './components/PowerButton'
 
 const DISCORD_ID = '879393496627306587'
 
 export default function App() {
   const [open, setOpen] = useState<'bio' | 'socials' | 'projects' | null>(null)
   const [booted, setBooted] = useState(false)
+  const [crtOff, setCrtOff] = useState(false)
+
+  const powerOff = () => {
+    setOpen(null)
+    setCrtOff(true)
+  }
+
+  const reboot = () => {
+    setBooted(false)
+    setCrtOff(false)
+  }
 
   return (
     <Box sx={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
@@ -31,8 +44,14 @@ export default function App() {
       />
 
       {!booted && <BootSequence onDone={() => setBooted(true)} />}
+      {crtOff && <CRTOffOverlay onReboot={reboot} />}
 
-      <CenterStack>
+      <CenterStack
+        onDoubleClick={(e) => {
+          if ((e.target as HTMLElement).closest('.retro-paper')) return
+          powerOff()
+        }}
+      >
         <Paper
           elevation={0}
           className="retro-paper"
@@ -55,6 +74,7 @@ export default function App() {
       <ProjectsModal open={open === 'projects'} onClose={() => setOpen(null)} />
 
       <TimePill />
+      {booted && <PowerButton onPowerOff={powerOff} />}
     </Box>
   )
 }

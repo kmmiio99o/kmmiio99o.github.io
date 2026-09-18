@@ -2,12 +2,13 @@ import React from 'react'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 
-export default function CenterStack({ children }: { children: React.ReactNode }) {
+export default function CenterStack({ children, onDoubleClick }: { children: React.ReactNode; onDoubleClick?: React.MouseEventHandler<HTMLDivElement> }) {
   const theme = useTheme()
   const isMobile = theme.breakpoints.down('sm')
 
   return (
     <Box
+      onDoubleClick={onDoubleClick}
       sx={{
         position: 'absolute',
         inset: 0,
