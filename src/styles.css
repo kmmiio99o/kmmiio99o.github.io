@@ -193,6 +193,30 @@ input, textarea, select, button, a, [contenteditable], .allow-select { -webkit-u
   100% { text-shadow: 0 0 0 transparent; }
 }
 
+@keyframes boot-blink {
+  0%, 55% { opacity: 1 }
+  56%, 100% { opacity: 0 }
+}
+
+@keyframes boot-fill {
+  from { width: 0% }
+  to { width: 100% }
+}
+
+@keyframes boot-flicker {
+  0% { opacity: 1 }
+  8% { opacity: 0.3 }
+  12% { opacity: 0.9 }
+  20% { opacity: 0.12 }
+  26% { opacity: 0.75 }
+  40% { opacity: 0.9 }
+  58% { opacity: 0.4 }
+  70% { opacity: 0.7 }
+  80% { opacity: 0.15 }
+  90% { opacity: 0.05 }
+  100% { opacity: 0 }
+}
+
 .glitch-text {
   animation: glitch 3s infinite;
   position: relative;

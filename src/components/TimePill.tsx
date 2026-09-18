@@ -14,6 +14,7 @@ export default function TimePill() {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
+    timeZone: 'Europe/Warsaw',
   })
 
   return (
@@ -27,7 +28,7 @@ export default function TimePill() {
         display: 'flex',
         alignItems: 'center',
         gap: 0.5,
-        padding: '5px 8px',
+        padding: '8px 14px',
         border: '2px solid rgba(120,220,255,0.2)',
         background: 'rgba(3,12,30,0.92)',
         pointerEvents: 'none',
@@ -38,7 +39,7 @@ export default function TimePill() {
         sx={{
           fontFamily: '"Press Start 2P", monospace',
           color: '#d6eaff',
-          fontSize: { xs: 8, sm: 9 },
+          fontSize: { xs: 11, sm: 12 },
           lineHeight: 1,
         }}
       >

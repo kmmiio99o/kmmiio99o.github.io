@@ -10,11 +10,13 @@ import SocialModal from './modals/SocialModal'
 import ProjectsModal from './modals/ProjectsModal'
 import CRTStyle from './components/CRTStyle'
 import TimePill from './components/TimePill'
+import BootSequence from './components/BootSequence'
 
 const DISCORD_ID = '879393496627306587'
 
 export default function App() {
   const [open, setOpen] = useState<'bio' | 'socials' | 'projects' | null>(null)
+  const [booted, setBooted] = useState(false)
 
   return (
     <Box sx={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
@@ -27,6 +29,8 @@ export default function App() {
         noiseIntensity={0.015}
         curvature={0.01}
       />
+
+      {!booted && <BootSequence onDone={() => setBooted(true)} />}
 
       <CenterStack>
         <Paper

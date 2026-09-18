@@ -80,14 +80,13 @@ function MarqueeStatus({ text }: { text: string }) {
   }, [text])
 
   return (
-    <div
+    <span
       ref={containerRef}
       style={{
         overflow: 'hidden',
         whiteSpace: 'nowrap',
-        display: 'inline-block',
-        maxWidth: '100%',
-        verticalAlign: 'middle',
+        display: 'block',
+        width: '100%',
       }}
     >
       <span
@@ -99,7 +98,7 @@ function MarqueeStatus({ text }: { text: string }) {
       >
         {text}
       </span>
-    </div>
+    </span>
   )
 }
 
@@ -110,7 +109,7 @@ export default function UserStatus({ statusText, username, customStatus, guildTa
   return (
     <Box sx={{ textAlign: 'left', display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
-        <Typography sx={{ fontSize: { xs: 10, sm: 12 }, fontFamily: 'Press Start 2P', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <Typography sx={{ fontSize: { xs: 12, sm: 15 }, fontFamily: 'Press Start 2P', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', '@media (max-width: 600px)': { fontSize: '12px !important' } }}>
           {username}
         </Typography>
         {guildTag && (
@@ -132,7 +131,10 @@ export default function UserStatus({ statusText, username, customStatus, guildTa
 
       {displayStatus && (
         <Box sx={{ width: '100%', overflow: 'hidden' }}>
-          <Typography sx={{ fontSize: { xs: 9, sm: 10 }, opacity: isOffline ? 0.5 : 0.85, fontFamily: 'Roboto Mono', textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+          <Typography
+            component="span"
+            sx={{ fontSize: { xs: 11, sm: 12 }, opacity: isOffline ? 0.5 : 0.85, fontFamily: 'Roboto Mono', textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap', overflow: 'hidden', display: 'block' }}
+          >
             <MarqueeStatus text={displayStatus} />
           </Typography>
         </Box>
