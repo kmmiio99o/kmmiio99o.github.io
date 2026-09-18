@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
+    "generate:og": "node scripts/generate-og.mjs",
+    "build": "npm run generate:og && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -16,8 +17,9 @@
     "@emotion/styled": "^11.14.1"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.5",
+    "puppeteer": "^25.4.0",
     "typescript": "^7.0.2",
-    "vite": "^8.2.0",
-    "@vitejs/plugin-react": "^6.0.5"
+    "vite": "^8.2.0"
   }
 }
