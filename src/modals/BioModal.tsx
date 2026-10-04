@@ -63,6 +63,12 @@ export default function BioModal({ open, onClose }: { open: boolean; onClose: ()
           </Typography>
         </Section>
 
+        <Section title="LOCATION">
+          <Typography component="p" variant="body2">
+            Poland — CET/CEST (UTC+1 / UTC+2). Every clock on this site ticks on Warsaw time.
+          </Typography>
+        </Section>
+
         <Section title="LANGUAGES">
           <LangChips langs={['TypeScript', 'JavaScript', 'C#', 'Kotlin', 'CSS', 'HTML']} />
         </Section>
@@ -89,6 +95,18 @@ export default function BioModal({ open, onClose }: { open: boolean; onClose: ()
         <Section title="DESIGN TASTE">
           <Typography component="p" variant="body2">
             Material 3 Expressive for polished UI, retro/CRT aesthetics for soul. Neon on midnight, blocky corners, scanlines — the intersection of modern system design and 90s terminal nostalgia.
+          </Typography>
+        </Section>
+
+        <Section title="ALSO INTO">
+          <Typography component="p" variant="body2">
+            Pixel fonts, CRT bloom, terminal UIs, and small tools that do one thing well. If it hums, glows, or scrolls text — I'm interested.
+          </Typography>
+        </Section>
+
+        <Section title="THIS SITE">
+          <Typography component="p" variant="body2">
+            Hand-built with React, TypeScript and MUI, shipped as a static bundle from GitHub Pages. No backend, no cookies, no trackers — just a CRT humming in your browser.
           </Typography>
         </Section>
 

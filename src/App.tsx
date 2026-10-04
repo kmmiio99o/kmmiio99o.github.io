@@ -33,7 +33,7 @@ export default function App() {
 
   return (
     <Box sx={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
-      <Starfield />
+      {booted && <Starfield />}
       <CRTStyle
         scanlineIntensity={0.15}
         scanlineThickness={1}
