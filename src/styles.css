@@ -240,3 +240,13 @@ input, textarea, select, button, a, [contenteditable], .allow-select { -webkit-u
     0 0 8px var(--neon),
     0 0 12px var(--neon);
 }
+
+/* Retro pixel cursor */
+@media (not (pointer: coarse)) {
+  body, a, button, .MuiButton-root, .MuiButtonBase-root, .MuiIconButton-root, .MuiChip-root, [role='button'], summary {
+    cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='24' viewBox='0 0 16 24'><path d='M2 2 L2 20 L6.5 15.5 L10 23 L13.5 21.5 L10 14 L15 14 Z' fill='%23fff' stroke='%23000' stroke-width='2' stroke-linejoin='miter'/></svg>") 2 2, default !important;
+  }
+  input, textarea, [contenteditable='true'], .allow-select {
+    cursor: text !important;
+  }
+}
