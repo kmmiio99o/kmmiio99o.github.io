@@ -45,7 +45,7 @@ export default function SocialModal({ open, onClose }: { open: boolean; onClose:
               fontSize: { xs: 11, sm: 12 },
             }}
           >
-            kmmiio99o
+            zaveqo
           </Link>
         </Box>
 
@@ -54,7 +54,7 @@ export default function SocialModal({ open, onClose }: { open: boolean; onClose:
             X (Twitter)
           </Typography>
           <Link
-            href="https://x.com/kmmiio99o"
+            href="https://x.com/zaveqo"
             target="_blank"
             rel="noopener noreferrer"
             sx={{
@@ -66,7 +66,7 @@ export default function SocialModal({ open, onClose }: { open: boolean; onClose:
               fontSize: { xs: 11, sm: 12 },
             }}
           >
-            kmmiio99o
+            zaveqo
           </Link>
         </Box>
       </Box>

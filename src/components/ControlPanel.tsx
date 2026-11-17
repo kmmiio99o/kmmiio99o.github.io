@@ -5,7 +5,7 @@ import UserStatus from './UserStatus'
 import ControlButtons from './ControlButtons'
 
 const DISCORD_ID = '879393496627306587'
-const USERNAME = 'kmmiio99o'
+const USERNAME = 'zaveqo'
 
 function getStatusInfo(data: LanyardData | null) {
   const user = data?.discord_user

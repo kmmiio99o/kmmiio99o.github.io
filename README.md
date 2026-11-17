@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="https://github.com/kmmiio99o.png" width="120" style="border-radius:50%" alt="kmmiio99o avatar" />
+  <img src="https://github.com/kmmiio99o.png" width="120" style="border-radius:50%" alt="zaveqo avatar" />
 </p>
 
-<h1 align="center">✨ kmmiio99o — Personal Portfolio</h1>
+<h1 align="center">✨ zaveqo — Personal Portfolio</h1>
 <p align="center">
   <b>Welcome to my digital universe!</b><br>
   <i>Built with React, Material UI, and a sprinkle of animated stars.</i>
@@ -48,7 +48,7 @@
 <p align="center">
   <a href="https://discord.com/users/879393496627306587">Discord</a> •
   <a href="https://github.com/kmmiio99o">GitHub</a> •
-  <a href="https://x.com/kmmiio99o">Twitter/X</a>
+  <a href="https://x.com/zaveqo">Twitter/X</a>
 </p>
 
 ---
@@ -71,5 +71,5 @@
 ---
 
 <p align="center">
-  <b>Made with passion by kmmiio99o © 2025</b>
+  <b>Made with passion by zaveqo © 2025</b>
 </p>
