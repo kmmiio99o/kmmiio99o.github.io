@@ -1,0 +1,60 @@
+name: Build and publish dist
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-dist
+  cancel-in-progress: true
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build site
+        run: bun run build
+
+      - name: Verify build output
+        run: test -d dist && find dist -type f | grep -q .
+
+      - name: Publish dist/ to the dist branch
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          publish_dir="${RUNNER_TEMP}/publish-dist"
+          rm -rf "$publish_dir"
+          mv dist "$publish_dir"
+
+          git checkout --orphan deploy-dist
+          git rm -rf . >/dev/null
+          git clean -fdx >/dev/null
+          cp -a "$publish_dir/." .
+          git add -A -f
+          git commit -m "Deploy ${GITHUB_SHA:0:7}"
+          git push --force origin deploy-dist:dist
